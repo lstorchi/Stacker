@@ -31,6 +31,7 @@ for sp in file:
   spheres.append(s)
 
   print "line: ", contatore
+
   contatore = contatore + 1
 
 file.close()
