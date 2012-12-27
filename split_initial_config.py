@@ -20,13 +20,13 @@ nanoparticle.POINTINSIDEDIM = 0
 
 NUMOFBOX = 64
 
-#box_xdim = 135.0
-#box_ydim = 135.0
-#box_zdim = 135.0
+box_xdim = 135.0
+box_ydim = 135.0
+box_zdim = 135.0
 
-box_xdim = 205.0
-box_ydim = 205.0
-box_zdim = 205.0
+#box_xdim = 205.0
+#box_ydim = 205.0
+#box_zdim = 205.0
 
 filenamenanop = "final_config_nanoparticle.txt"
 

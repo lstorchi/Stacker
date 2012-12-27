@@ -132,5 +132,7 @@ writer.SetInputConnection (renderLarge.GetOutputPort())
 writer.SetFileName("largeImage.tif")
 writer.Write()
 
+print minbox_x, minbox_y, minbox_z, maxbox_x, maxbox_y, maxbox_z
+
 renWin.Render()
 iren.Start()
