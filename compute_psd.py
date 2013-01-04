@@ -24,15 +24,19 @@ spheres = []
 
 contatore = 1
 for sp in file:
-  x, y, z, cx, cy, cz, r = sp.split(" ")
+  try:
+    x, y, z, cx, cy, cz, r = sp.split(" ")
+  except ValueError:
+    print "error at line: ", contatore
+    contatore = contatore + 1
+  else:
+    center = point.point(float(cx), float(cy), float(cz))
+    s = sphere.sphere(center, float(r))
+    spheres.append(s)
 
-  center = point.point(float(cx), float(cy), float(cz))
-  s = sphere.sphere(center, float(r))
-  spheres.append(s)
+    #print "line: ", contatore
 
-  print "line: ", contatore
-
-  contatore = contatore + 1
+    contatore = contatore + 1
 
 file.close()
 
