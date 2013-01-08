@@ -113,6 +113,7 @@ for selectedid in range(len(nanoparticles)):
 
     if (superfract < min_superfract):
       min_nanop = nanop
+      min_superfract = superfract
 
     i = i + 1
 
@@ -120,7 +121,7 @@ for selectedid in range(len(nanoparticles)):
       break;
 
   if i > max_numt:
-    print "Min superfract :", superfract
+    print "Min superfract :", min_superfract
 
   new_nanoparticles_list.append(min_nanop)
 

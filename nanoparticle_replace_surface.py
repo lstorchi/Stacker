@@ -23,6 +23,8 @@ def compute_superfract_ratio (nanop, nearnanop):
   surface_insidepoint = 0
   surface_type = {}
 
+  count_001 = 0
+  count_101 = 0
   # calcolo superficie di interesezione
   points_surface = nanop.get_surface_points()
   for p in points_surface:
@@ -39,13 +41,17 @@ def compute_superfract_ratio (nanop, nearnanop):
           surface_type[label] = 1
 
   for l, v in surface_type.iteritems():
-    print "\"",l,"\"", v
+    #print l, v
+    if l == "001":
+      count_001 += v
+    elif l == "101":
+      count_101 += v
 
   comptration = 0.0
-  if (" 001 " in surface_type) and (" 101 " in  surface_type):
-    comptration = surface_type[" 001 "] / surface_type[" 101 "]
+  if count_001 != 0 and count_101 != 0 :
+    comptration = float(count_101) / float(count_001)
  
-  print comptration, trueratio, math.fabs(comptration-trueratio)
+  #print comptration, trueratio, math.fabs(comptration-trueratio)
 
   return math.fabs(comptration-trueratio)
 
@@ -117,9 +123,19 @@ for selectedid in range(len(nanoparticles)):
   print "Selected " , len(neardst), " nanoparticles "
 
   max_numt = 1000
+  maxdiff = 1.0
 
-  if len(neardst) <= 2:
+  # anche 2 vale la pena provare fino a 1000 ho  visto casi in 
+  # cui si arriva ad una diff di 2 e poco piu'
+
+  if len(neardst) == 0:
     max_numt = 0
+  elif len(neardst) == 1:
+    max_numt = 10
+    maxdiff = 5,0
+  elif len(neardst) == 2:
+    max_numt = 1000
+    maxdiff = 2,5
 
   min_nanop = nanop
   superfract_ratio = compute_superfract_ratio (nanop, nearnanop)
@@ -127,7 +143,7 @@ for selectedid in range(len(nanoparticles)):
   p2 = nanop.get_p2()
   min_superfract_ratio = superfract_ratio
   i = 0
-  while superfract_ratio > 1.0:
+  while superfract_ratio > maxdiff:
     p2x = random.uniform(botx, topx)
     p2y = random.uniform(boty, topy)
     p2z = random.uniform(botz, topz)
@@ -139,6 +155,7 @@ for selectedid in range(len(nanoparticles)):
 
     if (superfract_ratio < min_superfract_ratio):
       min_nanop = nanop
+      min_superfract_ratio = superfract_ratio
 
     i = i + 1
 
@@ -146,7 +163,9 @@ for selectedid in range(len(nanoparticles)):
       break;
 
   if i > max_numt:
-    print "Min superfract_raio difference :", superfract_ratio
+    print "Min superfract_raio difference :", min_superfract_ratio
+  else:
+    print "Difference ratio: ", min_superfract_ratio
 
   new_nanoparticles_list.append(min_nanop)
 
