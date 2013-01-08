@@ -27,25 +27,23 @@ def compute_superfract_ratio (nanop, nearnanop):
   points_surface = nanop.get_surface_points()
   for p in points_surface:
     for a in range(len(nearnanop)):
-      if (a != selected_index):
-        other_particle = nearnanop[a]
-        if other_particle.is_point_inside([p.get_x(), 
-          p.get_y(), p.get_z()]):
+      other_particle = nearnanop[a]
+      if other_particle.is_point_inside([p.get_x(), 
+        p.get_y(), p.get_z()]):
     
-          label = p.get_label()
+        label = p.get_label()
 
-          if label in surface_type:
-            surface_type[label] += 1
-          else:
-            surface_type[label] = 1
+        if label in surface_type:
+          surface_type[label] += 1
+        else:
+          surface_type[label] = 1
 
   for l, v in surface_type.iteritems():
-    print l, v
-  
+    print "\"",l,"\"", v
 
   comptration = 0.0
-  if ("001" in surface_type) and ("101" in  surface_type):
-    comptration = surface_type["001"] / surface_type["101"]
+  if (" 001 " in surface_type) and (" 101 " in  surface_type):
+    comptration = surface_type[" 001 "] / surface_type[" 101 "]
  
   print comptration, trueratio, math.fabs(comptration-trueratio)
 
@@ -119,6 +117,10 @@ for selectedid in range(len(nanoparticles)):
   print "Selected " , len(neardst), " nanoparticles "
 
   max_numt = 1000
+
+  if len(neardst) <= 2:
+    max_numt = 0
+
   min_nanop = nanop
   superfract_ratio = compute_superfract_ratio (nanop, nearnanop)
   tetha = nanop.get_theta()
