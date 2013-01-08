@@ -132,10 +132,10 @@ for selectedid in range(len(nanoparticles)):
     max_numt = 0
   elif len(neardst) == 1:
     max_numt = 10
-    maxdiff = 5,0
+    maxdiff = 5.0
   elif len(neardst) == 2:
     max_numt = 1000
-    maxdiff = 2,5
+    maxdiff = 2.5
 
   min_nanop = nanop
   superfract_ratio = compute_superfract_ratio (nanop, nearnanop)
@@ -163,7 +163,7 @@ for selectedid in range(len(nanoparticles)):
       break;
 
   if i > max_numt:
-    print "Min superfract_raio difference :", min_superfract_ratio
+    print "Min superfract_ratio difference :", min_superfract_ratio
   else:
     print "Difference ratio: ", min_superfract_ratio
 
