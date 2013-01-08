@@ -152,6 +152,11 @@ nanoparticle_coordination.py  : Calcola in realta' tutto come nanoparticle_volum
 coord_w_radial_integration.py : calcola il coordination number proprio integrando, particella per 
                                 particella la g(r)
 
+nanoparticle_replace_surface.py   : ricostruire il packing muovendo ogni nanoparticella di modo che
+                                    il rapporto tra le frazioni di superficie 101 e 001 sia correttamente 
+                                    circa 20
+
+
 per usare pyOpt: export PYTHONPATH=$PYTHONPATH:/home/redo/AssegnoFilippo/stacker/pyopt/pyOpt-1.0.1
 
 -------------------------------------------------------------------------------------
