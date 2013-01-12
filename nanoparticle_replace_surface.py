@@ -53,6 +53,10 @@ def compute_superfract_ratio (nanop, nearnanop):
  
   #print comptration, trueratio, math.fabs(comptration-trueratio)
 
+  # favorisco comunque la sovrapposzione 101
+  if (count_101 != 0) and (count_001 == 0): 
+    return 0.0
+
   return math.fabs(comptration-trueratio)
 
 ###############################################################################
