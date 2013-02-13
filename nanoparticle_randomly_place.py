@@ -46,13 +46,16 @@ for i in range(len(scx)):
   cx = scx[i] 
   cy = scy[i] 
   cz = scz[i]
-  H = radius[i] * 4.18642
-  B = H*0.347
+  H = radius[i] * 3.062578
+  #H = radius[i] * 4.18642
+  B = H*0.5
+  #B = H*0.347
 
   #H = radius[i] * 2.4823
   #B = H*0.76
 
-  A = B*0.32
+  A = B*0.5
+  #A = B*0.32
 
   # ruota la nanoparticella random
   p1 = point.point(cx, cy, cz)
