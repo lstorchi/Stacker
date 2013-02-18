@@ -46,9 +46,9 @@ for i in range(len(scx)):
   cx = scx[i] 
   cy = scy[i] 
   cz = scz[i]
-  H = radius[i] * 3.062578
+  H = radius[i] * 1.929342
   #H = radius[i] * 4.18642
-  B = H*0.5
+  B = H
   #B = H*0.347
 
   #H = radius[i] * 2.4823
