@@ -156,6 +156,8 @@ nanoparticle_replace_surface.py   : ricostruire il packing muovendo ogni nanopar
                                     il rapporto tra le frazioni di superficie 101 e 001 sia correttamente 
                                     circa 20
 
+visualize_single_nanop_sphere.py : Visualizza una singola parteicella e la sfera corrispondente 
+
 
 per usare pyOpt: export PYTHONPATH=$PYTHONPATH:/home/redo/AssegnoFilippo/stacker/pyopt/pyOpt-1.0.1
 
