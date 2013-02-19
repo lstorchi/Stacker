@@ -58,7 +58,7 @@ for selected_index in range(0,1):
   renderer.AddActor(nanop.get_vtk_actor(True, 1.0))
 
   s = spheres[selected_index]
-  renderer.AddActor(s.get_vtk_actor(True, 1.0))
+  renderer.AddActor(s.get_actor(0.8))
 
 renderer.SetBackground(0,0,0)
 
