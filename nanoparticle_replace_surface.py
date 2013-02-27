@@ -117,7 +117,9 @@ for selectedid in range(len(nanoparticles)):
   p1, p2, tetha = nanop_selected.get_rotation_info()
 
   nanop = nanoparticle.nanotio2(pcx, pcy, pcz, A, B, H)
-  nanop.rotate_nanoparticle(p1, p2, tetha)
+  # non ruoto altrimenti perdo il riferimento visto che ogni volta voglio 
+  # ripartire dalla sfera dritta
+  #nanop.rotate_nanoparticle(p1, p2, tetha)
 
   nanoparticle.POINTINSURFACESTEP = float('inf')
 
@@ -126,7 +128,7 @@ for selectedid in range(len(nanoparticles)):
 
   print "Selected " , len(neardst), " nanoparticles "
 
-  max_numt = 1000
+  max_numt = 10000
   maxdiff = 1.0
 
   # anche 2 vale la pena provare fino a 1000 ho  visto casi in 
@@ -142,9 +144,10 @@ for selectedid in range(len(nanoparticles)):
     maxdiff = 2.5
 
   min_nanop = nanop
-  superfract_ratio = compute_superfract_ratio (nanop, nearnanop)
-  tetha = nanop.get_theta()
-  p2 = nanop.get_p2()
+  to_rotate_nanop = nanop
+  superfract_ratio = compute_superfract_ratio (min_nanop, nearnanop)
+  tetha = 0.0
+  p2 = point.point(float(pcx), float(pcy), float(pcz))
   min_superfract_ratio = superfract_ratio
   i = 0
   while superfract_ratio > maxdiff:
@@ -154,23 +157,28 @@ for selectedid in range(len(nanoparticles)):
     p2 = point.point(float(p2x), float(p2y), float(p2z))
     tetha = random.uniform(0.0, 2.0*math.pi) 
 
-    nanop = rotate_nanop (nanop, tetha, p2)
-    superfract_ratio = compute_superfract_ratio (nanop, nearnanop)
+    to_rotate_nanop = rotate_nanop (to_rotate_nanop, tetha, p2)
+    superfract_ratio = compute_superfract_ratio (to_rotate_nanop, nearnanop)
 
     if (superfract_ratio < min_superfract_ratio):
-      min_nanop = nanop
+      min_nanop = to_rotate_nanop
       min_superfract_ratio = superfract_ratio
 
     i = i + 1
+    # ogni volta riparto dalla particella dritta
+    to_rotate_nanop = nanop
 
     if (i > max_numt):
       break;
 
   if i > max_numt:
-    print "Min superfract_ratio difference :", min_superfract_ratio
+    superfract_ratio = compute_superfract_ratio (min_nanop, nearnanop)
+    print "Min superfract_ratio difference :", superfract_ratio
+    new_nanoparticles_list.append(min_nanop)
   else:
     print "Difference ratio: ", min_superfract_ratio
-
-  new_nanoparticles_list.append(min_nanop)
+    superfract_ratio = compute_superfract_ratio (nanop, nearnanop)
+    print "Min superfract_ratio difference :", superfract_ratio
+    new_nanoparticles_list.append(nanop)
 
   print >> sys.stderr, pcx, pcy, pcz, A, B, H, p2.get_x(), p2.get_y(), p2.get_z(), tetha
