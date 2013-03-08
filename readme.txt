@@ -158,6 +158,11 @@ nanoparticle_replace_surface.py   : ricostruire il packing muovendo ogni nanopar
 
 visualize_single_nanop_sphere.py : Visualizza una singola parteicella e la sfera corrispondente 
 
+nanoparticle_replace_surface_step2.py : Onde migliorare il rapporto medio ottenuto devo fare passaggi
+                                        successivi, e questo e' sicuramente uno in cui prendo particella
+                                        per particella e ruoto a differenza del primo in cui riarto dalla
+                                        prima particella e aggiungo man mano le altre.
+
 
 per usare pyOpt: export PYTHONPATH=$PYTHONPATH:/home/redo/AssegnoFilippo/stacker/pyopt/pyOpt-1.0.1
 
