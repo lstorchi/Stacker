@@ -134,8 +134,8 @@ for selectedid in range(len(nanoparticles)):
   # cui si arriva ad una diff di 2 e poco piu'
 
   # genera la spfera su cui poi generare i p2
-  p2sphere = sphere.sphere(point.point(nanop.get_center()), 
-      nanop.get_max_sphere())
+  ncx, ncy, ncz = nanop.get_center()
+  p2sphere = sphere.sphere(point.point(ncx, ncy, ncz), nanop.get_max_sphere())
   p2list = p2sphere.generate_surface_points(180)
 
   min_nanop = nanop
@@ -147,7 +147,7 @@ for selectedid in range(len(nanoparticles)):
   i = 0
   for p2 in p2list:
     tetha = 1.0
-    for tetha < 2.0*math.pi:
+    while tetha < 2.0*math.pi:
       to_rotate_nanop = rotate_nanop (to_rotate_nanop, tetha, p2)
       superfract_ratio = compute_superfract_ratio (to_rotate_nanop, nearnanop)
       
