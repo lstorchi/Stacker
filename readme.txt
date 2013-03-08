@@ -163,6 +163,11 @@ nanoparticle_replace_surface_step2.py : Onde migliorare il rapporto medio ottenu
                                         per particella e ruoto a differenza del primo in cui riarto dalla
                                         prima particella e aggiungo man mano le altre.
 
+nanoparticle_replace_surface_non_random_step2.py : Posso generare le rotazioni in modo esaustivo ad esempio:
+                                             genero tutti i punto sulla sfera e quelli sono p2 e poi tetha 
+                                             (angolo di rotazione) semplicemente mi sposto di step 2*PI/n
+                                             a seconda di quello che voglio. 
+
 
 per usare pyOpt: export PYTHONPATH=$PYTHONPATH:/home/redo/AssegnoFilippo/stacker/pyopt/pyOpt-1.0.1
 
