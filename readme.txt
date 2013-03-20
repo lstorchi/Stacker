@@ -168,6 +168,9 @@ nanoparticle_replace_surface_non_random_step2.py : Posso generare le rotazioni i
                                              (angolo di rotazione) semplicemente mi sposto di step 2*PI/n
                                              a seconda di quello che voglio. 
 
+nanoparticle_replace_surface_non_random_step2_fixed.py : come sopra solo che in questo caso vengono
+                                                         taggati i vicini e quindi non piu' mossi
+
 
 per usare pyOpt: export PYTHONPATH=$PYTHONPATH:/home/redo/AssegnoFilippo/stacker/pyopt/pyOpt-1.0.1
 

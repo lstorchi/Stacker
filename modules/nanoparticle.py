@@ -23,6 +23,8 @@ class nanotio2:
 
     #self._d = numpy.linspace( 0.0, 0.0, 12)
 
+    self._fixed = False
+
     self._cx = 0.0
     self._cy = 0.0
     self._cz = 0.0
@@ -50,6 +52,13 @@ class nanotio2:
     self._B = B
 
     self.__compute()
+
+  def set_fixed ():
+    self._fixed = True
+
+
+  def get_fixed ():
+    return self._fixed;
 
 
   def get_distance (self, pp):
@@ -1408,5 +1417,37 @@ def get_line_x_y (x1, y1, z1, x2, y2, z2, zin):
   y = y1 + (((x - x1) * (y2 - y1))/(x2 - x1))
 
   return x, y
+
+###############################################################################
+
+def get_near_nanoparticle_set_fixed (nanoparticles, px, py, pz, distance):
+
+  scx, scy, scz = nanoparticle_to_arrays (nanoparticles)
+
+  distx = (scx - px)
+  disty = (scy - py)
+  distz = (scz - pz)
+
+  distx2 = distx * distx
+  disty2 = disty * disty
+  distz2 = distz * distz
+
+  dist = distx2 + disty2 + distz2
+
+  d = numpy.sqrt(dist)
+
+  bools1 = d <= distance
+
+  indices, = numpy.where(bools1)
+
+  toret = []
+  toretdst = numpy.linspace( 0.0, 0.0, len(indices))
+
+  for i in range(len(indices)):
+    nanoparticles[indices[i]].set_fixed()
+    toret.append(nanoparticles[indices[i]])
+    toretdst[i] = d[indices[i]]
+
+  return toret, toretdst
 
 ###############################################################################
