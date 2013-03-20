@@ -53,11 +53,11 @@ class nanotio2:
 
     self.__compute()
 
-  def set_fixed ():
+  def set_fixed (self):
     self._fixed = True
 
 
-  def get_fixed ():
+  def get_fixed (self):
     return self._fixed;
 
 
