@@ -107,7 +107,7 @@ for selectedid in range(len(nanoparticles)):
 
   nanop_selected = nanoparticles[selectedid]
 
-  if (!nanop_selected.get_fixed()):
+  if (not nanop_selected.get_fixed()):
     pcx, pcy, pcz = nanop_selected.get_center()
     A, B, H = nanop_selected.get_dimensions()
     dm = max(B, A, H)/2.0
