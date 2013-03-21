@@ -35,6 +35,8 @@ class nanotio2:
     # not call set center and dimentsion to avoid call compute trhree time
 
     self._p1 = point.point(cx, cy, cz)
+    self._p2 = point.point(cx, cy, cz)
+
     self._cx = cx
     self._cy = cy
     self._cz = cz
