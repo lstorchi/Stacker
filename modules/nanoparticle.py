@@ -36,6 +36,7 @@ class nanotio2:
 
     self._p1 = point.point(cx, cy, cz)
     self._p2 = point.point(cx, cy, cz)
+    self._theta = 0.0
 
     self._cx = cx
     self._cy = cy

@@ -158,7 +158,7 @@ for selectedid in range(len(nanoparticles)):
       p2 = point.point(float(p2x), float(p2y), float(p2z))
       tetha = random.uniform(0.0, 2.0*math.pi) 
     
-      to_rotate_nanop = rotate_nanop (to_rotate_nanop, tetha, p2)
+      to_rotate_nanop = rotate_nanop (nanop, tetha, p2)
       superfract_ratio = compute_superfract_ratio (to_rotate_nanop, nearnanop)
     
       if (superfract_ratio < min_superfract_ratio):
