@@ -161,7 +161,7 @@ for selectedid in range(len(nanoparticles)):
       to_rotate_nanop = rotate_nanop (nanop, tetha, p2)
       superfract_ratio = compute_superfract_ratio (to_rotate_nanop, nearnanop)
     
-      if (superfract_ratio < min_superfract_ratio):
+      if (superfract_ratio <= min_superfract_ratio):
         min_nanop = to_rotate_nanop
         min_superfract_ratio = superfract_ratio
     
@@ -172,15 +172,9 @@ for selectedid in range(len(nanoparticles)):
       if (i > max_numt):
         break;
     
-    if i > max_numt:
-      superfract_ratio = compute_superfract_ratio (min_nanop, nearnanop)
-      print "Min superfract_ratio difference :", superfract_ratio
-      new_nanoparticles_list.append(min_nanop)
-    else:
-      print "Difference ratio: ", min_superfract_ratio
-      superfract_ratio = compute_superfract_ratio (nanop, nearnanop)
-      print "Min superfract_ratio difference :", superfract_ratio
-      new_nanoparticles_list.append(nanop)
+    superfract_ratio = compute_superfract_ratio (min_nanop, nearnanop)
+    print "Min superfract_ratio difference :", superfract_ratio
+    new_nanoparticles_list.append(min_nanop)
   else:
     new_nanoparticles_list.append(nanop_selected)
 
