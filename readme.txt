@@ -173,6 +173,11 @@ nanoparticle_replace_surface_non_random_step2_fixed.py : come sopra solo che in 
 
 nanoparticle_replace_surface_step2_fixed.py : come sopra ma random
 
+nanoparticle_replace_surface_step2_fixed_nona.py : come sopra ma mette fixed solo le nanoparticelle che 
+                                                   toccano quella che muovo quindi in conclusione ne muove
+                                                   di piu' di quello sopra, quindi non rimane fixed solo
+                                                   la coordinazione
+
 
 per usare pyOpt: export PYTHONPATH=$PYTHONPATH:/home/redo/AssegnoFilippo/stacker/pyopt/pyOpt-1.0.1
 

@@ -1252,7 +1252,7 @@ def file_to_nanoparticle_list(filename, nanaparticles):
 
 ###############################################################################
 
-def get_near_nanoparticle (nanoparticles, px, py, pz, distance):
+def get_near_nanoparticle_indexs (nanoparticles, px, py, pz, distance):
 
   scx, scy, scz = nanoparticle_to_arrays (nanoparticles)
 
@@ -1271,6 +1271,15 @@ def get_near_nanoparticle (nanoparticles, px, py, pz, distance):
   bools1 = d <= distance
 
   indices, = numpy.where(bools1)
+
+  return indices, d
+
+###############################################################################
+
+def get_near_nanoparticle (nanoparticles, px, py, pz, distance):
+
+  indices, d = get_near_nanoparticle_indexs (nanoparticles, \
+      px, py, pz, distance)
 
   toret = []
   toretdst = numpy.linspace( 0.0, 0.0, len(indices))
@@ -1428,23 +1437,8 @@ def get_line_x_y (x1, y1, z1, x2, y2, z2, zin):
 
 def get_near_nanoparticle_set_fixed (nanoparticles, px, py, pz, distance):
 
-  scx, scy, scz = nanoparticle_to_arrays (nanoparticles)
-
-  distx = (scx - px)
-  disty = (scy - py)
-  distz = (scz - pz)
-
-  distx2 = distx * distx
-  disty2 = disty * disty
-  distz2 = distz * distz
-
-  dist = distx2 + disty2 + distz2
-
-  d = numpy.sqrt(dist)
-
-  bools1 = d <= distance
-
-  indices, = numpy.where(bools1)
+  indices, d = get_near_nanoparticle_indexs (nanoparticles, \
+      px, py, pz, distance)
 
   toret = []
   toretdst = numpy.linspace( 0.0, 0.0, len(indices))
