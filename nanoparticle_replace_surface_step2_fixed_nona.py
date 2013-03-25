@@ -19,8 +19,8 @@ def set_fixed_for_touch_nanops (nanop, nanoparticles):
       pcx, pcy, pcz, (2.0 * nanop.get_max_sphere()))
  
   for i in range(len(indexs)):
-    if (nanop.nanoparticle_touch_me (nanoparticles[indices[i]])):
-      nanoparticles[indices[i]].set_fixed()
+    if (nanop.nanoparticle_touch_me (nanoparticles[indexs[i]])):
+      nanoparticles[indexs[i]].set_fixed()
 
 ###############################################################################
 
