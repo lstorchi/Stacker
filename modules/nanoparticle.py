@@ -443,7 +443,8 @@ class nanotio2:
       self.__compute_plane()
    
     nanopMapper = vtk.vtkPolyDataMapper()
-    nanopMapper.SetInput(self._polydata)
+    #nanopMapper.SetInput(self._polydata)
+    nanopMapper.SetInputData(self._polydata)
 
     if not color:
       nanopMapper.SetScalarRange(0,1)

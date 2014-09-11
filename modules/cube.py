@@ -80,7 +80,8 @@ def cube_to_actors (botx, boty, botz, \
 
   for s in sources:
     mapper = vtk.vtkPolyDataMapper()
-    mapper.SetInput(s.GetOutput())
+    #mapper.SetInput(s.GetOutput())
+    mapper.SetInputConnection(s.GetOutputPort())
 
     mappers.append(mapper)
 

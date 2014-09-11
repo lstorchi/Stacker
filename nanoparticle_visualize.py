@@ -97,20 +97,25 @@ for nanop in nanaparticles:
 
 # visualizza se necessario la sfera
 
-sphere = vtk.vtkSphereSource()
-sphere.SetCenter(0, 0, 0)
-sphere.SetRadius(float(9.5))
-sphere.SetThetaResolution(10)
-sphere.SetPhiResolution(10)
+usesphere = False
 
-spheremapper = vtk.vtkPolyDataMapper()
-spheremapper.SetInput(sphere.GetOutput())
-    
-sphereactor = vtk.vtkActor()
-sphereactor.SetMapper(spheremapper)
-sphereactor.GetProperty().SetOpacity(1)
+if usesphere :
+  sphere = vtk.vtkSphereSource()
+  sphere.SetCenter(0, 0, 0)
+  sphere.SetRadius(float(9.5))
+  sphere.SetThetaResolution(10)
+  sphere.SetPhiResolution(10)
+ 
+  spheremapper = vtk.vtkPolyDataMapper()
+  #spheremapper.SetInput(sphere.GetOutput())
+  spheremapper.SetInputConnection(sphere.GetOutputPort())
 
-#renderer.AddActor(sphereactor)
+     
+  sphereactor = vtk.vtkActor()
+  sphereactor.SetMapper(spheremapper)
+  sphereactor.GetProperty().SetOpacity(1)
+ 
+  renderer.AddActor(sphereactor)
 
 cube_actors = cube.cube_to_actors(minbox_x, minbox_y, minbox_z, \
     maxbox_x, maxbox_y, maxbox_z, 1.0, 1.0, 1.0)
