@@ -213,7 +213,7 @@ polydata.SetPolys(polys)
 #polydata.GetPointData().SetScalars(scalars)
 
 papper = vtk.vtkPolyDataMapper()
-papper.SetInput(polydata)
+papper.SetInputData(polydata)
 papper.SetScalarRange(0,0)
 
 pactor = vtk.vtkActor()
