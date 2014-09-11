@@ -18,7 +18,7 @@ import vtk
 
 ###############################################################################
 
-util_for_tr.NUMOFCIRCLEPOINTS = 36
+util_for_tr.NUMOFCIRCLEPOINTS = 72
 
 filename = "final_config.txt"
 
@@ -161,13 +161,14 @@ polydata.SetPolys(polys)
 #polydata.GetPointData().SetScalars(scalars)
 
 papper = vtk.vtkPolyDataMapper()
-papper.SetInput(polydata)
+#papper.SetInput(polydata)
+papper.SetInputData(polydata)
 papper.SetScalarRange(0,0)
 
 pactor = vtk.vtkActor()
 pactor.SetMapper(papper)
 #pactor.GetProperty().SetOpacity(opacity)
-#pactor.GetProperty().SetRepresentationToWireframe()
+pactor.GetProperty().SetRepresentationToWireframe()
 pactor.GetProperty().SetColor(1.0,1.0,1.0)
 
 ren.AddActor(pactor)
@@ -178,14 +179,20 @@ ren.ResetCamera()
 
 renWin.SetSize(1024, 768)
 
-renderLarge = vtk.vtkRenderLargeImage()
-renderLarge.SetInput(ren)
-renderLarge.SetMagnification(4)
+#renderLarge = vtk.vtkRenderLargeImage()
+#renderLarge.SetInput(ren)
+#renderLarge.SetMagnification(4)
 
-writer = vtk.vtkTIFFWriter()
-writer.SetInputConnection (renderLarge.GetOutputPort())
-writer.SetFileName("largeImage.tif")
+writer = vtk.vtkGL2PSExporter()
+writer.SetRenderWindow(renWin)
+writer.SetFileFormatToPDF ()
+writer.SetFilePrefix("largeImage")
 writer.Write()
+ 
+#writer = vtk.vtkTIFFWriter()
+#writer.SetInputConnection (renderLarge.GetOutputPort())
+#writer.SetFileName("largeImage.tif")
+#writer.Write()
 
 renWin.Render()
 iren.Start()
