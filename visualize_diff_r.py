@@ -89,7 +89,8 @@ mappers = []
 
 for source in sources:
   mapper = vtk.vtkPolyDataMapper()
-  mapper.SetInput(source.GetOutput())
+  #mapper.SetInput(source.GetOutput())
+  mapper.SetInputConnection(source.GetOutputPort())
   
   mappers.append(mapper)
 
@@ -112,6 +113,11 @@ for actor in actors:
 try:
   iren.Initialize()
   renWin.Render()
+  #writer = vtk.vtkGL2PSExporter()
+  #writer.SetRenderWindow(renWin)
+  #writer.SetFileFormatToSVG ()
+  #writer.SetFilePrefix("largeImage")
+  #writer.Write()
   iren.Start()
 except Exception as e:
   print e
