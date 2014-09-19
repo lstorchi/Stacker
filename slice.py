@@ -102,6 +102,15 @@ sys.stdout.flush()
 
 ren.SetBackground(0,0,0)
 renWin.SetSize(1024, 768)
-
 renWin.Render()
+
+renderLarge = vtk.vtkRenderLargeImage()
+renderLarge.SetInput(ren)
+renderLarge.SetMagnification(4)
+
+writer = vtk.vtkTIFFWriter()
+writer.SetInputConnection (renderLarge.GetOutputPort())
+writer.SetFileName("largeImage.tif")
+writer.Write()
+
 iren.Start()
