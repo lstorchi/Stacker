@@ -53,7 +53,7 @@ for selected_index in range(0,1):
     renderer.AddActor(p.get_actor(0.1, rc = 1.0, gc = 0.0, bc = 0.0))
   renderer.AddActor(nanop.get_vtk_actor(opacity = 0.5))
 
-renderer.SetBackground(0,0,0)
+renderer.SetBackground(255,255,255)
 
 renWin.SetSize(1024, 768)
 
