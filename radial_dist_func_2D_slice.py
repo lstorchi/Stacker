@@ -162,7 +162,7 @@ for zplane in drange (zmin+R_average, zmax-R_average, 2.0*R_average):
   
   tuple_box = (xmax-xmin, ymax-ymin)
   R_max = min(min(tuple_box)/2.0, 10.0*R_average)
-  dr = 0.4
+  dr = 0.8
   
   g_average, radii, x, y, indxs = pairCorrelationFunction_2D (x, y, \
         max(tuple_box)+(R_average),R_max,dr)
