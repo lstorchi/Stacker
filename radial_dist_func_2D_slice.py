@@ -44,7 +44,7 @@ for sp in file:
   s = sphere(center, float(r))
   spheres.append(s)
 
-  R_average = R_average + r
+  R_average = R_average + float(r)
 
   if (zmax < (float(z) + float(r))):
     zmax = (float(z) + float(r))
@@ -74,7 +74,11 @@ file.close()
 # il piano deve essere tra zmin e zmax 
 # equazione del piano
 
-for zplane in drange (zmin+R_average, zmax-R_average, 2.0*R_average)
+gval_average = numpy.ndarray
+radiival = numpy.ndarray
+thefirst = True
+counter = 0.0
+for zplane in drange (zmin+R_average, zmax-R_average, 2.0*R_average):
   
   spheres_in_plane = []
   
@@ -93,6 +97,9 @@ for zplane in drange (zmin+R_average, zmax-R_average, 2.0*R_average)
   
   circles = []
   
+  if (len(spheres_in_plane) > 0):
+    counter = counter + 1.0
+
   for s in spheres_in_plane:
     r = s.get_radius()
     c = s.get_center()
@@ -167,11 +174,20 @@ for zplane in drange (zmin+R_average, zmax-R_average, 2.0*R_average)
   for i in range(0,radii.size):
     if g_average[i] > total:
       total = g_average[i]
-  
+
+  if thefirst:
+    gval_average = numpy.linspace( 0.0, 0.0, len(g_average))
+    radiival = numpy.linspace( 0.0, 0.0, len(radii))
+    thefirst = False;
+
+  #outf = open ("radial_distribution.txt", "a")
   for i in range(0,radii.size):
-    data = str(radii[i]/(R_average)) + \
-        " " + str(g_average[i]/total) + "\n"
-    outf.write(data)
+    gval_average[i] = gval_average[i] + g_average[i]/total
+    radiival[i] = radii[i]/(R_average)
+    #data = str(radii[i]/(R_average)) + \
+    #    " " + str(g_average[i]/total) + "\n"
+    #outf.write(data)
+  #outf.close()
   
   sum = 0.0
   for i in range(1,radii.size):
@@ -183,7 +199,10 @@ for zplane in drange (zmin+R_average, zmax-R_average, 2.0*R_average)
       sum += gv*dr
   
   print sum
-  
-outf = open ("radial_distribution.txt", "w")
 
+outf = open ("radial_distribution.txt", "w")
+for i in range(0,radii.size):
+  data = str(radiival[i]) + \
+      " " + str(gval_average[i]/counter) + "\n"
+  outf.write(data)
 outf.close()
