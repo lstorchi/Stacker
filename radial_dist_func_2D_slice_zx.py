@@ -64,10 +64,7 @@ volume = (xmax-xmin) * (ymax-ymin) * (zmax-zmin)
 
 R_average = R_average / float(len(spheres))
 
-print "zmin -> zmax ", zmin , zmax
-
-#print "xmax: ", xmax, "xmin: ",xmin, "ymax: ", ymax, \
-#    "ymin: ", ymin, "zmx: ", zmax, "zmin: ", zmin
+print "ymin -> ymax ", ymin , ymax
 
 file.close()
 
@@ -78,7 +75,7 @@ gval_average = numpy.ndarray
 radiival = numpy.ndarray
 thefirst = True
 counter = 0.0
-for zplane in drange (zmin+R_average, zmax-R_average, 2.0*R_average):
+for yplane in drange (ymin+R_average, ymax-R_average, 2.0*R_average):
   
   spheres_in_plane = []
   
@@ -92,7 +89,7 @@ for zplane in drange (zmin+R_average, zmax-R_average, 2.0*R_average):
     cy = c.get_y()
     cz = c.get_z()
   
-    if (zplane >= (cz - r)) and (zplane <= (cz + r)):
+    if (yplane >= (cy - r)) and (yplane <= (cy + r)):
       spheres_in_plane.append(s)
   
   circles = []
@@ -108,45 +105,45 @@ for zplane in drange (zmin+R_average, zmax-R_average, 2.0*R_average):
     cy = c.get_y()
     cz = c.get_z()
   
-    circler = math.sqrt(math.pow(r, 2) - math.pow((zplane-cz),2))
+    circler = math.sqrt(math.pow(r, 2) - math.pow((yplane-cy),2))
   
-    cir = circle(cx, cy, circler)
+    cir = circle(cx, cz, circler)
     
     circles.append(cir)
   
   
   x = numpy.linspace( 0.0, 0.0, len(circles)) 
-  y = numpy.linspace( 0.0, 0.0, len(circles))
+  z = numpy.linspace( 0.0, 0.0, len(circles))
   
-  xmin = ymin =  100000000.0
-  xmax = ymax = -100000000.0
+  xmin = zmin =  100000000.0
+  xmax = zmax = -100000000.0
   
   R_average_circle = 0.0
   i = 0
   for s in circles:
     xv = 0.0
-    yv = 0.0 
+    zv = 0.0 
   
-    xv, yv = s.get_center()
+    xv, zv = s.get_center()
   
     x[i] = xv
-    y[i] = yv
+    z[i] = zv
   
     xv = x[i] - s.get_radius()
     if (xv < xmin):
       xmin = xv
   
-    yv = y[i] - s.get_radius()
-    if (yv < ymin):
-      ymin = yv
+    zv = z[i] - s.get_radius()
+    if (zv < zmin):
+      zmin = zv
   
     xv = x[i] + s.get_radius()
     if (xv > xmax):
       xmax = xv
   
-    yv = y[i] + s.get_radius()
-    if (yv > ymax):
-      ymax = yv
+    zv = z[i] + s.get_radius()
+    if (zv > zmax):
+      zmax = zv
   
     R_average_circle = R_average_circle + s.get_radius()
   
@@ -155,16 +152,16 @@ for zplane in drange (zmin+R_average, zmax-R_average, 2.0*R_average):
   R_average_circle = R_average_circle / float(i)
   
   print "TopX: ", xmax, "BotX: ", xmin
-  print "TopY: ", ymax, "BotY: ", ymin
+  print "TopZ: ", zmax, "BotZ: ", zmin
   print ""
   print "R_average_circle: " , R_average_circle
   print "I will use R_average: " , R_average
   
-  tuple_box = (xmax-xmin, ymax-ymin)
+  tuple_box = (xmax-xmin, zmax-zmin)
   R_max = min(min(tuple_box)/2.0, 10.0*R_average)
   dr = 0.8
   
-  g_average, radii, x, y, indxs = pairCorrelationFunction_2D (x, y, \
+  g_average, radii, x, z, indxs = pairCorrelationFunction_2D (x, z, \
         max(tuple_box)+(R_average),R_max,dr)
   
   # per normalizzare a uno
@@ -180,14 +177,9 @@ for zplane in drange (zmin+R_average, zmax-R_average, 2.0*R_average):
     radiival = numpy.linspace( 0.0, 0.0, len(radii))
     thefirst = False;
 
-  #outf = open ("radial_distribution.txt", "a")
   for i in range(0,radii.size):
     gval_average[i] = gval_average[i] + g_average[i]/total
     radiival[i] = radii[i]/(R_average)
-    #data = str(radii[i]/(R_average)) + \
-    #    " " + str(g_average[i]/total) + "\n"
-    #outf.write(data)
-  #outf.close()
   
   sum = 0.0
   for i in range(1,radii.size):
