@@ -191,7 +191,7 @@ for xplane in drange (xmin+R_average, xmax-R_average, 2.0*R_average):
   
   print sum
 
-outf = open ("radial_distribution.txt", "w")
+outf = open ("radial_distribution_zy.txt", "w")
 for i in range(0,radii.size):
   data = str(radiival[i]) + \
       " " + str(gval_average[i]/counter) + "\n"
