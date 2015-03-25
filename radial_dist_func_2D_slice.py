@@ -58,14 +58,13 @@ file.close()
 # equazione del piano
 zplane = 50.0
 
-np = 55
-ns = 1
-
 spheres_in_plane = []
 
+R_average = 0.0
 for s in spheres:
 
   r = s.get_radius()
+
   c = s.get_center()
 
   cx = c.get_x()
@@ -74,11 +73,11 @@ for s in spheres:
 
   if (zplane >= (cz - r)) and (zplane <= (cz + r)):
     spheres_in_plane.append(s)
+    R_average = R_average + r
 
-dt = (2.0 * math.pi)/(np)
+R_average = R_average / float(len(spheres_in_plane))
 
 circles = []
-
 
 for s in spheres_in_plane:
   r = s.get_radius()
@@ -100,7 +99,7 @@ y = numpy.linspace( 0.0, 0.0, len(circles))
 xmin = ymin =  100000000.0
 xmax = ymax = -100000000.0
 
-R_average = 0.0
+R_average_circle = 0.0
 i = 0
 for s in circles:
   xv = 0.0
@@ -127,16 +126,17 @@ for s in circles:
   if (yv > ymax):
     ymax = yv
 
-  R_average = R_average + s.get_radius()
+  R_average_circle = R_average_circle + s.get_radius()
 
   i += 1
 
-R_average = R_average / float(i)
+R_average_circle = R_average_circle / float(i)
 
 print "TopX: ", xmax, "BotX: ", xmin
 print "TopY: ", ymax, "BotY: ", ymin
 print ""
-print "R_average: " , R_average
+print "R_average_circle: " , R_average_circle
+print "I will use R_average: " , R_average
 
 tuple_box = (xmax-xmin, ymax-ymin)
 R_max = min(min(tuple_box)/2.0, 10.0*R_average)
