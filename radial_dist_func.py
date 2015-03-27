@@ -50,6 +50,12 @@ print "TopZ: ", zmax, "BotZ: ", zmin
 print ""
 print "R_average: " , R_average
 
+volume = (zmax - zmin) * (xmax - xmin) * (ymax - ymin)
+ndens = len(spheres) / volume
+
+print "Dens: ", ndens
+
+
 file.close()
 
 # radial distribution function
@@ -87,19 +93,31 @@ for i in range(0,radii.size):
   if g_average[i] > total:
     total = g_average[i]
 
+
 for i in range(0,radii.size):
+  #data = str(radii[i]/(R_average)) + \
+  #    " " + str(g_average[i]/total) + "\n"
+  #vol = 4.0*numpy.pi*(numpy.power((radii[i]-radii[i-1])/2.0,2))
+  #vol = 4.0*numpy.pi*(numpy.power((radii[i]-radii[i-1])/2.0,3))
+  #rdf = g_average[i]*vol
+  rdf = g_average[i]
   data = str(radii[i]/(R_average)) + \
-      " " + str(g_average[i]/total) + "\n"
+      " " + str(rdf) + "\n"
   outf.write(data)
 
+
+density = 1
+
 sum = 0.0
-for i in range(1,radii.size):
+for i in range(0,radii.size):
 
-  if (radii[i]/R_average) < 2.9 :
-    gv = (g_average[i]/total + g_average[i-1]/total)/2.0
+  if (radii[i]/R_average) < 3.0 :
+    #gv = (g_average[i]/total + g_average[i-1]/total)/2.0
+    #gv = (g_average[i] + g_average[i-1])/2.0
     dr = radii[i]-radii[i-1]
-
-    sum += gv*dr
+    vol = 4.0*numpy.pi*numpy.power((radii[i]-radii[i-1])/2.0,2)
+    #print dr, g_average[i]
+    sum += g_average[i]*vol*dr
 
 print sum
 

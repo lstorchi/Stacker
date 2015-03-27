@@ -158,7 +158,7 @@ for xplane in drange (xmin+R_average, xmax-R_average, 2.0*R_average):
   
   tuple_box = (zmax-zmin, ymax-ymin)
   R_max = min(min(tuple_box)/2.0, 10.0*R_average)
-  dr = 0.8
+  dr = 0.4
   
   g_average, radii, z, y, indxs = pairCorrelationFunction_2D (z, y, \
         max(tuple_box)+(R_average),R_max,dr)
@@ -177,7 +177,8 @@ for xplane in drange (xmin+R_average, xmax-R_average, 2.0*R_average):
     thefirst = False;
 
   for i in range(0,radii.size):
-    gval_average[i] = gval_average[i] + g_average[i]/total
+    #gval_average[i] = gval_average[i] + g_average[i]/total
+    gval_average[i] = gval_average[i] + g_average[i]
     radiival[i] = radii[i]/(R_average)
   
   sum = 0.0
