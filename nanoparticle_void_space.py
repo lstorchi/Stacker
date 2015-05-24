@@ -18,6 +18,10 @@ import cube
 
 def is_in_the_void_nanoparticle(nanoparticles, px, py, pz):
 
+  for nanop in nanoparticles: 
+    if (nanop.is_point_inside ([px, py, pz])):
+      return False
+
   return True
 
 ###############################################################################
@@ -96,7 +100,7 @@ for i in range(numof):
       if (is_in_the_void_nanoparticle(nanoparticles, \
             px, py, pz)):
         line = str(px) + " " + str(py) + " " + str(pz) + " 0.50\n"
-        vfile.write(pine)
+        vfile.write(line)
 
       print(100.0*(float(counter)/float(numof*numof*numof))+' % done!', end='\r')
 
