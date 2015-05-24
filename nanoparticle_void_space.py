@@ -102,6 +102,7 @@ for i in range(numof):
         line = str(px) + " " + str(py) + " " + str(pz) + " 0.50\n"
         vfile.write(line)
 
-      print(100.0*(float(counter)/float(numof*numof*numof))+' % done!', end='\r')
+      print(str(100.0*(float(counter)/float(numof*numof*numof))) \
+          +' % done!', end='\r')
 
 vflie.close()
