@@ -145,7 +145,7 @@ filetoprint.close()
 
 vfile = open("void.txt", "w")
 
-numof = 50
+numof = 100
 
 # vedo solo la parte interna ovviamente
 box_botx = box_botx+mead_d
