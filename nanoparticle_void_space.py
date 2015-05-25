@@ -186,7 +186,7 @@ for i in range(numof):
         point_in_the_void = point_in_the_void + 1
 
       print(str(100.0*(float(counter)/float(numof*numof*numof))) \
-          +' % done!', end='\r')
+          +' % ', end='\r')
 
 print ('Perc in the void: '+ \
     str(100.0*float(point_in_the_void)/(float(numof*numof*numof))))
