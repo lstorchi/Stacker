@@ -147,9 +147,9 @@ vfile = open("void.txt", "w")
 
 numof = 20
 
-dx = (box_botx - box_topx)/(numof+1) 
-dy = (box_boty - box_topy)/(numof+1)
-dz = (box_botz - box_topz)/(numof+1)
+dx = (box_topx - box_botx)/(numof+1) 
+dy = (box_topy - box_boty)/(numof+1)
+dz = (box_topz - box_botz)/(numof+1)
 
 print ('Deltas: '+str(dx)+' '+str(dy)+' '+str(dz))
 
