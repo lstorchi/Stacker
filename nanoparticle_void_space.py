@@ -87,9 +87,9 @@ mead_d = 2.0 * (r/float(len(nanoparticles)))
 
 print ('Mean D: '+str(mead_d)+'\n')
 
-px = minbox_x+2.0*mead_d
-py = minbox_y+2.0*mead_d
-pz = minbox_z+2.0*mead_d
+px = minbox_x+3.0*mead_d
+py = minbox_y+3.0*mead_d
+pz = minbox_z+3.0*mead_d
 
 # seleziono solo le nanoparticelle con il centro detro la box visto che poi 
 # dal calcolo della psd escludo comunque i punti ai bordi della box
@@ -145,7 +145,20 @@ filetoprint.close()
 
 vfile = open("void.txt", "w")
 
-numof = 20
+numof = 50
+
+# vedo solo la parte interna ovviamente
+box_botx = box_botx+mead_d
+box_topx = box_topx-mead_d
+box_boty = box_boty+mead_d
+box_topy = box_topy-mead_d
+box_botz = box_botz+mead_d
+box_topz = box_topz-mead_d
+
+print ('Box looking for void limits: '+\
+       str(box_botx)+' '+str(box_topx)+ \
+    ' '+str(box_boty)+' '+str(box_topy)+ \
+    ' '+str(box_botz)+' '+str(box_topz)+'\n')
 
 dx = (box_topx - box_botx)/(numof+1) 
 dy = (box_topy - box_boty)/(numof+1)
@@ -153,6 +166,7 @@ dz = (box_topz - box_botz)/(numof+1)
 
 print ('Deltas: '+str(dx)+' '+str(dy)+' '+str(dz))
 
+point_in_the_void = 0
 counter = 0
 px = box_botx - dx
 for i in range(numof):
@@ -169,8 +183,11 @@ for i in range(numof):
             px, py, pz)):
         line = str(px) + " " + str(py) + " " + str(pz) + " 0.50\n"
         vfile.write(line)
+        point_in_the_void = point_in_the_void + 1
 
       print(str(100.0*(float(counter)/float(numof*numof*numof))) \
           +' % done!', end='\r')
 
+print ('Perc in the void: '+ \
+    str(100.0*float(point_in_the_void)/(float(numof*numof*numof))))
 vfile.close()
