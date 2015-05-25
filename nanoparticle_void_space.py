@@ -75,9 +75,9 @@ for nanop in nanoparticles:
   if (minbox_z > (cz - dm)):
     minbox_z = (cz - dm)
 
-print ('Box limits: '+str(minbox_x)+' '+str(minbox_y)+ \
-    ' '+str(minbox_z)+' '+str(maxbox_x)+' '+ \
-    str(maxbox_y)+' '+str(maxbox_z)+'\n')
+print ('Box limits: '+str(minbox_x)+' '+str(maxbox_x)+ \
+    ' '+str(minbox_y)+' '+str(maxbox_y)+ \
+    ' '+ str(minbox_z)+' '+str(maxbox_z)+'\n')
 
 r = 0.0
 for nanop in nanoparticles:
@@ -100,6 +100,10 @@ box_boty = py
 box_topy = py + 6.0*mead_d
 box_botz = pz
 box_topz = pz + 6.0*mead_d
+
+print ('Selected Box limits: '+str(box_botx)+' '+str(box_topx)+ \
+    ' '+str(box_boty)+' '+str(box_topy)+ \
+    ' '+str(box_botz)+' '+str(box_topz)+'\n')
 
 nanopscx, nanopscy, nanopscz = \
         nanoparticle.nanoparticle_to_arrays (nanoparticles)
@@ -141,19 +145,21 @@ filetoprint.close()
 
 vfile = open("void.txt", "w")
 
-numof = 100
+numof = 20
 
 dx = (box_botx - box_topx)/(numof+1) 
 dy = (box_boty - box_topy)/(numof+1)
 dz = (box_botz - box_topz)/(numof+1)
 
+print ('Deltas: '+str(dx)+' '+str(dy)+' '+str(dz))
+
 counter = 0
-px = botx - dx
+px = box_botx - dx
 for i in range(numof):
-  py = boty - dy
+  py = box_boty - dy
   px += dx  
   for j in range(numof):
-    pz = botz - dz
+    pz = box_botz - dz
     py += dy
     for k in range(numof):
       pz += dz
@@ -167,4 +173,4 @@ for i in range(numof):
       print(str(100.0*(float(counter)/float(numof*numof*numof))) \
           +' % done!', end='\r')
 
-vflie.close()
+vfile.close()
