@@ -16,8 +16,13 @@ renWin.AddRenderer(ren)
 # create a renderwindowinteractor
 iren = vtk.vtkRenderWindowInteractor()
 iren.SetRenderWindow(renWin)
- 
-file = open("final_config.txt", "r")
+
+filename = "final_config.txt"
+
+if (len(sys.argv)) == 2:
+  filename = sys.argv[1]
+
+file = open(filename, "r")
 
 spheres = []
 
@@ -46,14 +51,14 @@ for sp in file:
 
 volume = (xmax-xmin) * (ymax-ymin) * (zmax-zmin)
 
-#print "xmax: ", xmax, "xmin: ",xmin, "ymax: ", ymax, \
-#    "ymin: ", ymin, "zmx: ", zmax, "zmin: ", zmin
+print "xmax: ", xmax, "xmin: ",xmin, "ymax: ", ymax, \
+    "ymin: ", ymin, "zmax: ", zmax, "zmin: ", zmin
 
 file.close()
 
 # il piano deve essere tra zmin e zmax 
 # equazione del piano
-zplane = 50.0
+zplane = 110.0
 
 np = 50
 ns = 1
