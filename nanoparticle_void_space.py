@@ -91,7 +91,7 @@ px = minbox_x+3.0*mead_d
 py = minbox_y+3.0*mead_d
 pz = minbox_z+3.0*mead_d
 
-# seleziono solo le nanoparticelle con il centro detro la box visto che poi 
+# seleziono solo le nanoparticelle con il centro dentro la box visto che poi 
 # dal calcolo della psd escludo comunque i punti ai bordi della box
 
 box_botx = px
@@ -145,7 +145,7 @@ filetoprint.close()
 
 vfile = open("void.txt", "w")
 
-numof = 100
+numof = 60
 
 # vedo solo la parte interna ovviamente
 box_botx = box_botx+mead_d
@@ -154,6 +154,16 @@ box_boty = box_boty+mead_d
 box_topy = box_topy-mead_d
 box_botz = box_botz+mead_d
 box_topz = box_topz-mead_d
+
+box_botx = box_botx+mead_d
+box_topx = box_botx+1.5*mead_d
+
+box_boty = box_boty+mead_d
+box_topy = box_boty+1.5*mead_d
+
+box_botz = box_botz+mead_d
+box_topz = box_botz+1.5*mead_d
+
 
 print ('Box looking for void limits: '+\
        str(box_botx)+' '+str(box_topx)+ \
