@@ -200,4 +200,9 @@ for i in range(numof):
 
 print ('Perc in the void: '+ \
     str(100.0*float(point_in_the_void)/(float(numof*numof*numof))))
+
+print "Now work using direcly perovskite"
+
+
+
 vfile.close()

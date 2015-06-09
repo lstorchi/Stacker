@@ -56,8 +56,6 @@ for sp in file:
 
 file.close()
 
-sources = []
-
 # add cube
 sources = []
 
