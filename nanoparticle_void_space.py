@@ -198,11 +198,95 @@ for i in range(numof):
       print(str(100.0*(float(counter)/float(numof*numof*numof))) \
           +' % ', end='\r')
 
+vfile.close()
+
 print ('Perc in the void: '+ \
     str(100.0*float(point_in_the_void)/(float(numof*numof*numof))))
 
-print "Now work using direcly perovskite"
+LUNCUBE = 0.633
+
+print ("Now work using direcly perovskite")
+
+botx = box_botx
+boty = box_boty
+botz = box_botz
+
+topx = box_topx
+topy = box_topy
+topz = box_topz
+
+nomofx = int((topx - botx) / LUNCUBE) + 1
+nomofy = int((topy - boty) / LUNCUBE) + 1
+nomofz = int((topz - botz) / LUNCUBE) + 1
+
+lines = []
+
+x = botx
+for i in range(0,nomofx):
+  y = boty
+  for j in range(0,nomofy):
+    z = botz
+    for a in range(0,nomofz):
+
+      if (is_in_the_void_nanoparticle(selected_nanoparticles, \
+            x, y, z)):
+        lines.append("Pb  "+str(x*10.0) + " " + str (y*10.0) + " " + \
+            str(z*10.0))
+
+      if (j < (nomofy-1)):
+        px = x
+        py = y+(LUNCUBE/2.0)
+        pz = z
+
+        if (is_in_the_void_nanoparticle(selected_nanoparticles, \
+              px, py, pz)):
+          lines.append(" I  "+str(px*10.0) + " " + \
+              str (py*10.0) + " " + \
+              str (pz*10.0))
+
+      if (i < (nomofx-1)):
+        px = x+(LUNCUBE/2.0)
+        py = y
+        pz = z
+
+        if (is_in_the_void_nanoparticle(selected_nanoparticles, \
+              px, py, pz)):
+          lines.append(" I  "+str(px*10.0) + " " + \
+              str(py*10.0) + " " + \
+              str(pz*10.0))
+
+      if (a < (nomofz-1)):
+        px = x
+        py = y
+        pz = z+(LUNCUBE/2.0)
+
+        if (is_in_the_void_nanoparticle(selected_nanoparticles, \
+              px, py, pz)):
+          lines.append(" I  "+str(px*10.0) + " " + str (py*10.0) + " " + \
+              str(pz*10.0)
+
+      if ((j < (nomofy-1)) and (i < (nomofx-1)) and (a < (nomofz-1))):
+        px = x+(LUNCUBE/2.0)
+        py = y+(LUNCUBE/2.0)
+        pz = z+(LUNCUBE/2.0)
+
+        if (is_in_the_void_nanoparticle(selected_nanoparticles, \
+              px, py, pz)):
+          lines.append("Cs  "+str(px*10.0) + " " + \
+              str(py*10.0) + " " + \
+              str(pz*10.0))
 
 
+      z = z + LUNCUBE
+    y = y + LUNCUBE
+  x = x + LUNCUBE
 
-vfile.close()
+
+pfile = open("pero.xyz", "w")
+
+pfile.write(str(len(lines)))
+pfile.write(" ")
+for l in lines:
+  pfile.write(l)
+
+pfile.close()
