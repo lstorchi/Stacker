@@ -145,7 +145,7 @@ filetoprint.close()
 
 vfile = open("void.txt", "w")
 
-numof = 60
+numof = 30
 
 # vedo solo la parte interna ovviamente
 box_botx = box_botx+mead_d
@@ -221,6 +221,8 @@ nomofz = int((topz - botz) / LUNCUBE) + 1
 
 lines = []
 
+counter = 0
+
 x = botx
 for i in range(0,nomofx):
   y = boty
@@ -263,7 +265,7 @@ for i in range(0,nomofx):
         if (is_in_the_void_nanoparticle(selected_nanoparticles, \
               px, py, pz)):
           lines.append(" I  "+str(px*10.0) + " " + str (py*10.0) + " " + \
-              str(pz*10.0)
+              str(pz*10.0))
 
       if ((j < (nomofy-1)) and (i < (nomofx-1)) and (a < (nomofz-1))):
         px = x+(LUNCUBE/2.0)
@@ -276,6 +278,12 @@ for i in range(0,nomofx):
               str(py*10.0) + " " + \
               str(pz*10.0))
 
+
+
+      print(str(100.0*(float(counter)/float(nomofx*nomofy*nomofz))) \
+          +' % ', end='\r')
+
+      counter = counter + 1
 
       z = z + LUNCUBE
     y = y + LUNCUBE
