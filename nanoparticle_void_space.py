@@ -95,11 +95,11 @@ pz = minbox_z+3.0*mead_d
 # dal calcolo della psd escludo comunque i punti ai bordi della box
 
 box_botx = px
-box_topx = px + 6.0*mead_d
+box_topx = px + 3.0*mead_d
 box_boty = py
-box_topy = py + 6.0*mead_d
+box_topy = py + 3.0*mead_d
 box_botz = pz
-box_topz = pz + 6.0*mead_d
+box_topz = pz + 3.0*mead_d
 
 print ('Selected Box limits: '+str(box_botx)+' '+str(box_topx)+ \
     ' '+str(box_boty)+' '+str(box_topy)+ \
@@ -156,14 +156,13 @@ box_botz = box_botz+mead_d
 box_topz = box_topz-mead_d
 
 box_botx = box_botx+mead_d
-box_topx = box_botx+1.5*mead_d
+box_topx = box_botx+1.0*mead_d
 
 box_boty = box_boty+mead_d
-box_topy = box_boty+1.5*mead_d
+box_topy = box_boty+1.0*mead_d
 
 box_botz = box_botz+mead_d
-box_topz = box_botz+1.5*mead_d
-
+box_topz = box_botz+1.0*mead_d
 
 print ('Box looking for void limits: '+\
        str(box_botx)+' '+str(box_topx)+ \
@@ -292,9 +291,9 @@ for i in range(0,nomofx):
 
 pfile = open("pero.xyz", "w")
 
-pfile.write(str(len(lines)))
-pfile.write(" ")
+pfile.write(str(len(lines))+"\n")
+pfile.write(" \n")
 for l in lines:
-  pfile.write(l)
+  pfile.write(l+"\n")
 
 pfile.close()
