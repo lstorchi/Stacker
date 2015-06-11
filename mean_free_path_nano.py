@@ -55,8 +55,8 @@ meand = 2.0 * meanr
 dz = ((zmax - zmin) - (3.0 * meand)) / float(hw_many_planes+1)
 
 print >> sys.stderr, xmin, xmax, ymin, ymax, zmin, zmax, dz
-print >> sys.stderr, xmin + meand, xmax - meand
-print >> sys.stderr, ymin + meand, ymax - meand
+print >> sys.stderr, xmin + 1.5*meand, xmax - 1.5*meand
+print >> sys.stderr, ymin + 1.5*meand, ymax - 1.5*meand
 print >> sys.stderr, meand, nanoparticles[0].get_dimensions()
 
 count_point_not_inside = 0
@@ -82,8 +82,8 @@ for iplane in range(hw_many_planes):
 
   for i in range(hw_many_points):
 
-    x = random.uniform(xmin + meand, xmax - meand)
-    y = random.uniform(ymin + meand, ymax - meand)
+    x = random.uniform(xmin + 1.5*meand, xmax - 1.5*meand)
+    y = random.uniform(ymin + 1.5*meand, ymax - 1.5*meand)
 
     is_inside = False
 
@@ -130,6 +130,9 @@ for iplane in range(hw_many_planes):
 
             print len(intersect_points), " " , d
             sys.stdout.flush()
+          else:
+            print >> sys.stderr, x, , " ", y, " ", zplane
+            print >> sys.stderr, "WARNING: not two point" 
 
 print >> sys.stderr, "100%"
 sys.stderr.flush()
