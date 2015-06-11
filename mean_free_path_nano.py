@@ -131,7 +131,7 @@ for iplane in range(hw_many_planes):
             print len(intersect_points), " " , d
             sys.stdout.flush()
           else:
-            print >> sys.stderr, x, , " ", y, " ", zplane
+            print >> sys.stderr, x, " ", y, " ", zplane
             print >> sys.stderr, "WARNING: not two point" 
 
 print >> sys.stderr, "100%"
