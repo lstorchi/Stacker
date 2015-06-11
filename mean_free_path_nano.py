@@ -20,10 +20,11 @@ import vtk
 
 ###############################################################################
 
-MAX_POINT_TODO = 1000000
-
 # non mi interessano le intersezioni
 nanoparticle.POINTINSIDEDIM = 0
+util_for_tr.NUMOFCIRCLEPOINTS = 180
+
+MAX_POINT_TODO = 2000
 
 filename = "nanoparticle_final_config.txt"
 
@@ -71,7 +72,7 @@ for iplane in range(hw_many_planes):
     refperc += 5.0
     sys.stderr.flush()
 
-  zplane = zmin + meand + (iplane+1)*dz
+  zplane = zmin + 1.5 * meand + (iplane+1)*dz
 
   # seleziona le nanoparticelle che dovrebbero passare per il piano
   # usando le sfere per fare la selezione e' possibile io ottenga
@@ -131,8 +132,7 @@ for iplane in range(hw_many_planes):
             print len(intersect_points), " " , d
             sys.stdout.flush()
           else:
-            print >> sys.stderr, x, " ", y, " ", zplane
-            print >> sys.stderr, "WARNING: not two point" 
+            print >> sys.stderr, x, " ", y, " ", zplane, " NO INTESECT"
 
 print >> sys.stderr, "100%"
 sys.stderr.flush()
