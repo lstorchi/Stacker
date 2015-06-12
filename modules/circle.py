@@ -46,6 +46,29 @@ class circle:
 
     return point_list
 
+  def generate_opposite_circle_points (self, n):
+
+    point_list = []
+    
+    d = (math.pi) / float(n-1)
+
+    alpha = 0.0
+    for i in range(n):
+      if (alpha <= math.pi):
+        x = self.cx + self.radius * math.cos(alpha)
+        y = self.cy + self.radius * math.sin(alpha)
+
+        point_list.append([x, y])
+
+        x = self.cx + self.radius * math.cos(alpha+math.pi)
+        y = self.cy + self.radius * math.sin(alpha+math.pi)
+
+        point_list.append([x, y])
+
+        alpha += d
+
+    return point_list
+
   def generate_circle_points (self, n):
 
     point_list = []

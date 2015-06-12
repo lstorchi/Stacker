@@ -23,7 +23,7 @@ import vtk
 # non mi interessano le intersezioni
 nanoparticle.POINTINSIDEDIM = 0
 
-util_for_tr.NUMOFCIRCLEPOINTS = 80
+util_for_tr.NUMOFCIRCLEPOINTS = 45
 
 MAX_POINT_TODO = 2000
 
@@ -145,7 +145,7 @@ for iplane in range(hw_many_planes):
         if (min_d != float("inf")):
           poly_data_points.append(selected_point)
 
-      for i in xrange(0,len(poly_data_points),2):
+      for i in xrange(0,len(poly_data_points)-1,2):
         ip1 = poly_data_points[i]
         ip2 = poly_data_points[i+1]
 
