@@ -22,7 +22,8 @@ import vtk
 
 # non mi interessano le intersezioni
 nanoparticle.POINTINSIDEDIM = 0
-util_for_tr.NUMOFCIRCLEPOINTS = 180
+
+util_for_tr.NUMOFCIRCLEPOINTS = 80
 
 MAX_POINT_TODO = 2000
 
@@ -67,10 +68,8 @@ refperc = 5.0
 for iplane in range(hw_many_planes):
 
   perc = 100.0 * (float(iplane) / float(hw_many_planes))
-  if perc >= refperc:
-    print >> sys.stderr, refperc , "%"
-    refperc += 5.0
-    sys.stderr.flush()
+  print >> sys.stderr, perc , "%"
+  sys.stderr.flush()
 
   zplane = zmin + 1.5 * meand + (iplane+1)*dz
 
@@ -108,11 +107,16 @@ for iplane in range(hw_many_planes):
 
       p = point.point(x, y, zplane)
 
+      #print x, y, zplane
+      #print " "
+
       # q lo genero fuori dalla box perche' cosi' sono certo attraversera 
       # tutte le nanoparticelle
       point_circle = circle.circle(x, y, 2.0 * max(Dx, Dy, Dz))
-      second_points = point_circle.generate_circle_points(\
+      second_points = point_circle.generate_opposite_circle_points(\
           util_for_tr.NUMOFCIRCLEPOINTS)
+
+      poly_data_points = []
 
       for sp in second_points:
         q = point.point(sp[0], sp[1], zplane)  
@@ -122,17 +126,32 @@ for iplane in range(hw_many_planes):
         for idx in interior_indices:
           intersect_points = nanoparticles[idx].intersect_line(p, q)
 
-          d = 0.0
-          if (len(intersect_points) == 2):
-            d = util_for_tr.point_distance([intersect_points[0][0], 
-              intersect_points[0][1]], \
-                [intersect_points[1][0], \
-                  intersect_points[1][1]])
+          if (len(intersect_points) != 0):
 
-            print len(intersect_points), " " , d
-            sys.stdout.flush()
-          else:
-            print >> sys.stderr, x, " ", y, " ", zplane, " NO INTESECT"
+            if (len(intersect_points) != 2):
+              print >> sys.stderr, "Warning less than two point"
+
+            for ip in intersect_points:
+
+              if (ip[2] != zplane):
+                print "Error"
+                exit()
+
+              d = util_for_tr.point_distance([x, y], [ip[0], ip[1]])
+              if (d < min_d):
+                min_d = d
+                selected_point = ip
+
+        if (min_d != float("inf")):
+          poly_data_points.append(selected_point)
+
+      for i in xrange(0,len(poly_data_points),2):
+        ip1 = poly_data_points[i]
+        ip2 = poly_data_points[i+1]
+
+        d = util_for_tr.point_distance([ip1[0], ip1[1]], [ip2[0], ip2[1]])
+        print d
+
 
 print >> sys.stderr, "100%"
 sys.stderr.flush()
