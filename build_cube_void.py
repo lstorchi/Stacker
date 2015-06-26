@@ -45,6 +45,9 @@ scx, scy, scz, radius = nanoparticle.nanoparticle_list_to_arrays(nanoparticles)
 meanr = radius.mean()
 meand = 2.0 * meanr
 
+print "Mean r: ", meanr
+print "Box limits: ", xmin, xmax, ymin, ymax, zmin, zmax
+
 # voglio fermarmi a circa 2 D dalla vetta visto che in cima avro' sempre una
 # densita' minore(ricorda la prima sfera che supera zmax ferma la procedura.
 
@@ -59,24 +62,24 @@ for i in range(MAX_NUM_OF_POINT/POINT_TODO):
     y = random.uniform(ymin + 1.5*meand, ymax - 1.5*meand)
     z = random.uniform(zmin + 1.5*meand, zmax - 1.5*meand)
 
-    bools1 = numpy.fabs(scx - x) < radius
-    bools2 = numpy.fabs(scy - y) < radius
-    bools3 = numpy.fabs(scz - z) < radius
-    interior_indices, = numpy.where(bools1*bools2*bools3)
+    print x, y, z
+
+    bools1 = numpy.sqrt((scx - x)**2 + (scy - y)**2 + (scz - z)**2) <= 2.0*2.0*radius
+    interior_indices, = numpy.where(bools1)
 
     is_inside = False
 
-    nanopaticles_tovis = []
+    nanoparticles_tovis = []
 
     for idx in interior_indices:
+      nanoparticles_tovis.append(nanoparticles[idx])
       if (nanoparticles[idx].is_point_inside([x, y, z])):
-        nanoparticles_tovis.append(nanoparticles[idx])
         is_inside = True
         break
 
+    print len(nanoparticles_tovis)
+
     if not is_inside:
-
-       visualize_nanop.visualize_nanoparticle_and_point(nanopaticles_tovis, x, y, z)
-
-       exit()
-
+      visualize_nanop.visualize_nanoparticle_and_point(nanoparticles_tovis, x, y, z)
+      exit()
+     

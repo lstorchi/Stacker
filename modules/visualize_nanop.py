@@ -34,12 +34,9 @@ def visualize_nanoparticle_and_point (nanoparticles, x, y, z):
   minbox_z = 100000.0
   maxbox_z =-100000.0
 
-  for nanop in nanaparticles: 
+  for nanop in nanoparticles: 
 
-    x = nanop.get_edge_points()
-    pts = nanop.get_points_connection()
     renderer.AddActor(nanop.get_vtk_actor(color=True,opacity=1.0))
-    #renderer.AddActor(nanop.get_vtk_actor())
  
     cx, cy, cz = nanop.get_center()
     A, B, H = nanop.get_dimensions()
@@ -61,23 +58,7 @@ def visualize_nanoparticle_and_point (nanoparticles, x, y, z):
       minbox_z = (cz - dm)
     
   ipp = point.point(x, y, z)
-  render.AddActor(ipp.get_actor(0.5)
-
-  cube_actors = cube.cube_to_actors(minbox_x, minbox_y, minbox_z, \
-      maxbox_x, maxbox_y, maxbox_z, 1.0, 1.0, 1.0)
-
-  for a in cube_actors:
-    renderer.AddActor(a)
-
-  renderer.SetActiveCamera(camera)
-  renderer.ResetCamera()
-  renderer.SetBackground(0,0,0)
-
-  renWin.SetSize(1024, 768)
-
-  renderLarge = vtk.vtkRenderLargeImage()
-  renderLarge.SetInput(renderer)
-  renderLarge.SetMagnification(4)
+  renderer.AddActor(ipp.get_actor(0.5))
 
   renWin.Render()
   iren.Start()
