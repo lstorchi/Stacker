@@ -38,27 +38,8 @@ def visualize_nanoparticle_and_point (nanoparticles, x, y, z):
 
     renderer.AddActor(nanop.get_vtk_actor(color=True,opacity=1.0))
  
-    cx, cy, cz = nanop.get_center()
-    A, B, H = nanop.get_dimensions()
- 
-    dm = max(H, B, A) / 2.0
- 
-    if (maxbox_x < (cx + dm)):
-      maxbox_x = (cx + dm)
-    if (maxbox_y < (cy + dm)):
-      maxbox_y = (cy + dm)
-    if (maxbox_z < (cz + dm)):
-      maxbox_z = (cz + dm)
-    
-    if (minbox_x > (cx - dm)):
-      minbox_x = (cx - dm)
-    if (minbox_y > (cy - dm)):
-      minbox_y = (cy - dm)
-    if (minbox_z > (cz - dm)):
-      minbox_z = (cz - dm)
-    
   ipp = point.point(x, y, z)
-  renderer.AddActor(ipp.get_actor(0.5))
+  renderer.AddActor(ipp.get_actor(1.0))
 
   renWin.Render()
   iren.Start()

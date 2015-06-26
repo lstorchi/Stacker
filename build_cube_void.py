@@ -64,7 +64,7 @@ for i in range(MAX_NUM_OF_POINT/POINT_TODO):
 
     print x, y, z
 
-    bools1 = numpy.sqrt((scx - x)**2 + (scy - y)**2 + (scz - z)**2) <= 2.0*2.0*radius
+    bools1 = numpy.sqrt((scx - x)**2 + (scy - y)**2 + (scz - z)**2) <= 2.0*radius
     interior_indices, = numpy.where(bools1)
 
     is_inside = False
