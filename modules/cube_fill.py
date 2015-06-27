@@ -11,11 +11,11 @@ class cube:
 
   def get_borders (self):
 
-    return self.x, self.y, self.z, self.x+dim,  self.z+dim, self.z+dim,
+    return self.x, self.y, self.z, self.x+self.dim,  self.z+self.dim, self.z+self.dim,
 
-  def get_ceter (self):
+  def get_center (self):
 
-    return self.x+(dim/2.0), self.y+(dim/2.0), self.z+(dim/2.0)
+    return self.x+(self.dim/2.0), self.y+(self.dim/2.0), self.z+(self.dim/2.0)
 
 
   def get_actor (self, rc = 1.0, gc = 1.0, bc = 1.0):

@@ -9,6 +9,7 @@ import sphere
 import circle
 import square
 import triangle
+import cube_fill
 import util_for_tr
 import nanoparticle
 import visualize_nanop
@@ -77,9 +78,11 @@ for i in range(MAX_NUM_OF_POINT/POINT_TODO):
         is_inside = True
         break
 
-    print len(nanoparticles_tovis)
-
     if not is_inside:
-      visualize_nanop.visualize_nanoparticle_and_point(nanoparticles_tovis, x, y, z)
+      cub = cube_fill.cube(x, y, z, 1.0)
+      #visualize_nanop.visualize_nanoparticle_and_point(nanoparticles_tovis, x, y, z)
+      visualize_nanop.visualize_nanoparticle_and_actor(nanoparticles_tovis, \
+          cub.get_actor(0.5, 0.6, 0.1))
+      
       exit()
      
