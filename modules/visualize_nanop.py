@@ -59,3 +59,24 @@ def visualize_nanoparticle_and_actor (nanoparticles, ac):
 
   renWin.Render()
   iren.Start()
+
+def visualize_actors (acs):
+
+  nanoparticle.POINTINSIDEDIM = 0
+
+  camera = vtk.vtkCamera()
+  camera.SetPosition(1,1,1)
+  camera.SetFocalPoint(0,0,0)
+
+  renderer = vtk.vtkRenderer()
+  renWin = vtk.vtkRenderWindow()
+  renWin.AddRenderer(renderer)
+
+  iren = vtk.vtkRenderWindowInteractor()
+  iren.SetRenderWindow(renWin)
+
+  for ac in acs:
+    renderer.AddActor(ac)
+
+  renWin.Render()
+  iren.Start()

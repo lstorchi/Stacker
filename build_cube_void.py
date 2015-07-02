@@ -25,8 +25,8 @@ import vtk
 # non mi interessano le intersezioni
 nanoparticle.POINTINSIDEDIM = 0
 
-MAX_NUM_OF_POINT = 2000
-POINT_TODO = 1
+MAX_NUM_OF_CUBE = 2000
+POINT_TODO = 10
 
 filename = "nanoparticle_final_config.txt"
 
@@ -52,37 +52,46 @@ print "Box limits: ", xmin, xmax, ymin, ymax, zmin, zmax
 # voglio fermarmi a circa 2 D dalla vetta visto che in cima avro' sempre una
 # densita' minore(ricorda la prima sfera che supera zmax ferma la procedura.
 
-for i in range(MAX_NUM_OF_POINT/POINT_TODO):
+
+actors = []
+
+cubes = []
+j = 0
+while (j < POINT_TODO):
+  x = random.uniform(xmin + 1.5*meand, xmax - 1.5*meand)
+  y = random.uniform(ymin + 1.5*meand, ymax - 1.5*meand)
+  z = random.uniform(zmin + 1.5*meand, zmax - 1.5*meand)
+
+  #print x, y, z
+
+  bools1 = numpy.sqrt((scx - x)**2 + (scy - y)**2 + (scz - z)**2) <= 2.0*radius
+  interior_indices, = numpy.where(bools1)
+
+  is_inside = False
+
+  for idx in interior_indices:
+    #actors.append(nanoparticles[idx].get_vtk_actor(color=True,opacity=0.8))
+    if (nanoparticles[idx].is_point_inside([x, y, z])):
+      is_inside = True
+      break
+
+  if not is_inside:
+    j = j + 1
+    cub = cube_fill.cube(x, y, z, 1.0)
+    cubes.append(cub)
+    actors.append(cub.get_actor(0.5, 0.6, 0.1))
+
+for i in range(MAX_NUM_OF_CUBE):
 
   # seleziona le nanoparticelle 
   # usando le sfere per fare la selezione e' possibile io ottenga
   # dei falsi positivi
 
-  for j in range(POINT_TODO):
-    x = random.uniform(xmin + 1.5*meand, xmax - 1.5*meand)
-    y = random.uniform(ymin + 1.5*meand, ymax - 1.5*meand)
-    z = random.uniform(zmin + 1.5*meand, zmax - 1.5*meand)
+  addedcubes = []
+  for cub in cubes:
+    face = random.randint(1, 6)
+    p1, p2, p3, p4 = cub.get_face_coords (face)
+    print p1, p2, p3, p4
+    
 
-    print x, y, z
-
-    bools1 = numpy.sqrt((scx - x)**2 + (scy - y)**2 + (scz - z)**2) <= 2.0*radius
-    interior_indices, = numpy.where(bools1)
-
-    is_inside = False
-
-    nanoparticles_tovis = []
-
-    for idx in interior_indices:
-      nanoparticles_tovis.append(nanoparticles[idx])
-      if (nanoparticles[idx].is_point_inside([x, y, z])):
-        is_inside = True
-        break
-
-    if not is_inside:
-      cub = cube_fill.cube(x, y, z, 1.0)
-      #visualize_nanop.visualize_nanoparticle_and_point(nanoparticles_tovis, x, y, z)
-      visualize_nanop.visualize_nanoparticle_and_actor(nanoparticles_tovis, \
-          cub.get_actor(0.5, 0.6, 0.1))
-      
-      exit()
-     
+visualize_nanop.visualize_actors (actors)
