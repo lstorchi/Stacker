@@ -2,21 +2,18 @@ import vtk
 
 class cube:
 
-  def __init__(self, x = 0.0, y = 0.0, z = 0.0, dim = 0.0):
-    self.x = x
-    self.y = y
-    self.z = z
+  def __init__(self, cx = 0.0, cy = 0.0, cz = 0.0, dim = 0.0):
     self.dim = dim
 
-    self.cx = self.x+(self.dim/2.0)
-    self.cy = self.y+(self.dim/2.0)
-    self.cz = self.z+(self.dim/2.0)
+    self.cx = cx
+    self.cy = cy
+    self.cz = cz
 
     botz = self.cz - (self.dim/2.0)
 
-    x1 = self.x
-    y1 = self.y
-    z1 = self.z
+    x1 = self.cx - (self.dim/2.0)
+    y1 = self.cy - (self.dim/2.0)
+    z1 = botz
 
     self.p1 = [x1, y1, z1]
 
@@ -64,14 +61,13 @@ class cube:
 
     self.p8 = [x8, y8, z8]
 
-
-  def get_borders (self):
-
-    return self.x, self.y, self.z, self.x+self.dim,  self.z+self.dim, self.z+self.dim,
-
   def get_center (self):
 
     return self.cx, self.cy, self.cz
+
+  def get_dim (self):
+
+    return self.dim
 
   def get_cube_coordintes (self):
 

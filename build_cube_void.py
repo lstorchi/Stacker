@@ -22,11 +22,27 @@ import vtk
 
 ###############################################################################
 
+def is_inside_nanoparticles (x, y, z, nanoparticles, scx, scy, scz, radius):
+
+  bools1 = numpy.sqrt((scx - x)**2 + (scy - y)**2 + (scz - z)**2) <= 2.0*radius
+  interior_indices, = numpy.where(bools1)
+
+  is_inside = False
+
+  for idx in interior_indices:
+    if (nanoparticles[idx].is_point_inside([x, y, z])):
+      is_inside = True
+      break
+
+  return is_inside
+
+###############################################################################
+
 # non mi interessano le intersezioni
 nanoparticle.POINTINSIDEDIM = 0
 
-MAX_NUM_OF_CUBE = 2000
-POINT_TODO = 10
+MAX_NUM_OF_CUBE = 10
+POINT_TODO = 1
 
 filename = "nanoparticle_final_config.txt"
 
@@ -70,7 +86,7 @@ while (j < POINT_TODO):
   is_inside = False
 
   for idx in interior_indices:
-    #actors.append(nanoparticles[idx].get_vtk_actor(color=True,opacity=0.8))
+    actors.append(nanoparticles[idx].get_vtk_actor(color=True,opacity=1.0))
     if (nanoparticles[idx].is_point_inside([x, y, z])):
       is_inside = True
       break
@@ -89,9 +105,30 @@ for i in range(MAX_NUM_OF_CUBE):
 
   addedcubes = []
   for cub in cubes:
-    face = random.randint(1, 6)
-    p1, p2, p3, p4 = cub.get_face_coords (face)
-    print p1, p2, p3, p4
-    
+    iface = random.randint(1, 6)
+    cx, cy, cz = cub.get_center ()
+    dim = cub.get_dim()
+
+    if (iface == 1):
+      cz = cz - dim/2.0
+    elif (iface == 2):
+      cz = cz + dim/2.0
+    elif (iface == 3):
+      cx = cx - dim/2.0 
+    elif (iface == 4):
+      cy = cy + dim/2.0 
+    elif (iface == 5):
+      cx = cx + dim/2.0
+    elif (iface == 6):
+      cy = cy - dim/2.0
+
+    if (not is_inside_nanoparticles(cx, cy, cz, nanoparticles, \
+      scx, scy, scz, radius)):
+      newcub = cube_fill.cube(cx, cy, cz, dim)
+      addedcubes.append(newcub)
+      actors.append(newcub.get_actor(0.5, 0.6, 0.1))
+      #print p1, p2, p3, p4
+
+  cubes.extend(addedcubes)
 
 visualize_nanop.visualize_actors (actors)
