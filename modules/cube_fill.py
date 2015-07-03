@@ -3,6 +3,13 @@ import vtk
 class cube:
 
   def __init__(self, cx = 0.0, cy = 0.0, cz = 0.0, dim = 0.0):
+    self.face1_free = True
+    self.face2_free = True
+    self.face3_free = True
+    self.face4_free = True
+    self.face5_free = True
+    self.face6_free = True
+
     self.dim = dim
 
     self.cx = cx
@@ -61,6 +68,47 @@ class cube:
 
     self.p8 = [x8, y8, z8]
 
+  def has_free_face (self):
+
+    return (self.face1_free or \
+        self.face2_free or \
+        self.face3_free or \
+        self.face4_free or \
+        self.face5_free or \
+        self.face6_free)
+
+  def is_face_free (self, iface):
+
+    if (iface == 1):
+      return self.face1_free
+    elif (iface == 2):
+      return self.face2_free
+    elif (iface == 3):
+      return self.face3_free
+    elif (iface == 4):
+      return self.face4_free
+    elif (iface == 5):
+      return self.face5_free
+    elif (iface == 6):
+      return self.face6_free
+    else:
+      return False
+
+  def set_iface (self, iface):
+
+    if (iface == 1):
+      self.face1_free = False
+    elif (iface == 2):
+      self.face2_free = False
+    elif (iface == 3):
+      self.face3_free = False
+    elif (iface == 4):
+      self.face4_free = False
+    elif (iface == 5):
+      self.face5_free = False
+    elif (iface == 6):
+      self.face6_free = False
+
   def get_center (self):
 
     return self.cx, self.cy, self.cz
@@ -71,8 +119,8 @@ class cube:
 
   def get_cube_coordintes (self):
 
-    return self.p1, self.p2, self.p3, self.p4, \
-        self.p5, self.p6, self.p7, self.p8
+    return [self.p1, self.p2, self.p3, self.p4, \
+        self.p5, self.p6, self.p7, self.p8]
 
   def get_face_coords (self, iface):
 
