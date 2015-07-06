@@ -64,8 +64,8 @@ def cube_is_inside_nanoparticles (cube, nanoparticles, scx, scy, scz, radius):
 # non mi interessano le intersezioni
 nanoparticle.POINTINSIDEDIM = 0
 
-MAX_NUM_OF_CUBE = 5000
-POINT_TODO = 5
+MAX_NUM_OF_CUBE = 50000
+POINT_TODO = 10
 CUBE_DIM = 1.0
 
 filename = "nanoparticle_final_config.txt"
@@ -93,7 +93,7 @@ print "Box limits: ", xmin, xmax, ymin, ymax, zmin, zmax
 # densita' minore(ricorda la prima sfera che supera zmax ferma la procedura.
 
 
-actors = []
+#actors = []
 
 centers = []
 cubes = []
@@ -119,14 +119,14 @@ while (j < POINT_TODO):
 
     if (not ([x, y, z] in centers)):
 
-      for idx in interior_indices:
-        actors.append(nanoparticles[idx].get_vtk_actor(color=True,opacity=1.0))
+      #for idx in interior_indices:
+      #  actors.append(nanoparticles[idx].get_vtk_actor(color=True,opacity=1.0))
    
       centers.append([x, y, z])
       j = j + 1
       cub = cube_fill.cube(x, y, z, CUBE_DIM)
       cubes.append(cub)
-      actors.append(cub.get_actor(0.5, 0.6, 0.1))
+      #actors.append(cub.get_actor(0.5, 0.6, 0.1))
 
 i = 0
 while (i < MAX_NUM_OF_CUBE):
@@ -178,10 +178,10 @@ while (i < MAX_NUM_OF_CUBE):
         if (not cube_is_inside_nanoparticles(newcub, nanoparticles, \
           scx, scy, scz, radius)):
           addedcubes.append(newcub)
-          actors.append(newcub.get_actor(0.5, 0.6, 0.1))
-          print cx, cy, cz
+          #actors.append(newcub.get_actor(0.5, 0.6, 0.1))
+          print cx, cy, cz, CUBE_DIM
           i = i + 1
 
   cubes.extend(addedcubes)
 
-visualize_nanop.visualize_actors (actors)
+#visualize_nanop.visualize_actors (actors)
