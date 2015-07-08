@@ -10,61 +10,66 @@ class cube:
     self.face5_free = True
     self.face6_free = True
 
+    self._pts = [[0,1,2,3], \
+                 [4,7,6,5], \
+                 [0,1,5,4], \
+                 [1,2,6,5], \
+                 [3,7,6,2], \
+                 [0,3,7,4]]
+
     self.dim = dim
 
     self.cx = cx
     self.cy = cy
     self.cz = cz
 
-    botz = self.cz - (self.dim/2.0)
+    dimmez = self.dim/2.0
 
-    x1 = self.cx - (self.dim/2.0)
-    y1 = self.cy - (self.dim/2.0)
-    z1 = botz
+    x1 = self.cx - dimmez
+    y1 = self.cy - dimmez
+    z1 = self.cz - dimmez
 
     self.p1 = [x1, y1, z1]
 
-    x2 = self.cx - (self.dim/2.0)
-    y2 = self.cy + (self.dim/2.0)
-    z2 = botz
+    x2 = self.cx - dimmez
+    y2 = self.cy + dimmez
+    z2 = self.cz - dimmez
 
     self.p2 = [x2, y2, z2]
 
-    x3 = self.cx + (self.dim/2.0)
-    y3 = self.cy + (self.dim/2.0)
-    z3 = botz
+    x3 = self.cx + dimmez
+    y3 = self.cy + dimmez
+    z3 = self.cz - dimmez
 
     self.p3 = [x3, y3, z3]
     
-    x4 = self.cx + (self.dim/2.0)
-    y4 = self.cy - (self.dim/2.0)
-    z4 = botz
+    x4 = self.cx + dimmez
+    y4 = self.cy - dimmez
+    z4 = self.cz - dimmez
 
     self.p4 = [x4, y4, z4]
 
-    topz = self.cz + (self.dim/2.0)
-
     x5 = x1 
     y5 = y1
-    z5 = topz
+    z5 = self.cz + dimmez
 
     self.p5 = [x5, y5, z5]
 
     x6 = x2
     y6 = y2
-    z6 = botz
+    z6 = self.cz + dimmez
 
     self.p6 = [x6, y6, z6]
 
     x7 = x3
     y7 = y3
-    z7 = botz
+    z7 = self.cz + dimmez
 
     self.p7 = [x7, y7, z7]
 
     x8 = x4
     y8 = y4
-    z8 = botz
+    z8 = self.cz + dimmez
 
     self.p8 = [x8, y8, z8]
 
@@ -131,29 +136,59 @@ class cube:
     elif (iface == 3):
       return self.p1, self.p2, self.p6, self.p5
     elif (iface == 4):
-      return self.p2, self.p3, self.p4, self.p6
+      return self.p2, self.p3, self.p7, self.p6
     elif (iface == 5):
       return self.p4, self.p8, self.p7, self.p3
     elif (iface == 6):
-      return self.p1, self.p4, self.p5, self.p5
+      return self.p1, self.p4, self.p8, self.p5
     else:
       # add an error code
       exit(1)
 
-  def get_actor (self, rc = 1.0, gc = 1.0, bc = 1.0):
+  def get_vtk_actor (self, rc = 1.0, gc = 1.0, bc = 1.0, opacity = 1.0):
 
-    source = vtk.vtkCubeSource()
-    source.SetCenter(self.get_center())
+    self._compute_polydata()
 
-    source.SetXLength(self.dim)
-    source.SetYLength(self.dim)
-    source.SetZLength(self.dim)
+    nanopMapper = vtk.vtkPolyDataMapper()
+    nanopMapper.SetInputData(self._polydata)
 
-    mapper = vtk.vtkPolyDataMapper()
-    mapper.SetInputConnection(source.GetOutputPort())
-    actor = vtk.vtkActor()
-    actor.SetMapper(mapper)
-    actor.GetProperty().SetColor(rc, gc, bc)
+    nanopActor = vtk.vtkActor()
+    nanopActor.SetMapper(nanopMapper)
+    nanopActor.GetProperty().SetOpacity(opacity)
 
-    return actor
+    nanopActor.GetProperty().SetColor(rc, gc, bc)
 
+    return nanopActor
+
+###################################################################3
+# PRIVATE 
+###################################################################3
+
+  def _compute_polydata(self):
+
+    self._polydata = vtk.vtkPolyData()
+
+    points = vtk.vtkPoints()
+    polys = vtk.vtkCellArray()
+    
+    points.InsertPoint(0,self.p1)
+    points.InsertPoint(1,self.p2)
+    points.InsertPoint(2,self.p3)
+    points.InsertPoint(3,self.p4)
+    points.InsertPoint(4,self.p5)
+    points.InsertPoint(5,self.p6)
+    points.InsertPoint(6,self.p7)
+    points.InsertPoint(7,self.p8)
+    
+    for i in range(len(self._pts)):
+      ids = vtk.vtkIdList()
+      ids.SetNumberOfIds(4)
+      for j in range(4):
+        ids.SetId(j, self._pts[i][j])
+    
+      polys.InsertNextCell(ids)
+    
+    self._polydata.SetPoints(points)
+    self._polydata.SetPolys(polys)
+
+    return self._polydata

@@ -41,7 +41,7 @@ file.close()
 
 actors = []
 
-for cube in cubes:
-  actors.append(cub.get_actor(0.5, 0.6, 0.1))
+for cub in cubes:
+  actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
 
 visualize_nanop.visualize_actors (actors)

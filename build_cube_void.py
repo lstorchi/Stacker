@@ -64,7 +64,7 @@ def cube_is_inside_nanoparticles (cube, nanoparticles, scx, scy, scz, radius):
 # non mi interessano le intersezioni
 nanoparticle.POINTINSIDEDIM = 0
 
-MAX_NUM_OF_CUBE = 50000
+MAX_NUM_OF_CUBE = 500
 POINT_TODO = 10
 CUBE_DIM = 1.0
 
