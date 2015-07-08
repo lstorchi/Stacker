@@ -73,6 +73,20 @@ class cube:
 
     self.p8 = [x8, y8, z8]
 
+  def rotate (self, point1, angle):
+
+    self._point1 = point1
+    self._angle = angle
+
+    self._rotate_point (p1)
+    self._rotate_point (p2)
+    self._rotate_point (p3)
+    self._rotate_point (p4)
+    self._rotate_point (p5)
+    self._rotate_point (p6)
+    self._rotate_point (p7)
+    self._rotate_point (p8)
+
   def has_free_face (self):
 
     return (self.face1_free or \
@@ -163,6 +177,16 @@ class cube:
 ###################################################################3
 # PRIVATE 
 ###################################################################3
+
+  def _rotate_point (self, p1):
+
+    point2 = point.point(self.cx, self.cy, self.cz)
+
+    p0 = point.point(p1[0], p1[1], p1[2])
+    p0 = util.point_rotate(point2, self._point1, p0, self._angle)
+    p1[0] = p0.get_x()
+    p1[1] = p0.get_y()
+    p1[2] = p0.get_z()
 
   def _compute_polydata(self):
 
