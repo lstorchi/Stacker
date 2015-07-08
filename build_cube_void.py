@@ -86,8 +86,8 @@ scx, scy, scz, radius = nanoparticle.nanoparticle_list_to_arrays(nanoparticles)
 meanr = radius.mean()
 meand = 2.0 * meanr
 
-print "Mean r: ", meanr
-print "Box limits: ", xmin, xmax, ymin, ymax, zmin, zmax
+print >> sys.stderr, "Mean r: ", meanr
+print >> sys.stderr, "Box limits: ", xmin, xmax, ymin, ymax, zmin, zmax
 
 # voglio fermarmi a circa 2 D dalla vetta visto che in cima avro' sempre una
 # densita' minore(ricorda la prima sfera che supera zmax ferma la procedura.
