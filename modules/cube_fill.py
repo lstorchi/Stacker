@@ -1,4 +1,6 @@
 import vtk
+import point
+import plane
 
 class cube:
 
@@ -10,12 +12,12 @@ class cube:
     self.face5_free = True
     self.face6_free = True
 
-    self._pts = [[0,1,2,3], \
-                 [4,7,6,5], \
-                 [0,1,5,4], \
-                 [1,2,6,5], \
-                 [3,7,6,2], \
-                 [0,3,7,4]]
+    self._pts = [[0,1,2,3],   # _down_plane
+                 [4,7,6,5],   # _up_plane
+                 [0,1,5,4],   # _left_plane
+                 [1,2,6,5],   # _back_plane
+                 [3,7,6,2],   # _right_plane
+                 [0,3,7,4]]   # _front_plane
 
     self.dim = dim
 
@@ -73,6 +75,8 @@ class cube:
 
     self.p8 = [x8, y8, z8]
 
+    self._compute_plane()
+
   def rotate (self, point1, angle):
 
     self._point1 = point1
@@ -86,7 +90,9 @@ class cube:
     self._rotate_point (p6)
     self._rotate_point (p7)
     self._rotate_point (p8)
-
+   
+    self._compute_plane()
+ 
   def has_free_face (self):
 
     return (self.face1_free or \
@@ -174,6 +180,13 @@ class cube:
 
     return nanopActor
 
+  def is_point_inside (self, p):
+
+    ptc = point.point(p[0], p[1], p[2])
+
+
+
+
 ###################################################################3
 # PRIVATE 
 ###################################################################3
@@ -216,3 +229,42 @@ class cube:
     self._polydata.SetPolys(polys)
 
     return self._polydata
+
+  def _compute_plane(self):
+
+    p0 = point.point(self.p1[0], self.p1[1], self.p1[2])
+    p1 = point.point(self.p2[0], self.p2[1], self.p2[2])
+    p2 = point.point(self.p3[0], self.p3[1], self.p3[2])
+
+    self._down_plane = plane.plane(p0, p1, p2)
+
+    p4 = point.point(self.p5[0], self.p5[1], self.p5[2])
+    p7 = point.point(self.p8[0], self.p8[1], self.p8[2])
+    p6 = point.point(self.p7[0], self.p7[1], self.p7[2])
+
+    self._up_plane = plane.plane(p4, p7, p6)
+
+    p0 = point.point(self.p1[0], self.p1[1], self.p1[2])
+    p1 = point.point(self.p2[0], self.p2[1], self.p2[2])
+    p5 = point.point(self.p6[0], self.p6[1], self.p6[2])
+
+    self._left_plane = plane.plane(p0, p1, p5)
+
+    p1 = point.point(self.p2[0], self.p2[1], self.p2[2])
+    p2 = point.point(self.p3[0], self.p3[1], self.p3[2])
+    p6 = point.point(self.p7[0], self.p7[1], self.p7[2])
+
+    self._back_plane = plane.plane(p1, p2, p6)
+
+    p3 = point.point(self.p4[0], self.p4[1], self.p4[2])
+    p7 = point.point(self.p8[0], self.p8[1], self.p8[2])
+    p6 = point.point(self.p7[0], self.p7[1], self.p7[2])
+
+    self._right_plane = plane.plane(p3, p7, p6)
+
+    p0 = point.point(self.p1[0], self.p1[1], self.p1[2])
+    p3 = point.point(self.p4[0], self.p4[1], self.p4[2])
+    p7 = point.point(self.p8[0], self.p8[1], self.p8[2])
+
+    self._front_plane = plane.plane(p3, p7, p6)
+
