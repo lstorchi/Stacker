@@ -177,6 +177,12 @@ class cube:
 
     return actors
 
+  def get_radius (self):
+
+    r = math.sqrt(2*dim*dim)
+
+    return r
+
   def get_vtk_actor (self, rc = 1.0, gc = 1.0, bc = 1.0, opacity = 1.0):
 
     self._compute_polydata()

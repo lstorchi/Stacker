@@ -22,6 +22,11 @@ import vtk
 
 ###############################################################################
 
+def inside_any_cubes (cub, cubes):
+
+
+###############################################################################
+
 def is_inside_nanoparticles (x, y, z, nanoparticles, scx, scy, scz, radius):
 
   bools1 = numpy.sqrt((scx - x)**2 + (scy - y)**2 + (scz - z)**2) <= 2.0*radius
@@ -92,8 +97,12 @@ print >> sys.stderr, "Box limits: ", xmin, xmax, ymin, ymax, zmin, zmax
 # voglio fermarmi a circa 2 D dalla vetta visto che in cima avro' sempre una
 # densita' minore(ricorda la prima sfera che supera zmax ferma la procedura.
 
-
 #actors = []
+
+cubcenterx = numpy.linspace(0.0, 0.0, 1)
+cubcentery = numpy.linspace(0.0, 0.0, 1)
+cubcenterz = numpy.linspace(0.0, 0.0, 1)
+cubradius = numpy.linspace(0.0, 0.0, 1)
 
 centers = []
 cubes = []
@@ -117,17 +126,32 @@ while (j < POINT_TODO):
 
   if not is_inside:
 
-    if (not ([x, y, z] in centers)):
+    if (not ([x, y, z] in centers)): # se non lo faccio i punti su angolo non vengono 
+                                     # visti come interni
 
       #for idx in interior_indices:
       #  actors.append(nanoparticles[idx].get_vtk_actor(color=True,opacity=1.0))
-   
-      centers.append([x, y, z])
-      j = j + 1
-      cub = cube_fill.cube(x, y, z, CUBE_DIM)
-      cubes.append(cub)
-      #actors.append(cub.get_actor(0.5, 0.6, 0.1))
 
+      cub = cube_fill.cube(x, y, z, CUBE_DIM)
+      tetha = random.uniform(0.0, 2.0*math.pi)
+      cub.rotate(p, tetha)
+      px = random.uniform(xmin + 1.5*meand, xmax - 1.5*meand)
+      py = random.uniform(ymin + 1.5*meand, ymax - 1.5*meand)
+      pz = random.uniform(zmin + 1.5*meand, zmax - 1.5*meand)
+
+      # check if any point of the cubes is inside not perfect but good enough
+
+      if (not inside_any_cubes (cub, cubes)):
+        cubes.append(cub)
+        centers.append([x, y, z])
+        j = j + 1
+
+        appen to centers array e radius using numpy.append(array, values)
+
+        #actors.append(cub.get_actor(0.5, 0.6, 0.1))
+
+
+"""
 i = 0
 while (i < MAX_NUM_OF_CUBE):
 
@@ -185,3 +209,4 @@ while (i < MAX_NUM_OF_CUBE):
   cubes.extend(addedcubes)
 
 #visualize_nanop.visualize_actors (actors)
+"""
