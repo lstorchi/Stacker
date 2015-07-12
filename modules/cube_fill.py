@@ -1,4 +1,5 @@
 import vtk
+import util
 import point
 import plane
 
@@ -82,14 +83,16 @@ class cube:
     self._point1 = point1
     self._angle = angle
 
-    self._rotate_point (p1)
-    self._rotate_point (p2)
-    self._rotate_point (p3)
-    self._rotate_point (p4)
-    self._rotate_point (p5)
-    self._rotate_point (p6)
-    self._rotate_point (p7)
-    self._rotate_point (p8)
+    print self._angle
+
+    self.p1 = self._rotate_point (self.p1)
+    self.p2 = self._rotate_point (self.p2)
+    self.p3 = self._rotate_point (self.p3)
+    self.p4 = self._rotate_point (self.p4)
+    self.p5 = self._rotate_point (self.p5)
+    self.p6 = self._rotate_point (self.p6)
+    self.p7 = self._rotate_point (self.p7)
+    self.p8 = self._rotate_point (self.p8)
    
     self._compute_plane()
  
@@ -165,6 +168,15 @@ class cube:
       # add an error code
       exit(1)
 
+  def get_point_actors (self, rc = 1.0, gc = 1.0, bc = 1.0, opacity = 1.0):
+
+    actors = []
+    for p in self.get_cube_coordintes():
+      ptc = point.point(p[0], p[1], p[2])
+      actors.append(ptc.get_actor())
+
+    return actors
+
   def get_vtk_actor (self, rc = 1.0, gc = 1.0, bc = 1.0, opacity = 1.0):
 
     self._compute_polydata()
@@ -184,8 +196,15 @@ class cube:
 
     ptc = point.point(p[0], p[1], p[2])
 
+    if (self._down_plane.check_point_side (ptc) !=
+        self._up_plane.check_point_side (ptc)):
+      if (self._back_plane.check_point_side (ptc) !=
+          self._front_plane.check_point_side (ptc)):
+        if (self._left_plane.check_point_side (ptc) !=
+          self._right_plane.check_point_side (ptc)):
+          return True
 
-
+    return False
 
 ###################################################################3
 # PRIVATE 
@@ -197,9 +216,8 @@ class cube:
 
     p0 = point.point(p1[0], p1[1], p1[2])
     p0 = util.point_rotate(point2, self._point1, p0, self._angle)
-    p1[0] = p0.get_x()
-    p1[1] = p0.get_y()
-    p1[2] = p0.get_z()
+    
+    return [p0.get_x(), p0.get_y(), p0.get_z()]
 
   def _compute_polydata(self):
 
@@ -239,10 +257,10 @@ class cube:
     self._down_plane = plane.plane(p0, p1, p2)
 
     p4 = point.point(self.p5[0], self.p5[1], self.p5[2])
-    p7 = point.point(self.p8[0], self.p8[1], self.p8[2])
     p6 = point.point(self.p7[0], self.p7[1], self.p7[2])
+    p7 = point.point(self.p8[0], self.p8[1], self.p8[2])
 
-    self._up_plane = plane.plane(p4, p7, p6)
+    self._up_plane = plane.plane(p4, p6, p7)
 
     p0 = point.point(self.p1[0], self.p1[1], self.p1[2])
     p1 = point.point(self.p2[0], self.p2[1], self.p2[2])
@@ -250,21 +268,21 @@ class cube:
 
     self._left_plane = plane.plane(p0, p1, p5)
 
+    p3 = point.point(self.p4[0], self.p4[1], self.p4[2])
+    p6 = point.point(self.p7[0], self.p7[1], self.p7[2])
+    p7 = point.point(self.p8[0], self.p8[1], self.p8[2])
+
+    self._right_plane = plane.plane(p3, p6, p7)
+
     p1 = point.point(self.p2[0], self.p2[1], self.p2[2])
     p2 = point.point(self.p3[0], self.p3[1], self.p3[2])
     p6 = point.point(self.p7[0], self.p7[1], self.p7[2])
 
     self._back_plane = plane.plane(p1, p2, p6)
 
-    p3 = point.point(self.p4[0], self.p4[1], self.p4[2])
-    p7 = point.point(self.p8[0], self.p8[1], self.p8[2])
-    p6 = point.point(self.p7[0], self.p7[1], self.p7[2])
-
-    self._right_plane = plane.plane(p3, p7, p6)
-
     p0 = point.point(self.p1[0], self.p1[1], self.p1[2])
     p3 = point.point(self.p4[0], self.p4[1], self.p4[2])
     p7 = point.point(self.p8[0], self.p8[1], self.p8[2])
 
-    self._front_plane = plane.plane(p3, p7, p6)
+    self._front_plane = plane.plane(p0, p3, p7)
 
