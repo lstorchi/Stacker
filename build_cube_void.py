@@ -27,7 +27,7 @@ def inside_any_cubes (cub, cubes, cubcenterx, cubcentery, cubcenterz,
 
   cx, cy, cz = cub.get_center()
 
-  bools1 = numpy.sqrt((cubcenterx - cx)**2 + (cubcentery - cy)**2 + 
+  bools1 = numpy.sqrt((cubcenterx - cx)**2 + (cubcentery - cy)**2 +  \
       (cubcenterz - cz)**2) <= 2.0*cubradius
   interior_indices, = numpy.where(bools1)
 
@@ -86,8 +86,8 @@ def cube_is_inside_nanoparticles (cube, nanoparticles, scx, scy, scz, radius):
 # non mi interessano le intersezioni
 nanoparticle.POINTINSIDEDIM = 0
 
-MAX_NUM_OF_CUBE = 500
-POINT_TODO = 10
+MAX_NUM_OF_CUBE = 50
+NUM_OF_STARTING_CUBE = 10
 CUBE_DIM = 1.0
 
 filename = "nanoparticle_final_config.txt"
@@ -124,7 +124,7 @@ cubradius = numpy.empty(1)
 centers = []
 cubes = []
 j = 0
-while (j < POINT_TODO):
+while (j < NUM_OF_STARTING_CUBE):
   x = random.uniform(xmin + 1.5*meand, xmax - 1.5*meand)
   y = random.uniform(ymin + 1.5*meand, ymax - 1.5*meand)
   z = random.uniform(zmin + 1.5*meand, zmax - 1.5*meand)
@@ -174,7 +174,6 @@ while (j < POINT_TODO):
 
         #actors.append(cub.get_actor(0.5, 0.6, 0.1))
 
-
 """
 i = 0
 while (i < MAX_NUM_OF_CUBE):
@@ -222,19 +221,27 @@ while (i < MAX_NUM_OF_CUBE):
         centers.append([cx, cy, cz])
         newcub = cube_fill.cube(cx, cy, cz, dim)
         newcub.set_iface (occupiediface)
+        point1, tetha = cub.get_rotate_data()
+        newcub.rotate(point1, tetha)
 
         if (not cube_is_inside_nanoparticles(newcub, nanoparticles, \
           scx, scy, scz, radius)):
-          addedcubes.append(newcub)
-          #actors.append(newcub.get_actor(0.5, 0.6, 0.1))
-          print cx, cy, cz, CUBE_DIM
-          i = i + 1
+          if (not inside_any_cubes (newcub, cubes, cubcenterx, \
+            cubcentery, cubcenterz, cubradius)):
+
+            addedcubes.append(newcub)
+            cubcenterx = numpy.append(cubcenterx, x)
+            cubcentery = numpy.append(cubcentery, y)
+            cubcenterz = numpy.append(cubcenterz, z)
+            cubradius = numpy.append(cubradius, cub.get_radius()) 
+            #actors.append(newcub.get_actor(0.5, 0.6, 0.1))
+            i = i + 1
 
   cubes.extend(addedcubes)
+"""
 
 #visualize_nanop.visualize_actors (actors)
 
-"""
 
 for cub in cubes:
   print cub.alldata_tostr()

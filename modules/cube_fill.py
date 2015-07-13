@@ -77,6 +77,9 @@ class cube:
 
     self.p8 = [x8, y8, z8]
 
+    self._point1 = point.point(0.0, 0.0, 0.0)
+    self._angle = 0.0
+
     self._compute_plane()
 
   def alldata_tostr (self):
@@ -109,6 +112,10 @@ class cube:
     self.p8 = self._rotate_point (self.p8)
    
     self._compute_plane()
+
+  def get_rotate_data (self):
+
+    return self._point1, self._angle
  
   def has_free_face (self):
 
