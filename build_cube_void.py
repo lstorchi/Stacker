@@ -105,8 +105,8 @@ def get_occopied_face (iface):
 # non mi interessano le intersezioni
 nanoparticle.POINTINSIDEDIM = 0
 
-MAX_NUM_OF_CUBE = 50
-NUM_OF_STARTING_CUBE = 10
+MAX_NUM_OF_CUBE = 2
+NUM_OF_STARTING_CUBE = 1
 CUBE_DIM = 1.0
 
 filename = "nanoparticle_final_config.txt"
@@ -135,22 +135,22 @@ print >> sys.stderr, "Box limits: ", xmin, xmax, ymin, ymax, zmin, zmax
 
 #actors = []
 
-cubcenterx = numpy.empty(1)
-cubcentery = numpy.empty(1)
-cubcenterz = numpy.empty(1)
-cubradius = numpy.empty(1)
+cubcenterx = numpy.empty(0)
+cubcentery = numpy.empty(0)
+cubcenterz = numpy.empty(0)
+cubradius = numpy.empty(0)
 
 centers = []
 cubes = []
 j = 0
 while (j < NUM_OF_STARTING_CUBE):
-  #x = random.uniform(xmin + 1.5*meand, xmax - 1.5*meand)
-  #y = random.uniform(ymin + 1.5*meand, ymax - 1.5*meand)
-  #z = random.uniform(zmin + 1.5*meand, zmax - 1.5*meand)
+  x = random.uniform(xmin + 1.5*meand, xmax - 1.5*meand)
+  y = random.uniform(ymin + 1.5*meand, ymax - 1.5*meand)
+  z = random.uniform(zmin + 1.5*meand, zmax - 1.5*meand)
 
-  x = random.uniform(xmin + 1.5*meand, xmin + 2.6*meand)
-  y = random.uniform(ymin + 1.5*meand, ymin + 2.6*meand)
-  z = random.uniform(zmin + 1.5*meand, zmin + 2.6*meand)
+  #x = random.uniform(xmin + 1.5*meand, xmin + 2.6*meand)
+  #y = random.uniform(ymin + 1.5*meand, ymin + 2.6*meand)
+  #z = random.uniform(zmin + 1.5*meand, zmin + 2.6*meand)
 
   #print x, y, z
 
@@ -198,8 +198,7 @@ while (j < NUM_OF_STARTING_CUBE):
 
         #actors.append(cub.get_actor(0.5, 0.6, 0.1))
 
-"""
-i = 0
+i = len(cubes)
 while (i < MAX_NUM_OF_CUBE):
 
   # seleziona le nanoparticelle 
@@ -214,17 +213,16 @@ while (i < MAX_NUM_OF_CUBE):
       while (not cub.is_face_free(iface)):
         iface = random.randint(1, 6)
 
-      cx, cy, cz = cub.get_center()
-      p1, p2, p3, p4, \
+      newcenter, p1, p2, p3, p4, \
       p5, p6, p7, p8 = cub.set_iface (iface)
       dim = cub.get_dim()
       # la faccia del nuovo cubo che verra' occupata 
       occupiediface = get_occopied_face (iface)
 
       # dovrebbe essere un modo semplice per vedere se il cubo si sovrappone
-      if (not ([cx, cy, cz] in centers)):
+      if (not (newcenter in centers)):
       
-        newcub = cube_fill.cube(cx, cy, cz, dim)
+        newcub = cube_fill.cube(newcenter[0], newcenter[1], newcenter[2], dim)
         newcub.set_iface (occupiediface)
         newcub.set_points (p1, p2, p3, p4, p5, p6, p7, p8)
 
@@ -232,10 +230,8 @@ while (i < MAX_NUM_OF_CUBE):
           scx, scy, scz, radius)):
           if (not inside_any_cubes (newcub, cubes, cubcenterx, \
             cubcentery, cubcenterz, cubradius)):
-            ccopied_face
-
             addedcubes.append(newcub)
-            centers.append([cx, cy, cz])
+            centers.append(center)
             cubcenterx = numpy.append(cubcenterx, x)
             cubcentery = numpy.append(cubcentery, y)
             cubcenterz = numpy.append(cubcenterz, z)
@@ -244,10 +240,8 @@ while (i < MAX_NUM_OF_CUBE):
             i = i + 1
 
   cubes.extend(addedcubes)
-"""
 
 #visualize_nanop.visualize_actors (actors)
-
 
 for cub in cubes:
   print cub.alldata_tostr()

@@ -14,12 +14,12 @@ class cube:
     self._face5_free = True
     self._face6_free = True
 
-    self._pts = [[0,1,2,3],   # _down_plane
-                 [4,7,6,5],   # _up_plane
-                 [0,1,5,4],   # _left_plane
-                 [1,2,6,5],   # _back_plane
-                 [3,7,6,2],   # _right_plane
-                 [0,3,7,4]]   # _front_plane
+    self._pts = [[0,1,2,3],   # _down_plane  1
+                 [4,7,6,5],   # _up_plane    2
+                 [0,1,5,4],   # _left_plane  3
+                 [1,2,6,5],   # _back_plane  4
+                 [3,7,6,2],   # _right_plane 5
+                 [0,3,7,4]]   # _front_plane 6
 
     self._dim = dim
 
@@ -179,22 +179,98 @@ class cube:
   # return the points of the iface attached cube
   def set_iface (self, iface):
 
-    #TODO
+    # look at http://math.stackexchange.com/questions/83404/finding-a-point-along-a-line-in-three-dimensions-given-two-points
+
+    newc = []
+    newp1 = []
+    newp2 = []
+    newp3 = []
+    newp4 = []
+    newp5 = []
+    newp6 = []
+    newp7 = []
+    newp8 = []
 
     if (iface == 1):
       self._face1_free = False
+      # 1 -> face 2
+      newp5 = self._p1
+      newp6 = self._p2
+      newp7 = self._p3
+      newp8 = self._p4
+      # 
+      u1 = self._p1[0] - self._p5[0]
+      u2 = self._p1[1] - self._p5[1]
+      u3 = self._p1[2] - self._p5[2]
+      norm = math.sqrt(u1*u1 + u2*u2 + u3*u3)
+      u1 = u1 / norm
+      u2 = u2 / norm
+      u2 = u3 / norm
+      # verso
+      newp1.append(newp5[0] + self._dim * u1)
+      newp1.append(newp5[1] + self._dim * u2)
+      newp1.append(newp5[2] + self._dim * u3)
+
+      newp2.append(newp6[0] + self._dim * u1)
+      newp2.append(newp6[1] + self._dim * u2)
+      newp2.append(newp6[2] + self._dim * u3)
+
+      newp3.append(newp7[0] + self._dim * u1)
+      newp3.append(newp7[1] + self._dim * u2)
+      newp3.append(newp7[2] + self._dim * u3)
+
+      newp4.append(newp8[0] + self._dim * u1)
+      newp4.append(newp8[1] + self._dim * u2)
+      newp4.append(newp8[2] + self._dim * u3)
+
+      newc.append(self._cx + self._dim * u1)
+      newc.append(self._cy + self._dim * u2)
+      newc.append(self._cz + self._dim * u3)
+
     elif (iface == 2):
       self._face2_free = False
+      # 2 -> face 1
+      newp1 = self._p5
+      newp2 = self._p6
+      newp3 = self._p7
+      newp4 = self._p8
+      # 
     elif (iface == 3):
       self._face3_free = False
+      # 3 -> face 5
+      newp4 = self._p1
+      newp3 = self._p2
+      newp7 = self._p6
+      newp8 = self._p5
+      # 
     elif (iface == 4):
       self._face4_free = False
+      # 4 -> face 6
+      newp1 = self._p2
+      newp4 = self._p3
+      newp8 = self._p7
+      newp5 = self._p6
+      # 
     elif (iface == 5):
       self._face5_free = False
+      # 5 -> face 3
+      newp1 = self._p4
+      newp2 = self._p3
+      newp6 = self._p7
+      newp5 = self._p8
+      # 
     elif (iface == 6):
       self._face6_free = False
+      # 6 -> face 4
+      newp3 = self._p1
+      newp3 = self._p4
+      newp7 = self._p8
+      newp6 = self._p5
+      # 
 
-    return newp1, newp2, newp3, newp4, \
+
+    return newc, \
+        newp1, newp2, newp3, newp4, \
         newp5, newp6, newp7, newp8
 
   def get_center (self):
