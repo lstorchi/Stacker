@@ -22,8 +22,25 @@ import vtk
 
 ###############################################################################
 
-def inside_any_cubes (cub, cubes):
+def inside_any_cubes (cub, cubes, cubcenterx, cubcentery, cubcenterz, 
+    cubradius):
 
+  cx, cy, cz = cub.get_center()
+
+  bools1 = numpy.sqrt((cubcenterx - cx)**2 + (cubcentery - cy)**2 + 
+      (cubcenterz - cz)**2) <= 2.0*cubradius
+  interior_indices, = numpy.where(bools1)
+
+  for idx in interior_indices:
+    if (cubes[idx].is_point_inside([cx, cy, cz])):
+      return True
+
+  for idx in interior_indices:
+    for p in cub.get_cube_coordintes():
+      if (cubes[idx].is_point_inside(p)):
+        return True
+
+  return False
 
 ###############################################################################
 
@@ -99,10 +116,10 @@ print >> sys.stderr, "Box limits: ", xmin, xmax, ymin, ymax, zmin, zmax
 
 #actors = []
 
-cubcenterx = numpy.linspace(0.0, 0.0, 1)
-cubcentery = numpy.linspace(0.0, 0.0, 1)
-cubcenterz = numpy.linspace(0.0, 0.0, 1)
-cubradius = numpy.linspace(0.0, 0.0, 1)
+cubcenterx = numpy.empty(1)
+cubcentery = numpy.empty(1)
+cubcenterz = numpy.empty(1)
+cubradius = numpy.empty(1)
 
 centers = []
 cubes = []
@@ -134,19 +151,26 @@ while (j < POINT_TODO):
 
       cub = cube_fill.cube(x, y, z, CUBE_DIM)
       tetha = random.uniform(0.0, 2.0*math.pi)
-      cub.rotate(p, tetha)
       px = random.uniform(xmin + 1.5*meand, xmax - 1.5*meand)
       py = random.uniform(ymin + 1.5*meand, ymax - 1.5*meand)
       pz = random.uniform(zmin + 1.5*meand, zmax - 1.5*meand)
+      p = point.point(px, py, pz)
+
+      cub.rotate(p, tetha)
 
       # check if any point of the cubes is inside not perfect but good enough
 
-      if (not inside_any_cubes (cub, cubes)):
+      if (not inside_any_cubes (cub, cubes, cubcenterx, 
+        cubcentery, cubcenterz, cubradius)):
         cubes.append(cub)
         centers.append([x, y, z])
         j = j + 1
 
-        appen to centers array e radius using numpy.append(array, values)
+        # append to centers array e radius using numpy.append(array, values)
+        cubcenterx = numpy.append(cubcenterx, x)
+        cubcentery = numpy.append(cubcentery, y)
+        cubcenterz = numpy.append(cubcenterz, z)
+        cubradius = numpy.append(cubradius, cub.get_radius()) 
 
         #actors.append(cub.get_actor(0.5, 0.6, 0.1))
 
@@ -209,4 +233,8 @@ while (i < MAX_NUM_OF_CUBE):
   cubes.extend(addedcubes)
 
 #visualize_nanop.visualize_actors (actors)
+
 """
+
+for cub in cubes:
+  print cub.alldata_tostr()

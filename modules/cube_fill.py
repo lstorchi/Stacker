@@ -1,5 +1,6 @@
 import vtk
 import util
+import math
 import point
 import plane
 
@@ -78,12 +79,25 @@ class cube:
 
     self._compute_plane()
 
+  def alldata_tostr (self):
+
+    alldata = str(self.cx) + " " + \
+              str(self.cy) + " " + \
+              str(self.cz) + " " + \
+              str(self.dim) + " " + \
+              str(self._point1.get_x()) + " " + \
+              str(self._point1.get_y()) + " " + \
+              str(self._point1.get_z()) + " " + \
+              str(self._angle)
+
+    return alldata
+
   def rotate (self, point1, angle):
 
     self._point1 = point1
     self._angle = angle
 
-    print self._angle
+    #print self._angle
 
     self.p1 = self._rotate_point (self.p1)
     self.p2 = self._rotate_point (self.p2)
@@ -179,7 +193,7 @@ class cube:
 
   def get_radius (self):
 
-    r = math.sqrt(2*dim*dim)
+    r = math.sqrt(2*self.dim*self.dim)
 
     return r
 
