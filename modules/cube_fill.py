@@ -7,12 +7,12 @@ import plane
 class cube:
 
   def __init__(self, cx = 0.0, cy = 0.0, cz = 0.0, dim = 0.0):
-    self.face1_free = True
-    self.face2_free = True
-    self.face3_free = True
-    self.face4_free = True
-    self.face5_free = True
-    self.face6_free = True
+    self._face1_free = True
+    self._face2_free = True
+    self._face3_free = True
+    self._face4_free = True
+    self._face5_free = True
+    self._face6_free = True
 
     self._pts = [[0,1,2,3],   # _down_plane
                  [4,7,6,5],   # _up_plane
@@ -23,57 +23,57 @@ class cube:
 
     self._dim = dim
 
-    self.cx = cx
-    self.cy = cy
-    self.cz = cz
+    self._cx = cx
+    self._cy = cy
+    self._cz = cz
 
     dimmez = self._dim/2.0
 
-    x1 = self.cx - dimmez
-    y1 = self.cy - dimmez
-    z1 = self.cz - dimmez
+    x1 = self._cx - dimmez
+    y1 = self._cy - dimmez
+    z1 = self._cz - dimmez
 
     self._p1 = [x1, y1, z1]
 
-    x2 = self.cx - dimmez
-    y2 = self.cy + dimmez
-    z2 = self.cz - dimmez
+    x2 = self._cx - dimmez
+    y2 = self._cy + dimmez
+    z2 = self._cz - dimmez
 
     self._p2 = [x2, y2, z2]
 
-    x3 = self.cx + dimmez
-    y3 = self.cy + dimmez
-    z3 = self.cz - dimmez
+    x3 = self._cx + dimmez
+    y3 = self._cy + dimmez
+    z3 = self._cz - dimmez
 
     self._p3 = [x3, y3, z3]
     
-    x4 = self.cx + dimmez
-    y4 = self.cy - dimmez
-    z4 = self.cz - dimmez
+    x4 = self._cx + dimmez
+    y4 = self._cy - dimmez
+    z4 = self._cz - dimmez
 
     self._p4 = [x4, y4, z4]
 
     x5 = x1 
     y5 = y1
-    z5 = self.cz + dimmez
+    z5 = self._cz + dimmez
 
     self._p5 = [x5, y5, z5]
 
     x6 = x2
     y6 = y2
-    z6 = self.cz + dimmez
+    z6 = self._cz + dimmez
 
     self._p6 = [x6, y6, z6]
 
     x7 = x3
     y7 = y3
-    z7 = self.cz + dimmez
+    z7 = self._cz + dimmez
 
     self._p7 = [x7, y7, z7]
 
     x8 = x4
     y8 = y4
-    z8 = self.cz + dimmez
+    z8 = self._cz + dimmez
 
     self._p8 = [x8, y8, z8]
 
@@ -81,9 +81,9 @@ class cube:
 
   def alldata_tostr (self):
 
-    alldata = str(self.cx) + " " + \
-              str(self.cy) + " " + \
-              str(self.cz) + " " + \
+    alldata = str(self._cx) + " " + \
+              str(self._cy) + " " + \
+              str(self._cz) + " " + \
               str(self._dim) + " " + \
               str(self._p1[0]) + " " + \
               str(self._p1[1]) + " " + \
@@ -112,6 +112,7 @@ class cube:
 
     return alldata
 
+  # check if the distance are compatible with the cube dimension
   def set_points (self, p1, p2, p3, p4, p5, p6, p7, p8):
 
    if ((self._is_dist_compatible(p1, p4)) and
@@ -151,48 +152,54 @@ class cube:
  
   def has_free_face (self):
 
-    return (self.face1_free or \
-        self.face2_free or \
-        self.face3_free or \
-        self.face4_free or \
-        self.face5_free or \
-        self.face6_free)
+    return (self._face1_free or \
+        self._face2_free or \
+        self._face3_free or \
+        self._face4_free or \
+        self._face5_free or \
+        self._face6_free)
 
   def is_face_free (self, iface):
 
     if (iface == 1):
-      return self.face1_free
+      return self._face1_free
     elif (iface == 2):
-      return self.face2_free
+      return self._face2_free
     elif (iface == 3):
-      return self.face3_free
+      return self._face3_free
     elif (iface == 4):
-      return self.face4_free
+      return self._face4_free
     elif (iface == 5):
-      return self.face5_free
+      return self._face5_free
     elif (iface == 6):
-      return self.face6_free
+      return self._face6_free
     else:
       return False
 
+  # return the points of the iface attached cube
   def set_iface (self, iface):
 
+    #TODO
+
     if (iface == 1):
-      self.face1_free = False
+      self._face1_free = False
     elif (iface == 2):
-      self.face2_free = False
+      self._face2_free = False
     elif (iface == 3):
-      self.face3_free = False
+      self._face3_free = False
     elif (iface == 4):
-      self.face4_free = False
+      self._face4_free = False
     elif (iface == 5):
-      self.face5_free = False
+      self._face5_free = False
     elif (iface == 6):
-      self.face6_free = False
+      self._face6_free = False
+
+    return newp1, newp2, newp3, newp4, \
+        newp5, newp6, newp7, newp8
 
   def get_center (self):
 
-    return self.cx, self.cy, self.cz
+    return self._cx, self._cy, self._cz
 
   def get_dim (self):
 
@@ -281,7 +288,7 @@ class cube:
 
   def _rotate_point (self, p1, point1, angle):
 
-    point2 = point.point(self.cx, self.cy, self.cz)
+    point2 = point.point(self._cx, self._cy, self._cz)
 
     p0 = point.point(p1[0], p1[1], p1[2])
     p0 = util.point_rotate(point2, point1, p0, angle)

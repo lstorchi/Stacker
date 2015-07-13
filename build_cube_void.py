@@ -83,6 +83,25 @@ def cube_is_inside_nanoparticles (cube, nanoparticles, scx, scy, scz, radius):
 
 ###############################################################################
 
+def get_occopied_face (iface):
+
+  if (iface == 1):
+    occupiediface = 2
+  elif (iface == 2):
+    occupiediface = 1
+  elif (iface == 3):
+    occupiediface = 5
+  elif (iface == 4):
+    occupiediface = 6
+  elif (iface == 5):
+    occupiediface = 3
+  elif (iface == 6):
+    occupiediface = 4
+
+  return occupiediface
+
+###############################################################################
+
 # non mi interessano le intersezioni
 nanoparticle.POINTINSIDEDIM = 0
 
@@ -195,46 +214,28 @@ while (i < MAX_NUM_OF_CUBE):
       while (not cub.is_face_free(iface)):
         iface = random.randint(1, 6)
 
-      cx, cy, cz = cub.get_center ()
-      cub.set_iface (iface)
+      cx, cy, cz = cub.get_center()
+      p1, p2, p3, p4, \
+      p5, p6, p7, p8 = cub.set_iface (iface)
       dim = cub.get_dim()
-      
       # la faccia del nuovo cubo che verra' occupata 
-      occupiediface = 0
-      if (iface == 1):
-        cz = cz - dim/2.0
-        occupiediface = 2
-      elif (iface == 2):
-        cz = cz + dim/2.0
-        occupiediface = 1
-      elif (iface == 3):
-        cx = cx - dim/2.0
-        occupiediface = 5
-      elif (iface == 4):
-        cy = cy + dim/2.0
-        occupiediface = 6
-      elif (iface == 5):
-        cx = cx + dim/2.0
-        occupiediface = 3
-      elif (iface == 6):
-        cy = cy - dim/2.0
-        occupiediface = 4
+      occupiediface = get_occopied_face (iface)
 
       # dovrebbe essere un modo semplice per vedere se il cubo si sovrappone
       if (not ([cx, cy, cz] in centers)):
       
-        centers.append([cx, cy, cz])
         newcub = cube_fill.cube(cx, cy, cz, dim)
         newcub.set_iface (occupiediface)
-        point1, tetha = cub.get_rotate_data()
-        newcub.rotate(point1, tetha)
+        newcub.set_points (p1, p2, p3, p4, p5, p6, p7, p8)
 
         if (not cube_is_inside_nanoparticles(newcub, nanoparticles, \
           scx, scy, scz, radius)):
           if (not inside_any_cubes (newcub, cubes, cubcenterx, \
             cubcentery, cubcenterz, cubradius)):
+            ccopied_face
 
             addedcubes.append(newcub)
+            centers.append([cx, cy, cz])
             cubcenterx = numpy.append(cubcenterx, x)
             cubcentery = numpy.append(cubcentery, y)
             cubcenterz = numpy.append(cubcenterz, z)
