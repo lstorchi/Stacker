@@ -125,9 +125,13 @@ centers = []
 cubes = []
 j = 0
 while (j < NUM_OF_STARTING_CUBE):
-  x = random.uniform(xmin + 1.5*meand, xmax - 1.5*meand)
-  y = random.uniform(ymin + 1.5*meand, ymax - 1.5*meand)
-  z = random.uniform(zmin + 1.5*meand, zmax - 1.5*meand)
+  #x = random.uniform(xmin + 1.5*meand, xmax - 1.5*meand)
+  #y = random.uniform(ymin + 1.5*meand, ymax - 1.5*meand)
+  #z = random.uniform(zmin + 1.5*meand, zmax - 1.5*meand)
+
+  x = random.uniform(xmin + 1.5*meand, xmin + 2.6*meand)
+  y = random.uniform(ymin + 1.5*meand, ymin + 2.6*meand)
+  z = random.uniform(zmin + 1.5*meand, zmin + 2.6*meand)
 
   #print x, y, z
 
@@ -154,6 +158,7 @@ while (j < NUM_OF_STARTING_CUBE):
       px = random.uniform(xmin + 1.5*meand, xmax - 1.5*meand)
       py = random.uniform(ymin + 1.5*meand, ymax - 1.5*meand)
       pz = random.uniform(zmin + 1.5*meand, zmax - 1.5*meand)
+
       p = point.point(px, py, pz)
 
       cub.rotate(p, tetha)
@@ -164,13 +169,13 @@ while (j < NUM_OF_STARTING_CUBE):
         cubcentery, cubcenterz, cubradius)):
         cubes.append(cub)
         centers.append([x, y, z])
-        j = j + 1
-
         # append to centers array e radius using numpy.append(array, values)
         cubcenterx = numpy.append(cubcenterx, x)
         cubcentery = numpy.append(cubcentery, y)
         cubcenterz = numpy.append(cubcenterz, z)
         cubradius = numpy.append(cubradius, cub.get_radius()) 
+
+        j = j + 1
 
         #actors.append(cub.get_actor(0.5, 0.6, 0.1))
 
