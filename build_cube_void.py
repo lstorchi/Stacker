@@ -106,7 +106,7 @@ def get_occopied_face (iface):
 nanoparticle.POINTINSIDEDIM = 0
 
 NUM_OF_STARTING_CUBE = 10
-MAX_NUM_OF_CUBE = 2*NUM_OF_STARTING_CUBE
+MAX_NUM_OF_CUBE = 20*NUM_OF_STARTING_CUBE
 
 CUBE_DIM = 1.0
 
@@ -149,9 +149,9 @@ while (j < NUM_OF_STARTING_CUBE):
   y = random.uniform(ymin + 1.5*meand, ymax - 1.5*meand)
   z = random.uniform(zmin + 1.5*meand, zmax - 1.5*meand)
 
-  #x = random.uniform(xmin + 1.5*meand, xmin + 2.6*meand)
-  #y = random.uniform(ymin + 1.5*meand, ymin + 2.6*meand)
-  #z = random.uniform(zmin + 1.5*meand, zmin + 2.6*meand)
+  x = random.uniform(xmin + 1.5*meand, xmin + 2.6*meand)
+  y = random.uniform(ymin + 1.5*meand, ymin + 2.6*meand)
+  z = random.uniform(zmin + 1.5*meand, zmin + 2.6*meand)
 
   #print x, y, z
 
@@ -209,13 +209,10 @@ while (i < MAX_NUM_OF_CUBE):
   addedcubes = []
   for cub in cubes:
     if (cub.has_free_face ()):
-
+      
       iface = random.randint(1, 6)
       while (not cub.is_face_free(iface)):
         iface = random.randint(1, 6)
-
-      # TODO
-      iface = 1
 
       newcenter, p1, p2, p3, p4, \
       p5, p6, p7, p8 = cub.set_iface (iface)
@@ -230,18 +227,18 @@ while (i < MAX_NUM_OF_CUBE):
         newcub.set_iface (occupiediface)
         newcub.set_points (p1, p2, p3, p4, p5, p6, p7, p8)
 
-        #if (not cube_is_inside_nanoparticles(newcub, nanoparticles, \
-        #  scx, scy, scz, radius)):
-        #  if (not inside_any_cubes (newcub, cubes, cubcenterx, \
-        #    cubcentery, cubcenterz, cubradius)):
-        addedcubes.append(newcub)
-        centers.append(newcenter)
-        cubcenterx = numpy.append(cubcenterx, x)
-        cubcentery = numpy.append(cubcentery, y)
-        cubcenterz = numpy.append(cubcenterz, z)
-        cubradius = numpy.append(cubradius, cub.get_radius()) 
-        #actors.append(newcub.get_actor(0.5, 0.6, 0.1))
-        i = i + 1
+        if (not cube_is_inside_nanoparticles(newcub, nanoparticles, \
+          scx, scy, scz, radius)):
+          #if (not inside_any_cubes (newcub, cubes, cubcenterx, \
+          #  cubcentery, cubcenterz, cubradius)):
+          addedcubes.append(newcub)
+          centers.append(newcenter)
+          cubcenterx = numpy.append(cubcenterx, x)
+          cubcentery = numpy.append(cubcentery, y)
+          cubcenterz = numpy.append(cubcenterz, z)
+          cubradius = numpy.append(cubradius, cub.get_radius()) 
+          #actors.append(newcub.get_actor(0.5, 0.6, 0.1))
+          i = i + 1
 
   cubes.extend(addedcubes)
 
