@@ -206,17 +206,18 @@ while (i < MAX_NUM_OF_CUBE):
   # usando le sfere per fare la selezione e' possibile io ottenga
   # dei falsi positivi
 
-  addedcubes = []
-  for cub in cubes:
-    if (cub.has_free_face ()):
+  oldnumof = len(cubes)
+
+  for cubi in range(oldnumof):
+    if (cubes[cubi].has_free_face ()):
       
       iface = random.randint(1, 6)
-      while (not cub.is_face_free(iface)):
+      while (not cubes[cubi].is_face_free(iface)):
         iface = random.randint(1, 6)
 
       newcenter, p1, p2, p3, p4, \
-      p5, p6, p7, p8 = cub.set_iface (iface)
-      dim = cub.get_dim()
+      p5, p6, p7, p8 = cubes[cubi].set_iface (iface)
+      dim = cubes[cubi].get_dim()
       # la faccia del nuovo cubo che verra' occupata 
       occupiediface = get_occopied_face (iface)
 
@@ -229,18 +230,16 @@ while (i < MAX_NUM_OF_CUBE):
 
         if (not cube_is_inside_nanoparticles(newcub, nanoparticles, \
           scx, scy, scz, radius)):
-          #if (not inside_any_cubes (newcub, cubes, cubcenterx, \
-          #  cubcentery, cubcenterz, cubradius)):
-          addedcubes.append(newcub)
-          centers.append(newcenter)
-          cubcenterx = numpy.append(cubcenterx, x)
-          cubcentery = numpy.append(cubcentery, y)
-          cubcenterz = numpy.append(cubcenterz, z)
-          cubradius = numpy.append(cubradius, cub.get_radius()) 
-          #actors.append(newcub.get_actor(0.5, 0.6, 0.1))
-          i = i + 1
-
-  cubes.extend(addedcubes)
+          if (not inside_any_cubes (newcub, cubes, cubcenterx, \
+            cubcentery, cubcenterz, cubradius)):
+            cubes.append(newcub)
+            centers.append(newcenter)
+            cubcenterx = numpy.append(cubcenterx, x)
+            cubcentery = numpy.append(cubcentery, y)
+            cubcenterz = numpy.append(cubcenterz, z)
+            cubradius = numpy.append(cubradius, cub.get_radius()) 
+            #actors.append(newcub.get_actor(0.5, 0.6, 0.1))
+            i = i + 1
 
 #visualize_nanop.visualize_actors (actors)
 
