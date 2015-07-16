@@ -205,7 +205,7 @@ class cube:
       norm = math.sqrt(u1*u1 + u2*u2 + u3*u3)
       u1 = u1 / norm
       u2 = u2 / norm
-      u2 = u3 / norm
+      u3 = u3 / norm
       # verso
       newp1.append(newp5[0] + self._dim * u1)
       newp1.append(newp5[1] + self._dim * u2)

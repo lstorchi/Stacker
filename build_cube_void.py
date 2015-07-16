@@ -105,8 +105,9 @@ def get_occopied_face (iface):
 # non mi interessano le intersezioni
 nanoparticle.POINTINSIDEDIM = 0
 
-MAX_NUM_OF_CUBE = 2
-NUM_OF_STARTING_CUBE = 1
+NUM_OF_STARTING_CUBE = 10
+MAX_NUM_OF_CUBE = 2*NUM_OF_STARTING_CUBE
+
 CUBE_DIM = 1.0
 
 filename = "nanoparticle_final_config.txt"
@@ -213,6 +214,9 @@ while (i < MAX_NUM_OF_CUBE):
       while (not cub.is_face_free(iface)):
         iface = random.randint(1, 6)
 
+      # TODO
+      iface = 1
+
       newcenter, p1, p2, p3, p4, \
       p5, p6, p7, p8 = cub.set_iface (iface)
       dim = cub.get_dim()
@@ -226,18 +230,18 @@ while (i < MAX_NUM_OF_CUBE):
         newcub.set_iface (occupiediface)
         newcub.set_points (p1, p2, p3, p4, p5, p6, p7, p8)
 
-        if (not cube_is_inside_nanoparticles(newcub, nanoparticles, \
-          scx, scy, scz, radius)):
-          if (not inside_any_cubes (newcub, cubes, cubcenterx, \
-            cubcentery, cubcenterz, cubradius)):
-            addedcubes.append(newcub)
-            centers.append(center)
-            cubcenterx = numpy.append(cubcenterx, x)
-            cubcentery = numpy.append(cubcentery, y)
-            cubcenterz = numpy.append(cubcenterz, z)
-            cubradius = numpy.append(cubradius, cub.get_radius()) 
-            #actors.append(newcub.get_actor(0.5, 0.6, 0.1))
-            i = i + 1
+        #if (not cube_is_inside_nanoparticles(newcub, nanoparticles, \
+        #  scx, scy, scz, radius)):
+        #  if (not inside_any_cubes (newcub, cubes, cubcenterx, \
+        #    cubcentery, cubcenterz, cubradius)):
+        addedcubes.append(newcub)
+        centers.append(newcenter)
+        cubcenterx = numpy.append(cubcenterx, x)
+        cubcentery = numpy.append(cubcentery, y)
+        cubcenterz = numpy.append(cubcenterz, z)
+        cubradius = numpy.append(cubradius, cub.get_radius()) 
+        #actors.append(newcub.get_actor(0.5, 0.6, 0.1))
+        i = i + 1
 
   cubes.extend(addedcubes)
 
