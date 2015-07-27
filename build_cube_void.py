@@ -145,9 +145,9 @@ centers = []
 cubes = []
 j = 0
 while (j < NUM_OF_STARTING_CUBE):
-  x = random.uniform(xmin + 1.5*meand, xmax - 1.5*meand)
-  y = random.uniform(ymin + 1.5*meand, ymax - 1.5*meand)
-  z = random.uniform(zmin + 1.5*meand, zmax - 1.5*meand)
+  #x = random.uniform(xmin + 1.5*meand, xmax - 1.5*meand)
+  #y = random.uniform(ymin + 1.5*meand, ymax - 1.5*meand)
+  #z = random.uniform(zmin + 1.5*meand, zmax - 1.5*meand)
 
   x = random.uniform(xmin + 1.5*meand, xmin + 2.6*meand)
   y = random.uniform(ymin + 1.5*meand, ymin + 2.6*meand)
