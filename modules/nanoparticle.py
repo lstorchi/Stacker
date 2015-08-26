@@ -311,6 +311,78 @@ class nanotio2:
     return pret
 
 
+  def project_point_101 (self, pp):
+
+    dist = float("inf")
+    pret = point.point()
+    peqn = plane.plane()
+
+    p = self._UP_pright.project_point(pp)
+    if (self.__is_in_polyhedra(0, p)):
+      d = p.get_distance_from(pp)
+      if (d < dist):
+        dist = d
+        pret = p
+        peqn = self._UP_pright
+
+    p = self._UP_pback.project_point(pp) 
+    if (self.__is_in_polyhedra(1, p)):
+      d = p.get_distance_from(pp)
+      if (d < dist):
+        dist = d
+        pret = p
+        peqn = self._UP_pback
+
+    p = self._UP_pleft.project_point(pp) 
+    if (self.__is_in_polyhedra(2, p)):
+      d = p.get_distance_from(pp)
+      if (d < dist):
+        dist = d
+        pret = p
+        peqn = self._UP_pleft
+
+    p = self._UP_pfront.project_point(pp) 
+    if (self.__is_in_polyhedra(3, p)):
+      d = p.get_distance_from(pp)
+      if (d < dist):
+        dist = d
+        pret = p
+        peqn = self._UP_pfront
+
+    p = self._DOWN_pright.project_point(pp) 
+    if (self.__is_in_polyhedra(5, p)):
+      d = p.get_distance_from(pp)
+      if (d < dist):
+        dist = d
+        pret = p
+        peqn = self._DOWN_pright
+
+    p = self._DOWN_pback.project_point(pp) 
+    if (self.__is_in_polyhedra(6, p)):
+      d = p.get_distance_from(pp)
+      if (d < dist):
+        dist = d
+        pret = p
+        peqn = self._DOWN_pback
+
+    p = self._DOWN_pleft.project_point(pp) 
+    if (self.__is_in_polyhedra(7, p)):
+      d = p.get_distance_from(pp)
+      if (d < dist):
+        dist = d
+        pret = p
+        peqn = self._DOWN_pleft
+
+    p = self._DOWN_pfront.project_point(pp) 
+    if (self.__is_in_polyhedra(8, p)):
+      d = p.get_distance_from(pp)
+      if (d < dist):
+        dist = d
+        pret = p
+        peqn = self._DOWN_pfront
+
+    return pret, peqn
+
   def set_center(self, cx = 0.0, cy = 0.0, cz = 0.0):
     self._cx = cx
     self._cy = cy

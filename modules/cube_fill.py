@@ -115,18 +115,18 @@ class cube:
   # check if the distance are compatible with the cube dimension
   def set_points (self, p1, p2, p3, p4, p5, p6, p7, p8):
 
-   if ((self._is_dist_compatible(p1, p4)) and
-       (self._is_dist_compatible(p4, p3)) and
-       (self._is_dist_compatible(p3, p2)) and
-       (self._is_dist_compatible(p2, p1)) and
-       (self._is_dist_compatible(p5, p8)) and
-       (self._is_dist_compatible(p8, p7)) and
-       (self._is_dist_compatible(p7, p6)) and
-       (self._is_dist_compatible(p6, p5)) and
-       (self._is_dist_compatible(p5, p1)) and
-       (self._is_dist_compatible(p8, p4)) and
-       (self._is_dist_compatible(p7, p3)) and
-       (self._is_dist_compatible(p6, p2))):
+    if ((self._is_dist_compatible(p1, p4)) and
+        (self._is_dist_compatible(p4, p3)) and
+        (self._is_dist_compatible(p3, p2)) and
+        (self._is_dist_compatible(p2, p1)) and
+        (self._is_dist_compatible(p5, p8)) and
+        (self._is_dist_compatible(p8, p7)) and
+        (self._is_dist_compatible(p7, p6)) and
+        (self._is_dist_compatible(p6, p5)) and
+        (self._is_dist_compatible(p5, p1)) and
+        (self._is_dist_compatible(p8, p4)) and
+        (self._is_dist_compatible(p7, p3)) and
+        (self._is_dist_compatible(p6, p2))):
       self._p1 = p1
       self._p2 = p2
       self._p3 = p3
@@ -135,7 +135,18 @@ class cube:
       self._p6 = p6
       self._p7 = p7
       self._p8 = p8
+      
+      dimmez = self._dim/2.0
+      
+      self._cx = p1[0] + dimmez
+      self._cy = p2[0] + dimmez
+      self._cz = p3[0] + dimmez
+      
       self._compute_plane()
+      
+      return True
+
+    return False
 
   def rotate (self, point1, angle):
 

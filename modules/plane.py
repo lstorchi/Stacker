@@ -3,7 +3,7 @@ import point
 
 class plane:
   
-  def __init__ (self, a, b, c):
+  def __init__ (self, a = point.point (), b = point.point(), c = point.point()):
 
     self.set_points (a, b, c)
 
