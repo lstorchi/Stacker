@@ -111,7 +111,7 @@ def get_occopied_face (iface):
 nanoparticle.POINTINSIDEDIM = 0
 
 NUM_OF_STARTING_CUBE = 10
-MAX_NUM_OF_CUBE = 30*NUM_OF_STARTING_CUBE
+MAX_NUM_OF_CUBE = 80*NUM_OF_STARTING_CUBE
 
 CUBE_DIM = 1.0
 
@@ -203,7 +203,7 @@ while (j < (NUM_OF_STARTING_CUBE/2)):
 
         j = j + 1
 
-        #actors.append(cub.get_actor(0.5, 0.6, 0.1))
+        actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
 
 j = 0
 while (j < (NUM_OF_STARTING_CUBE/2)):
@@ -238,7 +238,7 @@ while (j < (NUM_OF_STARTING_CUBE/2)):
         p1, peqn = nanoparticles[nearest_nanop[0]].project_point_101(point.point(x, y, z))
 
         actors.append(nanoparticles[nearest_nanop[0]].get_vtk_actor(color=True,opacity=1.0))
-        actors.append(p1.get_actor(0.1, 1.0, 0.0, 0.0))
+        #actors.append(p1.get_actor(0.1, 1.0, 0.0, 0.0))
 
         # genera il secondo punto uso i due vettori con cui posso definire il piano
         # http://stackoverflow.com/questions/18663755/how-to-convert-a-3d-point-on-a-plane-to-uv-coordinates
@@ -254,187 +254,166 @@ while (j < (NUM_OF_STARTING_CUBE/2)):
           u3 = c
 
         norm = math.sqrt(u1*u1 + u2*u2 + u3*u3)
-        u1 = u1 / norm
-        u2 = u2 / norm
-        u3 = u3 / norm
-        p2x = p1.get_x() + CUBE_DIM * u1
-        p2y = p1.get_y() + CUBE_DIM * u2
-        p2z = p1.get_z() + CUBE_DIM * u3
-                                       
-        p2 = point.point(p2x, p2y, p2z)
 
-        #actors.append(p2_pro.get_actor(0.2, 0.0, 1.0, 0.0))
-        actors.append(p2.get_actor(0.1, 0.0, 1.0, 0.0))
+        if (norm != 0.0): # perche' succede devo definire meglio u
 
-        print "p1 to p2: ", p1.get_distance_from(p2)
-        print "p2 is in the plane: ", peqn.is_point_in(p2)
+          u1 = u1 / norm
+          u2 = u2 / norm
+          u3 = u3 / norm
+          p2x = p1.get_x() + CUBE_DIM * u1
+          p2y = p1.get_y() + CUBE_DIM * u2
+          p2z = p1.get_z() + CUBE_DIM * u3
+                                         
+          p2 = point.point(p2x, p2y, p2z)
+         
+          #actors.append(p2_pro.get_actor(0.2, 0.0, 1.0, 0.0))
+          #actors.append(p2.get_actor(0.1, 0.0, 1.0, 0.0))
+         
+          #print "p1 to p2: ", p1.get_distance_from(p2)
+          #print "p2 is in the plane: ", peqn.is_point_in(p2)
+         
+          # genera terzo punto
+          # http://stackoverflow.com/questions/18663755/how-to-convert-a-3d-point-on-a-plane-to-uv-coordinates
+          n1 = a
+          n2 = b
+          n3 = c
+          norm = math.sqrt(n1*n1 + n2*n2 + n3*n3)
+          n1 = n1 / norm
+          n2 = n2 / norm
+          n3 = n3 / norm
+          v1 = n2*u3 - n3*u2
+          v2 = n3*u1 - n1*u3
+          v3 = n1*u2 - n2*u1
+         
+          p3x = p1.get_x() + CUBE_DIM * v1
+          p3y = p1.get_y() + CUBE_DIM * v2
+          p3z = p1.get_z() + CUBE_DIM * v3
+                                         
+          p3 = point.point(p3x, p3y, p3z)
+         
+          #actors.append(p3.get_actor(0.1, 0.0, 0.0, 1.0))
+         
+          #print "p1 to p3: ", p3.get_distance_from(p1)
+          #print "p3 is in the plane: ", peqn.is_point_in(p3)
+         
+          # determina il quanto punto
+          p4x = p3.get_x() + CUBE_DIM * u1
+          p4y = p3.get_y() + CUBE_DIM * u2
+          p4z = p3.get_z() + CUBE_DIM * u3
+         
+          p4 = point.point(p4x, p4y, p4z)
+         
+          #actors.append(p4.get_actor(0.1, 0.0, 0.0, 1.0))
+         
+          #print "p4 to p3: ", p3.get_distance_from(p4)
+          #print "p4 is in the plane: ", peqn.is_point_in(p4)
+         
+         
+          # linea perpendicolare al piane che passa per p1
+          a, b, c, d = peqn.get_plane_data()
+         
+          norm = math.sqrt(a*a + b*b + c*c) 
+         
+          p5x = p1.get_x() + (a * (CUBE_DIM/norm))
+          p5y = p1.get_y() + (b * (CUBE_DIM/norm))
+          p5z = p1.get_z() + (c * (CUBE_DIM/norm))
+         
+          if (nanoparticles[nearest_nanop[0]].is_point_inside([p5x, p5y, p5z])):
+            p5x = p1.get_x() - (a * (CUBE_DIM/norm))
+            p5y = p1.get_y() - (b * (CUBE_DIM/norm))
+            p5z = p1.get_z() - (c * (CUBE_DIM/norm))
+         
+          p5 = point.point(p5x, p5y, p5z)
+         
+          #actors.append(p5.get_actor(0.1, 0.0, 0.0, 1.0))
+         
+          #print "p1 to p5: ", p1.get_distance_from(p5)
+         
+          # linea perpendicolare al piane che passa per p2
+          a, b, c, d = peqn.get_plane_data()
+         
+          norm = math.sqrt(a*a + b*b + c*c) 
+         
+          p6x = p2.get_x() + (a * (CUBE_DIM/norm))
+          p6y = p2.get_y() + (b * (CUBE_DIM/norm))
+          p6z = p2.get_z() + (c * (CUBE_DIM/norm))
+         
+          if (nanoparticles[nearest_nanop[0]].is_point_inside([p6x, p6y, p6z])):
+            p6x = p2.get_x() - (a * (CUBE_DIM/norm))
+            p6y = p2.get_y() - (b * (CUBE_DIM/norm))
+            p6z = p2.get_z() - (c * (CUBE_DIM/norm))
+         
+          p6 = point.point(p6x, p6y, p6z)
+         
+          #actors.append(p6.get_actor(0.1, 0.0, 0.0, 1.0))
+         
+          #print "p2 to p6: ", p2.get_distance_from(p6)
+         
+          # linea perpendicolare al piane che passa per p3
+          a, b, c, d = peqn.get_plane_data()
+         
+          norm = math.sqrt(a*a + b*b + c*c) 
+         
+          p7x = p3.get_x() + (a * (CUBE_DIM/norm))
+          p7y = p3.get_y() + (b * (CUBE_DIM/norm))
+          p7z = p3.get_z() + (c * (CUBE_DIM/norm))
+         
+          if (nanoparticles[nearest_nanop[0]].is_point_inside([p7x, p7y, p7z])):
+            p7x = p3.get_x() - (a * (CUBE_DIM/norm))
+            p7y = p3.get_y() - (b * (CUBE_DIM/norm))
+            p7z = p3.get_z() - (c * (CUBE_DIM/norm))
+         
+          p7 = point.point(p7x, p7y, p7z)
+         
+          #actors.append(p7.get_actor(0.1, 0.0, 0.0, 1.0))
+         
+          #print "p3 to p7: ", p3.get_distance_from(p7)
+         
+          # linea perpendicolare al piane che passa per p4
+          a, b, c, d = peqn.get_plane_data()
+         
+          norm = math.sqrt(a*a + b*b + c*c) 
+         
+          p8x = p4.get_x() + (a * (CUBE_DIM/norm))
+          p8y = p4.get_y() + (b * (CUBE_DIM/norm))
+          p8z = p4.get_z() + (c * (CUBE_DIM/norm))
+         
+          if (nanoparticles[nearest_nanop[0]].is_point_inside([p8x, p8y, p8z])):
+            p8x = p4.get_x() - (a * (CUBE_DIM/norm))
+            p8y = p4.get_y() - (b * (CUBE_DIM/norm))
+            p8z = p4.get_z() - (c * (CUBE_DIM/norm))
+         
+          p8 = point.point(p8x, p8y, p8z)
+         
+          #actors.append(p8.get_actor(0.1, 0.0, 0.0, 1.0))
+         
+          #print "p4 to p8: ", p4.get_distance_from(p8)
+         
+          cub = cube_fill.cube(0.0, 0.0, 0.0, CUBE_DIM)
+          if (cub.set_points ([p1.get_x(), p1.get_y(), p1.get_z()],
+               [p2.get_x(), p2.get_y(), p2.get_z()],
+               [p4.get_x(), p4.get_y(), p4.get_z()],
+               [p3.get_x(), p3.get_y(), p3.get_z()],
+               [p5.get_x(), p5.get_y(), p5.get_z()],
+               [p6.get_x(), p6.get_y(), p6.get_z()],
+               [p8.get_x(), p8.get_y(), p8.get_z()],
+               [p7.get_x(), p7.get_y(), p7.get_z()])):
 
-        # genera terzo punto
-        # http://stackoverflow.com/questions/18663755/how-to-convert-a-3d-point-on-a-plane-to-uv-coordinates
-        n1 = a
-        n2 = b
-        n3 = c
-        norm = math.sqrt(n1*n1 + n2*n2 + n3*n3)
-        n1 = n1 / norm
-        n2 = n2 / norm
-        n3 = n3 / norm
-        v1 = n2*u3 - n3*u2
-        v2 = n3*u1 - n1*u3
-        v3 = n1*u2 - n2*u1
-
-        p3x = p1.get_x() + CUBE_DIM * v1
-        p3y = p1.get_y() + CUBE_DIM * v2
-        p3z = p1.get_z() + CUBE_DIM * v3
-                                       
-        p3 = point.point(p3x, p3y, p3z)
-
-        actors.append(p3.get_actor(0.1, 0.0, 0.0, 1.0))
-
-        print "p1 to p3: ", p3.get_distance_from(p1)
-        print "p3 is in the plane: ", peqn.is_point_in(p3)
-
-        # determina il quanto punto
-        p4x = p3.get_x() + CUBE_DIM * u1
-        p4y = p3.get_y() + CUBE_DIM * u2
-        p4z = p3.get_z() + CUBE_DIM * u3
-
-        p4 = point.point(p4x, p4y, p4z)
-
-        actors.append(p4.get_actor(0.1, 0.0, 0.0, 1.0))
-
-        print "p4 to p3: ", p3.get_distance_from(p4)
-        print "p4 is in the plane: ", peqn.is_point_in(p4)
-
-
-        # linea perpendicolare al piane che passa per p1
-        a, b, c, d = peqn.get_plane_data()
-
-        norm = math.sqrt(a*a + b*b + c*c) 
-
-        p5x = p1.get_x() + (a * (CUBE_DIM/norm))
-        p5y = p1.get_y() + (b * (CUBE_DIM/norm))
-        p5z = p1.get_z() + (c * (CUBE_DIM/norm))
-
-        if (nanoparticles[nearest_nanop[0]].is_point_inside([p5x, p5y, p5z])):
-          p5x = p1.get_x() - (a * (CUBE_DIM/norm))
-          p5y = p1.get_y() - (b * (CUBE_DIM/norm))
-          p5z = p1.get_z() - (c * (CUBE_DIM/norm))
-
-        p5 = point.point(p5x, p5y, p5z)
-
-        actors.append(p5.get_actor(0.1, 0.0, 0.0, 1.0))
-
-        print "p1 to p5: ", p1.get_distance_from(p5)
-
-        # linea perpendicolare al piane che passa per p2
-        a, b, c, d = peqn.get_plane_data()
-
-        norm = math.sqrt(a*a + b*b + c*c) 
-
-        p6x = p2.get_x() + (a * (CUBE_DIM/norm))
-        p6y = p2.get_y() + (b * (CUBE_DIM/norm))
-        p6z = p2.get_z() + (c * (CUBE_DIM/norm))
-
-        if (nanoparticles[nearest_nanop[0]].is_point_inside([p6x, p6y, p6z])):
-          p6x = p2.get_x() - (a * (CUBE_DIM/norm))
-          p6y = p2.get_y() - (b * (CUBE_DIM/norm))
-          p6z = p2.get_z() - (c * (CUBE_DIM/norm))
-
-        p6 = point.point(p6x, p6y, p6z)
-
-        actors.append(p6.get_actor(0.1, 0.0, 0.0, 1.0))
-
-        print "p2 to p6: ", p2.get_distance_from(p6)
-
-        # linea perpendicolare al piane che passa per p3
-        a, b, c, d = peqn.get_plane_data()
-
-        norm = math.sqrt(a*a + b*b + c*c) 
-
-        p7x = p3.get_x() + (a * (CUBE_DIM/norm))
-        p7y = p3.get_y() + (b * (CUBE_DIM/norm))
-        p7z = p3.get_z() + (c * (CUBE_DIM/norm))
-
-        if (nanoparticles[nearest_nanop[0]].is_point_inside([p7x, p7y, p7z])):
-          p7x = p3.get_x() - (a * (CUBE_DIM/norm))
-          p7y = p3.get_y() - (b * (CUBE_DIM/norm))
-          p7z = p3.get_z() - (c * (CUBE_DIM/norm))
-
-        p7 = point.point(p7x, p7y, p7z)
-
-        actors.append(p7.get_actor(0.1, 0.0, 0.0, 1.0))
-
-        print "p3 to p7: ", p3.get_distance_from(p7)
-
-        # linea perpendicolare al piane che passa per p4
-        a, b, c, d = peqn.get_plane_data()
-
-        norm = math.sqrt(a*a + b*b + c*c) 
-
-        p8x = p4.get_x() + (a * (CUBE_DIM/norm))
-        p8y = p4.get_y() + (b * (CUBE_DIM/norm))
-        p8z = p4.get_z() + (c * (CUBE_DIM/norm))
-
-        if (nanoparticles[nearest_nanop[0]].is_point_inside([p8x, p8y, p8z])):
-          p8x = p4.get_x() - (a * (CUBE_DIM/norm))
-          p8y = p4.get_y() - (b * (CUBE_DIM/norm))
-          p8z = p4.get_z() - (c * (CUBE_DIM/norm))
-
-        p8 = point.point(p8x, p8y, p8z)
-
-        actors.append(p8.get_actor(0.1, 0.0, 0.0, 1.0))
-
-        print "p4 to p8: ", p4.get_distance_from(p8)
-
-        cub = cube_fill.cube(0.0, 0.0, 0.0, CUBE_DIM)
-        if (cub.set_points ([p1.get_x(), p1.get_y(), p1.get_z()],
-             [p2.get_x(), p2.get_y(), p2.get_z()],
-             [p4.get_x(), p4.get_y(), p4.get_z()],
-             [p3.get_x(), p3.get_y(), p3.get_z()],
-             [p5.get_x(), p5.get_y(), p5.get_z()],
-             [p6.get_x(), p6.get_y(), p6.get_z()],
-             [p8.get_x(), p8.get_y(), p8.get_z()],
-             [p7.get_x(), p7.get_y(), p7.get_z()])):
-
-          actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
-
-          break
-
-visualize_nanop.visualize_actors (actors)
-
-"""
-
-
-        #for idx in interior_indices:
-        #  actors.append(nanoparticles[idx].get_vtk_actor(color=True,opacity=1.0))
-    
-        cub = cube_fill.cube(x, y, z, CUBE_DIM)
-        tetha = random.uniform(0.0, 2.0*math.pi)
-        px = random.uniform(xmin + 1.5*meand, xmax - 1.5*meand)
-        py = random.uniform(ymin + 1.5*meand, ymax - 1.5*meand)
-        pz = random.uniform(zmin + 1.5*meand, zmax - 1.5*meand)
-    
-        p = point.point(px, py, pz)
-    
-        cub.rotate(p, tetha)
-    
-        # check if any point of the cubes is inside not perfect but good enough
-    
-        if (not inside_any_cubes (cub, cubes, cubcenterx, 
-          cubcentery, cubcenterz, cubradius)):
-          cubes.append(cub)
-          centers.append([x, y, z])
-          # append to centers array e radius using numpy.append(array, values)
-          cubcenterx = numpy.append(cubcenterx, x)
-          cubcentery = numpy.append(cubcentery, y)
-          cubcenterz = numpy.append(cubcenterz, z)
-          cubradius = numpy.append(cubradius, cub.get_radius()) 
-    
-          j = j + 1
-    
-          #actors.append(cub.get_actor(0.5, 0.6, 0.1))
-
-
+            x, y, z = cub.get_center()
+   
+            if (not inside_any_cubes (cub, cubes, cubcenterx, 
+              cubcentery, cubcenterz, cubradius)):
+              cubes.append(cub)
+              centers.append([x, y, z])
+              # append to centers array e radius using numpy.append(array, values)
+              cubcenterx = numpy.append(cubcenterx, x)
+              cubcentery = numpy.append(cubcentery, y)
+              cubcenterz = numpy.append(cubcenterz, z)
+              cubradius = numpy.append(cubradius, cub.get_radius()) 
+            
+              actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
+            
+              j = j + 1
 
 i = len(cubes)
 while (i < MAX_NUM_OF_CUBE):
@@ -475,11 +454,10 @@ while (i < MAX_NUM_OF_CUBE):
             cubcentery = numpy.append(cubcentery, y)
             cubcenterz = numpy.append(cubcenterz, z)
             cubradius = numpy.append(cubradius, cub.get_radius()) 
-            #actors.append(newcub.get_actor(0.5, 0.6, 0.1))
+            actors.append(newcub.get_vtk_actor(0.5, 0.6, 0.1))
             i = i + 1
 
-#visualize_nanop.visualize_actors (actors)
+visualize_nanop.visualize_actors (actors)
 
 for cub in cubes:
   print cub.alldata_tostr()
-"""
