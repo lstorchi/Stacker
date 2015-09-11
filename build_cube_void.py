@@ -110,8 +110,8 @@ def get_occopied_face (iface):
 # non mi interessano le intersezioni
 nanoparticle.POINTINSIDEDIM = 0
 
-NUM_OF_STARTING_CUBE = 10
-MAX_NUM_OF_CUBE = 80*NUM_OF_STARTING_CUBE
+NUM_OF_STARTING_CUBE = 50
+MAX_NUM_OF_CUBE = 200*NUM_OF_STARTING_CUBE
 
 CUBE_DIM = 1.0
 
@@ -139,7 +139,7 @@ print >> sys.stderr, "Box limits: ", xmin, xmax, ymin, ymax, zmin, zmax
 # voglio fermarmi a circa 2 D dalla vetta visto che in cima avro' sempre una
 # densita' minore(ricorda la prima sfera che supera zmax ferma la procedura.
 
-actors = []
+#actors = []
 
 cubcenterx = numpy.empty(0)
 cubcentery = numpy.empty(0)
@@ -203,7 +203,7 @@ while (j < (NUM_OF_STARTING_CUBE/2)):
 
         j = j + 1
 
-        actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
+        #actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
 
 j = 0
 while (j < (NUM_OF_STARTING_CUBE/2)):
@@ -237,7 +237,7 @@ while (j < (NUM_OF_STARTING_CUBE/2)):
     
         p1, peqn = nanoparticles[nearest_nanop[0]].project_point_101(point.point(x, y, z))
 
-        actors.append(nanoparticles[nearest_nanop[0]].get_vtk_actor(color=True,opacity=1.0))
+        #actors.append(nanoparticles[nearest_nanop[0]].get_vtk_actor(color=True,opacity=1.0))
         #actors.append(p1.get_actor(0.1, 1.0, 0.0, 0.0))
 
         # genera il secondo punto uso i due vettori con cui posso definire il piano
@@ -411,7 +411,7 @@ while (j < (NUM_OF_STARTING_CUBE/2)):
               cubcenterz = numpy.append(cubcenterz, z)
               cubradius = numpy.append(cubradius, cub.get_radius()) 
             
-              actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
+              #actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
             
               j = j + 1
 
@@ -454,10 +454,10 @@ while (i < MAX_NUM_OF_CUBE):
             cubcentery = numpy.append(cubcentery, y)
             cubcenterz = numpy.append(cubcenterz, z)
             cubradius = numpy.append(cubradius, cub.get_radius()) 
-            actors.append(newcub.get_vtk_actor(0.5, 0.6, 0.1))
+            #actors.append(newcub.get_vtk_actor(0.5, 0.6, 0.1))
             i = i + 1
 
-visualize_nanop.visualize_actors (actors)
+#visualize_nanop.visualize_actors (actors)
 
 for cub in cubes:
   print cub.alldata_tostr()
