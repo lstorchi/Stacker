@@ -58,3 +58,5 @@ for sp in file:
 
 file.close()
 
+for cub in cubes:
+  print cub.get_perovskite_xyz()

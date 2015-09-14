@@ -498,6 +498,27 @@ class cube:
 
     return False
 
+  def get_perovskite_xyz (self):
+
+    strout = "Pb   " + str(self._p1[0]) + " " + \
+            str(self._p1[1]) + " " + str(self._p1[2]) + "\n" + \
+        "Pb   " + str(self._p2[0]) + " " + \
+            str(self._p2[1]) + " " + str(self._p2[2]) + "\n" + \
+        "Pb   " + str(self._p3[0]) + " " + \
+            str(self._p3[1]) + " " + str(self._p3[2]) + "\n" + \
+        "Pb   " + str(self._p4[0]) + " " + \
+            str(self._p4[1]) + " " + str(self._p4[2]) + "\n" + \
+        "Pb   " + str(self._p5[0]) + " " + \
+            str(self._p5[1]) + " " + str(self._p5[2]) + "\n" + \
+        "Pb   " + str(self._p6[0]) + " " + \
+            str(self._p6[1]) + " " + str(self._p6[2]) + "\n" + \
+        "Pb   " + str(self._p7[0]) + " " + \
+            str(self._p7[1]) + " " + str(self._p7[2]) + "\n" + \
+        "Pb   " + str(self._p8[0]) + " " + \
+            str(self._p8[1]) + " " + str(self._p8[2]) + "\n" 
+
+    return strout
+
 ###################################################################3
 # PRIVATE 
 ###################################################################3
