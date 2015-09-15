@@ -136,11 +136,9 @@ class cube:
       self._p7 = p7
       self._p8 = p8
       
-      dimmez = self._dim/2.0
-      
-      self._cx = p1[0] + dimmez
-      self._cy = p2[0] + dimmez
-      self._cz = p3[0] + dimmez
+      self._cx = self._get_midpoint(self._p1, self._p7)[0]
+      self._cy = self._get_midpoint(self._p1, self._p7)[1]
+      self._cz = self._get_midpoint(self._p1, self._p7)[2]
       
       self._compute_plane()
       
