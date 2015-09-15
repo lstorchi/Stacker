@@ -58,5 +58,7 @@ for sp in file:
 
 file.close()
 
+print " ", len(cub)
+print " " 
 for cub in cubes:
   print cub.get_perovskite_xyz()
