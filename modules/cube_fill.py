@@ -504,18 +504,6 @@ class cube:
         "Pb   " + str(10.0*self._p1[0]) + \
             " " + str(10.0*self._p1[1]) + \
             " " + str(10.0*self._p1[2]) + "\n" + \
-        " I   " + str(10.0*self._get_midpoint(self._p1, self._p4)[0]) + \
-            " " + str(10.0*self._get_midpoint(self._p1, self._p4)[1]) + \
-            " " + str(10.0*self._get_midpoint(self._p1, self._p4)[2]) + "\n" + \
-        "Pb   " + str(10.0*self._p4[0]) + \
-            " " + str(10.0*self._p4[1]) + \
-            " " + str(10.0*self._p4[2]) + "\n" + \
-        "Pb   " + str(10.0*self._p2[0]) + \
-            " " + str(10.0*self._p2[1]) + \
-            " " + str(10.0*self._p2[2]) + "\n" + \
-        "Pb   " + str(10.0*self._p3[0]) + \
-            " " + str(10.0*self._p3[1]) + \
-            " " + str(10.0*self._p3[2]) + "\n" + \
         "Pb   " + str(10.0*self._p5[0]) + \
             " " + str(10.0*self._p5[1]) + \
             " " + str(10.0*self._p5[2]) + "\n" + \
@@ -527,7 +515,55 @@ class cube:
             " " + str(10.0*self._p7[2]) + "\n" + \
         "Pb   " + str(10.0*self._p8[0]) + \
             " " + str(10.0*self._p8[1]) + \
-            " " + str(10.0*self._p8[2]) + "\n" 
+            " " + str(10.0*self._p8[2]) + "\n" + \
+        "Pb   " + str(10.0*self._p4[0]) + \
+            " " + str(10.0*self._p4[1]) + \
+            " " + str(10.0*self._p4[2]) + "\n" + \
+        "Pb   " + str(10.0*self._p3[0]) + \
+            " " + str(10.0*self._p3[1]) + \
+            " " + str(10.0*self._p3[2]) + "\n" + \
+        "Pb   " + str(10.0*self._p2[0]) + \
+            " " + str(10.0*self._p2[1]) + \
+            " " + str(10.0*self._p2[2]) + "\n" + \
+        " I   " + str(10.0*self._get_midpoint(self._p1, self._p4)[0]) + \
+            " " + str(10.0*self._get_midpoint(self._p1, self._p4)[1]) + \
+            " " + str(10.0*self._get_midpoint(self._p1, self._p4)[2]) + "\n" + \
+        " I   " + str(10.0*self._get_midpoint(self._p3, self._p4)[0]) + \
+            " " + str(10.0*self._get_midpoint(self._p3, self._p4)[1]) + \
+            " " + str(10.0*self._get_midpoint(self._p3, self._p4)[2]) + "\n" + \
+        " I   " + str(10.0*self._get_midpoint(self._p3, self._p2)[0]) + \
+            " " + str(10.0*self._get_midpoint(self._p3, self._p2)[1]) + \
+            " " + str(10.0*self._get_midpoint(self._p3, self._p2)[2]) + "\n" + \
+        " I   " + str(10.0*self._get_midpoint(self._p1, self._p2)[0]) + \
+            " " + str(10.0*self._get_midpoint(self._p1, self._p2)[1]) + \
+            " " + str(10.0*self._get_midpoint(self._p1, self._p2)[2]) + "\n" + \
+        " I   " + str(10.0*self._get_midpoint(self._p1, self._p5)[0]) + \
+            " " + str(10.0*self._get_midpoint(self._p1, self._p5)[1]) + \
+            " " + str(10.0*self._get_midpoint(self._p1, self._p5)[2]) + "\n" + \
+        " I   " + str(10.0*self._get_midpoint(self._p4, self._p8)[0]) + \
+            " " + str(10.0*self._get_midpoint(self._p4, self._p8)[1]) + \
+            " " + str(10.0*self._get_midpoint(self._p4, self._p8)[2]) + "\n" + \
+        " I   " + str(10.0*self._get_midpoint(self._p3, self._p7)[0]) + \
+            " " + str(10.0*self._get_midpoint(self._p3, self._p7)[1]) + \
+            " " + str(10.0*self._get_midpoint(self._p3, self._p7)[2]) + "\n" + \
+        " I   " + str(10.0*self._get_midpoint(self._p2, self._p6)[0]) + \
+            " " + str(10.0*self._get_midpoint(self._p2, self._p6)[1]) + \
+            " " + str(10.0*self._get_midpoint(self._p2, self._p6)[2]) + "\n" + \
+        " I   " + str(10.0*self._get_midpoint(self._p8, self._p5)[0]) + \
+            " " + str(10.0*self._get_midpoint(self._p8, self._p5)[1]) + \
+            " " + str(10.0*self._get_midpoint(self._p8, self._p5)[2]) + "\n" + \
+        " I   " + str(10.0*self._get_midpoint(self._p7, self._p8)[0]) + \
+            " " + str(10.0*self._get_midpoint(self._p7, self._p8)[1]) + \
+            " " + str(10.0*self._get_midpoint(self._p7, self._p8)[2]) + "\n" + \
+        " I   " + str(10.0*self._get_midpoint(self._p6, self._p7)[0]) + \
+            " " + str(10.0*self._get_midpoint(self._p6, self._p7)[1]) + \
+            " " + str(10.0*self._get_midpoint(self._p6, self._p7)[2]) + "\n" + \
+        " I   " + str(10.0*self._get_midpoint(self._p5, self._p6)[0]) + \
+            " " + str(10.0*self._get_midpoint(self._p5, self._p6)[1]) + \
+            " " + str(10.0*self._get_midpoint(self._p5, self._p6)[2]) + "\n" + \
+        "Cs   " + str(10.0*self._cx) + \
+            " " + str(10.0*self._cy) + \
+            " " + str(10.0*self._cz)
 
     return strout
 
