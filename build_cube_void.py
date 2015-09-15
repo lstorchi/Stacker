@@ -113,7 +113,7 @@ nanoparticle.POINTINSIDEDIM = 0
 NUM_OF_STARTING_CUBE = 50
 MAX_NUM_OF_CUBE = 200*NUM_OF_STARTING_CUBE
 
-CUBE_DIM = 1.0
+CUBE_DIM = 0.633
 
 filename = "nanoparticle_final_config.txt"
 
