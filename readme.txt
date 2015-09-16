@@ -193,3 +193,18 @@ pore_size.py          : Calcola la pore size. Usando il metodo semplice e quindi
                         data la griglia di punti semplicemente considera la sfera
                         piu' grande centrata nel punto. In realta' il modo in
                         cui sono valutate vpor e psd non credo sia ben definito.
+Ricordati di considerare anche l'orientazione dei nanocristalli nel
+randomwalk. Di fatto da come sono distribuiti gli stati, se due 
+nanocristalli sono impilati l'uno sopra la'ltro forse consucono poco.
+
+quindi si potrebbe tentare anche di determinare una qualche 
+possibilita' di transizione tra nanocristalli impaccati deiversamente 
+e quindi anche con porosita' e PSD. Impilati uno sopra l'altro porosita'
+presumibilmente maggiore e psd di un qualche tipo.
+
+=====================================================================
+
+PRIMO LAVORO
+
+studio proprieta' delle sfere e come cambia quando passo ai nanocristalli
+
