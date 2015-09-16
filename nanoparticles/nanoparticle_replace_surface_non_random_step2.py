@@ -3,7 +3,7 @@ import sys
 import random
 import math
 
-sys.path.append("./modules")
+sys.path.append("../modules")
 
 import nanoparticle
 import sphere
@@ -123,25 +123,20 @@ for selectedid in range(len(nanoparticles)):
 
   nanoparticle.POINTINSURFACESTEP = float('inf')
 
-  nearnanop, neardst = nanoparticle.get_near_nanoparticle (new_nanoparticles_list, \
+  nearnanop, neardst = nanoparticle.get_near_nanoparticle (nanoparticles, \
       pcx, pcy, pcz, (2.0 * nanop.get_max_sphere()))
 
   print "Selected " , len(neardst), " nanoparticles "
 
-  max_numt = 10000
   maxdiff = 1.0
 
   # anche 2 vale la pena provare fino a 1000 ho  visto casi in 
   # cui si arriva ad una diff di 2 e poco piu'
 
-  if len(neardst) == 0:
-    max_numt = 0
-  elif len(neardst) == 1:
-    max_numt = 10
-    maxdiff = 5.0
-  elif len(neardst) == 2:
-    max_numt = 1000
-    maxdiff = 2.5
+  # genera la spfera su cui poi generare i p2
+  ncx, ncy, ncz = nanop.get_center()
+  p2sphere = sphere.sphere(point.point(ncx, ncy, ncz), nanop.get_max_sphere())
+  p2list = p2sphere.generate_surface_points(180)
 
   min_nanop = nanop
   to_rotate_nanop = nanop
@@ -150,28 +145,26 @@ for selectedid in range(len(nanoparticles)):
   p2 = point.point(float(pcx), float(pcy), float(pcz))
   min_superfract_ratio = superfract_ratio
   i = 0
-  while superfract_ratio > maxdiff:
-    p2x = random.uniform(botx, topx)
-    p2y = random.uniform(boty, topy)
-    p2z = random.uniform(botz, topz)
-    p2 = point.point(float(p2x), float(p2y), float(p2z))
-    tetha = random.uniform(0.0, 2.0*math.pi) 
+  for p2 in p2list:
+    tetha = 1.0
+    while tetha < 2.0*math.pi:
+      to_rotate_nanop = rotate_nanop (to_rotate_nanop, tetha, p2)
+      superfract_ratio = compute_superfract_ratio (to_rotate_nanop, nearnanop)
+      
+      if (superfract_ratio < min_superfract_ratio):
+        min_nanop = to_rotate_nanop
+        min_superfract_ratio = superfract_ratio
+      
+      i = i + 1
+      # ogni volta riparto dalla particella dritta
+      to_rotate_nanop = nanop
+      
+      if (superfract_ratio <= maxdiff):
+        break;
 
-    to_rotate_nanop = rotate_nanop (to_rotate_nanop, tetha, p2)
-    superfract_ratio = compute_superfract_ratio (to_rotate_nanop, nearnanop)
+      tetha = tetha + 1.0
 
-    if (superfract_ratio < min_superfract_ratio):
-      min_nanop = to_rotate_nanop
-      min_superfract_ratio = superfract_ratio
-
-    i = i + 1
-    # ogni volta riparto dalla particella dritta
-    to_rotate_nanop = nanop
-
-    if (i > max_numt):
-      break;
-
-  if i > max_numt:
+  if superfract_ratio > maxdiff:
     superfract_ratio = compute_superfract_ratio (min_nanop, nearnanop)
     print "Min superfract_ratio difference :", superfract_ratio
     new_nanoparticles_list.append(min_nanop)

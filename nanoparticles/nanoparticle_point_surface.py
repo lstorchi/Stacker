@@ -5,7 +5,7 @@ import numpy
 import random
 import math
 
-sys.path.append("./modules")
+sys.path.append("../modules")
 
 import nanoparticle
 import sphere

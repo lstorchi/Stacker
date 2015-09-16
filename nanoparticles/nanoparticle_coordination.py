@@ -5,7 +5,7 @@ import numpy
 import random
 import math
 
-sys.path.append("./modules")
+sys.path.append("../modules")
 
 import nanoparticle
 import sphere
@@ -39,15 +39,8 @@ def get_near_nanoparticle (nanopscx, nanopscy, nanopscz, px, py, pz, distance):
 
 ###############################################################################
 
-use_box = False
-
-nanoparticle.POINTINSURFACESTEP = 0.5
-
-if use_box:
-  nanoparticle.POINTINSIDEDIM = 0
-  numofp = 30
-else:
-  nanoparticle.POINTINSIDEDIM = 30
+nanoparticle.POINTINSIDEDIM = 0
+nanoparticle.POINTINSURFACESTEP = float('inf')
 
 filename = "nanoparticle_final_config.txt"
 
@@ -74,14 +67,17 @@ for selectedid in range(len(nanoparticles_init)):
   nanop = nanoparticles_init[selectedid]
   pcx, pcy, pcz = nanop.get_center()
 
+  A, B, H = nanop.get_dimensions()
+  dm = max(B, A, H)/2.0
+
   # seleziona solo particelle interne
   distx = min(math.fabs(pcx-botx), math.fabs(pcx-topx))
   disty = min(math.fabs(pcy-boty), math.fabs(pcy-topy))
   distz = min(math.fabs(pcz-botz), math.fabs(pcz-topz))
 
-  #print min(distx, disty, distz), 2.0 * common.R
+  #print min(distx, disty, distz), 2.0 * dm
 
-  if (min(distx, disty, distz) > (2.0 * common.R)):
+  if (min(distx, disty, distz) > (2.0 * dm)):
     nanoparticles.append(nanop)
 
 print "Using ", len(nanoparticles) , " nanoparticles "
@@ -95,10 +91,23 @@ count = 0.0
 listofsovrapperc = []
 
 for selectedid in range(len(nanoparticles)):
-  nanop = nanoparticles[selectedid]
-  pcx, pcy, pcz = nanop.get_center()
-  A, B, H = nanop.get_dimensions()
+  nanop_selected = nanoparticles[selectedid]
+
+  pcx, pcy, pcz = nanop_selected.get_center()
+  A, B, H = nanop_selected.get_dimensions()
   dm = max(B, A, H)/2.0
+
+  # devo generare per questa nanoparticella punti in superficie e dentro
+  nanoparticle.POINTINSIDEDIM = 30
+  nanoparticle.POINTINSURFACESTEP = 0.25
+
+  p1, p2, tetha = nanop_selected.get_rotation_info()
+
+  nanop = nanoparticle.nanotio2(pcx, pcy, pcz, A, B, H)
+  nanop.rotate_nanoparticle(p1, p2, tetha)
+
+  nanoparticle.POINTINSIDEDIM = 0
+  nanoparticle.POINTINSURFACESTEP = float('inf')
 
   maxbox_x = pcx + dm
   minbox_x = pcx - dm
@@ -123,6 +132,8 @@ for selectedid in range(len(nanoparticles)):
   surface_type = {}
 
   # calcolo superficie di interesezione
+  sf001add = False
+  sf101add = False
   points_surface = nanop.get_surface_points()
   for p in points_surface:
     for a in range(len(nearnanop)):
@@ -136,15 +147,48 @@ for selectedid in range(len(nanoparticles)):
 
           label = p.get_label()
 
+          if label == "001":
+            sf001add = True
+          elif label == "101":
+            sf101add = True
+
           if label in surface_type:
             surface_type[label] += 1
           else:
             surface_type[label] = 1
  
-  for l, v in surface_type.iteritems():
-    print "Surface: ", l, " fract: ", float(v)/float(len(points_surface))
+  SurfaceTOT, SurfaceP1, SurfaceP2, SurfaceP3, \
+      SurfaceP4, SurfaceP5, SurfaceP6, SurfaceP7, \
+      SurfaceP8, SurfaceP9, SurfaceP10 = nanop.get_surface()
 
-  print "Surface inter fract: ", float(surface_insidepoint)/float(len(points_surface))
+  for l, v in surface_type.iteritems():
+    SFrt = float(v)/float(len(points_surface))
+    print "Surface: ", l, " fract: ", SFrt
+    print "Surface: ", l, " surface: ", SFrt*SurfaceTOT
+
+  if not sf001add:
+    print "Surface: "+ " 001 " + " fract: ", 0.0
+    print "Surface: "+ " 001 " + " surface: ", 0.0
+
+  if not sf101add:
+    print "Surface: "+ " 101 " + " fract: ", 0.0
+    print "Surface: "+ " 101 " + " surface: ", 0.0
+
+  print "Surface inside point: ", surface_insidepoint, " of ", len(points_surface)
+  SFrt = float(surface_insidepoint)/float(len(points_surface))
+  print "Surface inter fract: ", SFrt
+  print "Surface inter surface: ", SFrt*SurfaceTOT
+  print "Nanoparticle surfaces TOT: ", SurfaceTOT
+  print "                      P1 : ", SurfaceP1
+  print "                      P2 : ", SurfaceP2
+  print "                      P3 : ", SurfaceP3
+  print "                      P4 : ", SurfaceP4
+  print "                      P5 : ", SurfaceP5
+  print "                      P6 : ", SurfaceP6
+  print "                      P7 : ", SurfaceP7
+  print "                      P8 : ", SurfaceP8
+  print "                      P9 : ", SurfaceP9
+  print "                      P10: ", SurfaceP10
 
   touchinanop = []
   pointpernanoparticle = {} # dictionary to collect all point inside 
@@ -157,64 +201,30 @@ for selectedid in range(len(nanoparticles)):
   totpoint = 0
 
   # se uso ogni volta punti nel paralleloepipedo 
-  if use_box:
-    totpoint = 0
-    dx = (maxbox_x - minbox_x) / (numofp + 1)
-    dy = (maxbox_y - minbox_y) / (numofp + 1)
-    dz = (maxbox_z - minbox_z) / (numofp + 1)
-    for i in range(numofp):
-      x = minbox_x + (i * dx)
-      for j in range(numofp):
-        y = minbox_y + (j * dy)
-        for k in range(numofp):
-          z = minbox_z + (k * dz)
-      
-          if nanop.is_point_inside([x, y, z]):
-            for a in range(len(nearnanop)):
-              if (a != selected_index):
-                other_particle = nearnanop[a]
-                if other_particle.is_point_inside([x, y, z]):
-                  insidepoint += 1
-                  touchinanop.append(a)
-    
-                  if a in pointpernanoparticle:
-                    pointpernanoparticle[a] += 1
-                  else:
-                    pointpernanoparticle[a] = 1
-           
-          totpoint += 1
-    
-    print selectedid+1 , " of ", len(nanoparticles)
-    print "Number of touching nanoparticles: ", len(set(touchinanop))
-    box_V = (maxbox_x - minbox_x) * (maxbox_y - minbox_y) *\
-        (maxbox_z - minbox_z)
-    V = box_V * (float(insidepoint)/float(totpoint)) 
-    print "Volume sovrapposto: ", V
-    print "Volume Totale box: ", box_V
-    print "Volume nanoparticle: ", nanop.get_volume()
-  else:
-    # uso punti direttamente dentro il nanocristallo
-    points_inside = nanop.inside_point_grid()
-    for p in points_inside:
-      for a in range(len(nearnanop)):
-        if (a != selected_index):
-          other_particle = nearnanop[a]
-          if other_particle.is_point_inside([p.get_x(), 
-            p.get_y(), p.get_z()]):
-    
-            insidepoint += 1
-            touchinanop.append(a)
-    
-            if a in pointpernanoparticle:
-              pointpernanoparticle[a] += 1
-            else:
-              pointpernanoparticle[a] = 1
-    
-    print selectedid+1 , " of ", len(nanoparticles)
-    print "Number of touching nanoparticles: ", len(set(touchinanop))
-    V = nanop.get_volume() * (float(insidepoint)/float(len(points_inside)))
-    print "Volume sovrapposto: ", V
-    print "Volume nanoparticle: ", nanop.get_volume()
+  # uso punti direttamente dentro il nanocristallo
+  points_inside = nanop.inside_point_grid()
+  for p in points_inside:
+    for a in range(len(nearnanop)):
+      if (a != selected_index):
+        other_particle = nearnanop[a]
+        if other_particle.is_point_inside([p.get_x(), 
+          p.get_y(), p.get_z()]):
+  
+          insidepoint += 1
+          touchinanop.append(a)
+  
+          if a in pointpernanoparticle:
+            pointpernanoparticle[a] += 1
+          else:
+            pointpernanoparticle[a] = 1
+  
+  print selectedid+1 , " of ", len(nanoparticles)
+  print "Insidepoint: ", insidepoint, " of ", len(points_inside)
+  print "Number of touching nanoparticles: ", len(set(touchinanop))
+  print "Volume fract: ", float(insidepoint)/float(len(points_inside))
+  V = nanop.get_volume() * (float(insidepoint)/float(len(points_inside)))
+  print "Volume sovrapposto: ", V
+  print "Volume nanoparticle: ", nanop.get_volume()
 
   if (len(set(touchinanop)) > 0):
     rap = V/nanop.get_volume()
@@ -225,18 +235,23 @@ for selectedid in range(len(nanoparticles)):
     totrapavg = totrapavg + avgrap
 
   for a, v in pointpernanoparticle.iteritems():
-    if use_box:
-      # se uso la box
-      sovrvol = box_V * (float(v)/float(totpoint))
-    else:
-      sovrvol = nanop.get_volume() * (float(insidepoint)/float(len(points_inside)))
+    sovrvol = nanop.get_volume() * (float(v)/float(len(points_inside)))
 
     print "With particle ", a, " ", sovrvol/nanop.get_volume()
     listofsovrapperc.append(sovrvol/nanop.get_volume())
 
+  # nel computo aggiungo anche i punti di superficie
+  totpointinside = (float(insidepoint)+float(surface_insidepoint))
+  totamountpoint = float(len(points_inside))+float(len(points_surface))
+  print "Volume fract with surface: ", totpointinside/totamountpoint
+  V = nanop.get_volume() * totpointinside/totamountpoint
+  print "Volume sovrapposto with surface: ", V
+
   print ""
 
   count = count + 1.0
+
+  del nanop
 
 print "Media rapporto: ", totrap/count
 print "Media rapporto a coppia: ", totrapavg/count

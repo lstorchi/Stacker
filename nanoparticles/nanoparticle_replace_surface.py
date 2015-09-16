@@ -3,7 +3,7 @@ import sys
 import random
 import math
 
-sys.path.append("./modules")
+sys.path.append("../modules")
 
 import nanoparticle
 import sphere
@@ -123,7 +123,7 @@ for selectedid in range(len(nanoparticles)):
 
   nanoparticle.POINTINSURFACESTEP = float('inf')
 
-  nearnanop, neardst = nanoparticle.get_near_nanoparticle (nanoparticles, \
+  nearnanop, neardst = nanoparticle.get_near_nanoparticle (new_nanoparticles_list, \
       pcx, pcy, pcz, (2.0 * nanop.get_max_sphere()))
 
   print "Selected " , len(neardst), " nanoparticles "
