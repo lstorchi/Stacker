@@ -3,7 +3,7 @@ import sys
 import vtk
 import time
 
-sys.path.append("./modules")
+sys.path.append("../modules")
 
 import util
 import point

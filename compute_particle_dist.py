@@ -3,7 +3,7 @@ import sys
 import time
 import numpy
 
-sys.path.append("./modules")
+sys.path.append("../modules")
 
 import sphere
 import util

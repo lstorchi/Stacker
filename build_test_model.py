@@ -2,7 +2,7 @@ import math
 import random
 
 import sys
-sys.path.append("./modules")
+sys.path.append("../modules")
 
 from util import *
 from point import * 

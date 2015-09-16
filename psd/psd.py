@@ -2,7 +2,7 @@ import re
 import sys
 import time
 
-sys.path.append("./modules")
+sys.path.append("../modules")
 
 import util
 import point

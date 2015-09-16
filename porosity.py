@@ -1,5 +1,5 @@
 import sys
-sys.path.append("./modules")
+sys.path.append("../modules")
 
 import point 
 import sphere

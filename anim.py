@@ -4,7 +4,7 @@ import random
 # http://www.vtk.org/pipermail/vtkusers/2011-March/115686.html
 
 import sys
-sys.path.append("./modules")
+sys.path.append("../modules")
 
 from sphere import *
 from point import *

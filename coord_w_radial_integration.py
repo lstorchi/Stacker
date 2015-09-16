@@ -1,7 +1,7 @@
 import sys
 import scipy.integrate as integrate
 
-sys.path.append("./modules")
+sys.path.append("../modules")
 
 from point import *
 from sphere import *

@@ -2,7 +2,7 @@ import vtk
 import sys
 
 import sys
-sys.path.append("./modules")
+sys.path.append("../modules")
 
 from cube import *
 from point import * 

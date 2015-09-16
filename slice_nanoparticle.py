@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import sys
 
-sys.path.append("./modules")
+sys.path.append("../modules")
 
 import nanoparticle
 import sphere

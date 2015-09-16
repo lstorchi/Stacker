@@ -2,7 +2,7 @@ import re
 import sys
 import time
 
-sys.path.append("./modules")
+sys.path.append("../modules")
 
 import nanoparticle
 import sphere
@@ -93,7 +93,7 @@ def function_for_distance_fast (px, py, pz, \
     #rf = q.get_distance_from(p)
 
     rf = n.get_distance(p)
-
+    
     if (rf < minr2):
       minr2 = rf
 
@@ -245,19 +245,14 @@ def solvopt_problem(px, py, pz, lx, ly, lz,
 
 #numpy.seterr(invalid='raise')
 
-MAX_POINT_TODO = 1773
-count_point_inside = 0
-
 # no mi interessano le intersezioni
 nanoparticle.POINTINSIDEDIM = 0
+nanoparticle.POINTINSURFACESTEP = float('inf')
 
 filename = "nanoparticle_final_config.txt"
-to_append = ""
 
 if (len(sys.argv)) > 1:
   filename = sys.argv[1]
-  if (len(sys.argv) == 3):
-    to_append = sys.argv[2]
 
 nanoparticles = []
 
@@ -336,7 +331,7 @@ for nanop in nanoparticles:
 
 
 # il numero di punti random che genero 
-num_of_points = 8000
+num_of_points = 1000000
 
 distacemax = distacemax + (0.2 * distacemax)
 
@@ -358,15 +353,12 @@ reference = deltaperc
 
 pore_radius_list = numpy.linspace(0.0, 0.0, num_of_points)
 
-out_filename = "pore_radius_list_nano.txt"
+poref = open("pore_radius_list_nano.txt", "w")
+errof = open("error_file_nano.txt", "w")
 
-if to_append != "":
-  out_filename += "_" + to_append 
+for i in range(num_of_points):
 
-poref = open(out_filename, "w")
-
-i = 0
-while (i < num_of_points):
+  there_are_new_points = False
 
   perc = 100.0 * float(i)/float(num_of_points)
   if (perc >= reference):
@@ -376,6 +368,8 @@ while (i < num_of_points):
   px = random.uniform(minbox_x + distacemax, maxbox_x - distacemax)
   py = random.uniform(minbox_y + distacemax, maxbox_y - distacemax)
   pz = random.uniform(minbox_z + distacemax, maxbox_z - distacemax)
+
+  #print px, py, pz
 
   t0 = time.time()
 
@@ -389,7 +383,12 @@ while (i < num_of_points):
 
   print "select nanoparticle: %f " % (time.time() - t0) + " seconds"
 
-  if (len(selected_nanoparticles) > 0):
+  #print len(selected_nanoparticles)
+
+  if (len(selected_nanoparticles) == 0):
+    pore_radius_list[i] = distacemax
+  else:
+
     if (not is_inside_a_nanoparticle (px, py, pz, selected_nanoparticles)):
 
       t0 = time.time()
@@ -401,48 +400,102 @@ while (i < num_of_points):
 
       if (f <= 0):
 
-        pore_r = math.sqrt(-f)
+        pore_radius_list[i] = math.sqrt(-f)
+        
+        data = str(px) + " " + \
+               str(py) + " " + \
+               str(pz) + " " + \
+               str(f_px) + " " + \
+               str(f_py) + " " + \
+               str(f_pz) + " " + \
+               str(math.sqrt(-f)) + "\n"
+        #print math.sqrt(-f)
+        poref.write(data)
+        poref.flush()
+        
+        #r = math.sqrt(-f)
+        #spheres = []  
+        #spheres.append(sphere.sphere(point.point(f_px, f_py, f_pz), r))
+        #visualize_collection (minbox_x, minbox_y, minbox_z,
+        #    maxbox_x, maxbox_y, maxbox_z, selected_nanoparticles,
+        #    spheres)
+        #exit()
 
-        if pore_r > radius_of_test_molecule:
+      if pore_radius_list[i] > radius_of_test_molecule:
+        there_are_new_points = True
 
-          pcenter = point.point(f_px, f_py, f_pz)
-          pore = sphere.sphere(pcenter, pore_r)
-          psurface_points = pore.generate_surface_points(20)
+    else:
+      pore_radius_list[i] = -1
 
-          tto = time.time()
 
-          touch_nanoparticle = False
-          for nanop in selected_nanoparticles:
-            if (nanop.sphere_touch_me_surface_points(pore_r, pcenter, \
-                psurface_points)):
-              touch_nanoparticle = True
-              break;
+  if there_are_new_points:
 
-          print "touch_nanoparticle %f " % (time.time() - tto) + " seconds"
+    # costruisco l'istogramma, credo si possa usare anche numpy.histogram
+    # direttamente 
+    max_cumm = 0.0
+    for i in range(num_of_points):
+      if pore_radius_list[i] > radius_of_test_molecule:
+       
+        for p in range(int(pore_radius_list[i] * RES_PSD) + 2):
+    
+          if (p >= hist_count):
+            print "Problem when computing histogram"
+            exit(-1)
+    
+          PSD_hist[p] += 1.0
+          if (PSD_hist[p] > max_cumm):
+            max_cumm = PSD_hist[p]
 
-          if not touch_nanoparticle:
-            pore_radius_list[i] = pore_r 
+    # per capire quando mi devo fermare a stampare
+    max_reached = 0
+    for i in range(len(PSD_hist)):
+      if (PSD_hist[i] == 0.0):
+        max_reached = i + 5
+        break
 
-            data = str(px) + " " + \
-                   str(py) + " " + \
-                   str(pz) + " " + \
-                   str(f_px) + " " + \
-                   str(f_py) + " " + \
-                   str(f_pz) + " " + \
-                   str(pore_radius_list[i]) + "\n"
-            poref.write(data)
-            poref.flush()
+    # come noto -dH(D)/dD  e' il PSD 
+    dHD = -1.0 * numpy.diff(PSD_hist)/2.0
+    dD = numpy.linspace(0.0, float(len(dHD)-1)/RES_PSD, len(dHD))
 
-            count_point_inside += 1
+    # normalizzo
+    dHD = dHD/max(dHD)
 
-            if (count_point_inside >= MAX_POINT_TODO) : 
-              print "Max point reached" 
-              poref.close()
-              exit(1)
-          
-            i += 1 
+    # calcolo l'errore
+    count = 0
+    err = avg_err = max_err = 0.0
+    for i in range(len(dHD)):
+      if dHD[i] > 0.0:
+        err = math.fabs(dHD[i] - dHD_old[i]) / dHD[i]
+        avg_err += err
+        if err > max_err:
+          max_err = err
+        count += 1
+    avg_err /= count
+    dHD_old = dHD
 
+    data = "%d %f %f\n" % (i, avg_err, max_err)
+    errof.write(data)
+
+    histof = open("psd_cumm_nano.txt", "w")
+    for i in range(min(max_reached, len(PSD_hist))):
+      data = "%f %f\n" % (float(i) / RES_PSD, PSD_hist[i] / max_cumm)
+      histof.write(data)
+    histof.close()
+
+    diff_histf = open("psd_diff_nano.txt", "w")
+    for i in range(min(max_reached, len(dHD))):
+      data = "%f %f\n" % (dD[i], dHD[i])
+      diff_histf.write(data)
+    diff_histf.close()
+
+errof.close()
 poref.close()
 
 print "Done" 
 
+# test di visualizzazione
+#spheres = []  
+#spheres.append(sphere.sphere(point.point(px, py, pz), r))
+#visualize_collection (minbox_x, minbox_y, minbox_z,
+#    maxbox_x, maxbox_y, maxbox_z, selected_nanoparticles,
+#    spheres)
