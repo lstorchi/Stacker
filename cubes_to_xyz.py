@@ -21,6 +21,16 @@ import math
 import sys
 import vtk
 
+###############################################################################
+
+def append_if_not_in (fulllist, toadd):
+
+  for i in toadd:
+    if i not in fulllist:
+      fulllist.append(i)
+
+###############################################################################
+
 # non mi interessano le intersezioni
 
 filename = "cubes.txt"
@@ -58,7 +68,29 @@ for sp in file:
 
 file.close()
 
-print " ", len(cub)
-print " " 
+allpbc = []
+allic = []
+allcsc = []
+
 for cub in cubes:
-  print cub.get_perovskite_xyz()
+  pbc = []
+  cub.get_perovskite_xyz_Pb(pbc)
+  ic = []
+  cub.get_perovskite_xyz_I(ic)
+  csc = []
+  cub.get_perovskite_xyz_Cs(csc)
+  
+  append_if_not_in (allpbc, pbc)
+  append_if_not_in (allic, ic)
+  append_if_not_in (allcsc, csc)
+
+numof = len(allpbc) + len(allic) + len(allcsc)
+
+print " ", numof
+print " "
+for i in allpbc:
+  print "Pb ", 10.0*i[0], " ", 10.0*i[1], " ", 10.0*i[2]
+for i in allic:
+  print " I ", 10.0*i[0], " ", 10.0*i[1], " ", 10.0*i[2]
+for i in allcsc:
+  print "Cs ", 10.0*i[0], " ", 10.0*i[1], " ", 10.0*i[2]

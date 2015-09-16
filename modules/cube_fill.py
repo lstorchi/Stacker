@@ -496,7 +496,37 @@ class cube:
 
     return False
 
-  def get_perovskite_xyz (self):
+  def get_perovskite_xyz_Pb (self, coords):
+
+    coords.append(self._p1)
+    coords.append(self._p2)
+    coords.append(self._p3)
+    coords.append(self._p4)
+    coords.append(self._p5)
+    coords.append(self._p6)
+    coords.append(self._p7)
+    coords.append(self._p8)
+
+  def get_perovskite_xyz_I (self, coords):
+
+    coords.append(self._get_midpoint(self._p1, self._p4))
+    coords.append(self._get_midpoint(self._p3, self._p4))
+    coords.append(self._get_midpoint(self._p3, self._p2))
+    coords.append(self._get_midpoint(self._p1, self._p2))
+    coords.append(self._get_midpoint(self._p1, self._p5))
+    coords.append(self._get_midpoint(self._p4, self._p8))
+    coords.append(self._get_midpoint(self._p3, self._p7))
+    coords.append(self._get_midpoint(self._p2, self._p6))
+    coords.append(self._get_midpoint(self._p8, self._p5))
+    coords.append(self._get_midpoint(self._p7, self._p8))
+    coords.append(self._get_midpoint(self._p6, self._p7))
+    coords.append(self._get_midpoint(self._p5, self._p6))
+
+  def get_perovskite_xyz_Cs (self, coords):
+
+    coords.append([self._cx, self._cy, self._cz])
+
+  def get_perovskite_xyz_string (self):
 
     strout = \
         "Pb   " + str(10.0*self._p1[0]) + \
