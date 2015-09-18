@@ -87,12 +87,12 @@ def get_occopied_face (iface):
 # non mi interessano le intersezioni
 nanoparticle.POINTINSIDEDIM = 0
 
-NUM_OF_STARTING_CUBE = 50
-MAX_NUM_OF_CUBE = 200*NUM_OF_STARTING_CUBE
+NUM_OF_STARTING_CUBE = 20
+MAX_NUM_OF_CUBE = 50*NUM_OF_STARTING_CUBE
 
 CUBE_DIM = 0.633
 
-zmax = xmax = ymax = 150.0
+zmax = xmax = ymax = 20.0
 zmin = xmin = ymin = 0.0
 
 print >> sys.stderr, "Box limits: ", xmin, xmax, ymin, ymax, zmin, zmax
@@ -156,7 +156,7 @@ while (j < (NUM_OF_STARTING_CUBE/2)):
 
   x = random.uniform(xmin + CUBE_DIM*math.sqrt(3.0), xmax - CUBE_DIM*math.sqrt(3.0))
   y = random.uniform(ymin + CUBE_DIM*math.sqrt(3.0), ymax - CUBE_DIM*math.sqrt(3.0))
-  z = zmin
+  z = zmin + CUBE_DIM/2.0
 
   if (not ([x, y, z] in centers)): # se non lo faccio i punti su angolo non vengono 
                                    # visti come interni
@@ -179,5 +179,45 @@ while (j < (NUM_OF_STARTING_CUBE/2)):
 
       actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
 
-visualize_nanop.visualize_actors (actors)
+i = len(cubes)
+while (i < MAX_NUM_OF_CUBE):
 
+  oldnumof = len(cubes)
+
+  for cubi in range(oldnumof):
+    if (cubes[cubi].has_free_face ()):
+      
+      iface = random.randint(1, 6)
+      while (not cubes[cubi].is_face_free(iface)):
+        iface = random.randint(1, 6)
+
+      newcenter, p1, p2, p3, p4, \
+      p5, p6, p7, p8 = cubes[cubi].set_iface (iface)
+      dim = cubes[cubi].get_dim()
+      # la faccia del nuovo cubo che verra' occupata 
+      occupiediface = get_occopied_face (iface)
+
+      if ((newcenter[0] < xmax) and (newcenter[0] > xmin) and \
+          (newcenter[1] < ymax) and (newcenter[1] > ymin) and \
+          (newcenter[2] < zmax) and (newcenter[2] > zmin)):
+
+        # dovrebbe essere un modo semplice per vedere se il cubo si sovrappone
+        if (not (newcenter in centers)):
+        
+          newcub = cube_fill.cube(newcenter[0], newcenter[1], newcenter[2], dim)
+          newcub.set_iface (occupiediface)
+          newcub.set_points (p1, p2, p3, p4, p5, p6, p7, p8)
+       
+          if (not inside_any_cubes (newcub, cubes, cubcenterx, \
+            cubcentery, cubcenterz, cubradius)):
+            cubes.append(newcub)
+            centers.append(newcenter)
+            cubcenterx = numpy.append(cubcenterx, x)
+            cubcentery = numpy.append(cubcentery, y)
+            cubcenterz = numpy.append(cubcenterz, z)
+            cubradius = numpy.append(cubradius, cub.get_radius()) 
+            i = i + 1
+       
+            actors.append(newcub.get_vtk_actor(0.5, 0.6, 0.1))
+
+visualize_nanop.visualize_actors (actors)
