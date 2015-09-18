@@ -149,5 +149,35 @@ while (j < (NUM_OF_STARTING_CUBE/2)):
 
       actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
 
+
+j = 0
+while (j < (NUM_OF_STARTING_CUBE/2)):
+  # questi vanno piazzati sulle superficie 
+
+  x = random.uniform(xmin + CUBE_DIM*math.sqrt(3.0), xmax - CUBE_DIM*math.sqrt(3.0))
+  y = random.uniform(ymin + CUBE_DIM*math.sqrt(3.0), ymax - CUBE_DIM*math.sqrt(3.0))
+  z = zmin
+
+  if (not ([x, y, z] in centers)): # se non lo faccio i punti su angolo non vengono 
+                                   # visti come interni
+
+    cub = cube_fill.cube(x, y, z, CUBE_DIM)
+
+    # check if any point of the cubes is inside not perfect but good enough
+
+    if (not inside_any_cubes (cub, cubes, cubcenterx, 
+      cubcentery, cubcenterz, cubradius)):
+      cubes.append(cub)
+      centers.append([x, y, z])
+      # append to centers array e radius using numpy.append(array, values)
+      cubcenterx = numpy.append(cubcenterx, x)
+      cubcentery = numpy.append(cubcentery, y)
+      cubcenterz = numpy.append(cubcenterz, z)
+      cubradius = numpy.append(cubradius, cub.get_radius()) 
+
+      j = j + 1
+
+      actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
+
 visualize_nanop.visualize_actors (actors)
 
