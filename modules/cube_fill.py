@@ -14,6 +14,8 @@ class cube:
     self._face5_free = True
     self._face6_free = True
 
+    self._tagnumber = 0
+
     self._pts = [[0,1,2,3],   # _down_plane  1
                  [4,7,6,5],   # _up_plane    2
                  [0,1,5,4],   # _left_plane  3
@@ -78,6 +80,14 @@ class cube:
     self._p8 = [x8, y8, z8]
 
     self._compute_plane()
+
+  def get_tagnumber (self):
+
+    return self._tagnumber
+
+  def set_tagnumber (self, i):
+    
+    self._tagnumber = i
 
   def alldata_tostr (self):
 

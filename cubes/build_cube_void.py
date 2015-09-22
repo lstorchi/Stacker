@@ -88,9 +88,11 @@ def get_occopied_face (iface):
 nanoparticle.POINTINSIDEDIM = 0
 
 NUM_OF_STARTING_CUBE = 20
-MAX_NUM_OF_CUBE = 50*NUM_OF_STARTING_CUBE
+MAX_NUM_OF_CUBE = 10*NUM_OF_STARTING_CUBE
 
 CUBE_DIM = 0.633
+
+cubesets = [ [] ]
 
 zmax = xmax = ymax = 20.0
 zmin = xmin = ymin = 0.0
@@ -113,6 +115,9 @@ cubradius = numpy.empty(0)
 centers = []
 cubes = []
 
+print "First step..."
+
+globalindex = 0
 j = 0
 while (j < (NUM_OF_STARTING_CUBE/2)):
 
@@ -137,7 +142,11 @@ while (j < (NUM_OF_STARTING_CUBE/2)):
 
     if (not inside_any_cubes (cub, cubes, cubcenterx, 
       cubcentery, cubcenterz, cubradius)):
+
+      cub.set_tagnumber (globalindex)
+
       cubes.append(cub)
+      cubesets.append([globalindex])
       centers.append([x, y, z])
       # append to centers array e radius using numpy.append(array, values)
       cubcenterx = numpy.append(cubcenterx, x)
@@ -146,9 +155,11 @@ while (j < (NUM_OF_STARTING_CUBE/2)):
       cubradius = numpy.append(cubradius, cub.get_radius()) 
 
       j = j + 1
+      globalindex = globalindex + 1
 
       actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
 
+print "Second step... ", globalindex
 
 j = 0
 while (j < (NUM_OF_STARTING_CUBE/2)):
@@ -167,7 +178,11 @@ while (j < (NUM_OF_STARTING_CUBE/2)):
 
     if (not inside_any_cubes (cub, cubes, cubcenterx, 
       cubcentery, cubcenterz, cubradius)):
+
+      cub.set_tagnumber (globalindex)
+
       cubes.append(cub)
+      cubesets.append([globalindex])
       centers.append([x, y, z])
       # append to centers array e radius using numpy.append(array, values)
       cubcenterx = numpy.append(cubcenterx, x)
@@ -176,48 +191,84 @@ while (j < (NUM_OF_STARTING_CUBE/2)):
       cubradius = numpy.append(cubradius, cub.get_radius()) 
 
       j = j + 1
+      globalindex = globalindex + 1
 
       actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
+
+print "Third step... ", globalindex
+
+visualize_nanop.visualize_actors (actors)
 
 i = len(cubes)
 while (i < MAX_NUM_OF_CUBE):
 
+  print "  ", i , " of " , MAX_NUM_OF_CUBE
+
   oldnumof = len(cubes)
 
   for cubi in range(oldnumof):
+    print "      ", cubi , " of ", oldnumof
+
     if (cubes[cubi].has_free_face ()):
-      
-      iface = random.randint(1, 6)
-      while (not cubes[cubi].is_face_free(iface)):
-        iface = random.randint(1, 6)
 
-      newcenter, p1, p2, p3, p4, \
-      p5, p6, p7, p8 = cubes[cubi].set_iface (iface)
-      dim = cubes[cubi].get_dim()
-      # la faccia del nuovo cubo che verra' occupata 
-      occupiediface = get_occopied_face (iface)
+      added = False 
+      maxnumoftry = 0
 
-      if ((newcenter[0] < xmax) and (newcenter[0] > xmin) and \
-          (newcenter[1] < ymax) and (newcenter[1] > ymin) and \
-          (newcenter[2] < zmax) and (newcenter[2] > zmin)):
+      while (added == False): 
 
-        # dovrebbe essere un modo semplice per vedere se il cubo si sovrappone
-        if (not (newcenter in centers)):
-        
-          newcub = cube_fill.cube(newcenter[0], newcenter[1], newcenter[2], dim)
-          newcub.set_iface (occupiediface)
-          newcub.set_points (p1, p2, p3, p4, p5, p6, p7, p8)
-       
-          if (not inside_any_cubes (newcub, cubes, cubcenterx, \
-            cubcentery, cubcenterz, cubradius)):
-            cubes.append(newcub)
-            centers.append(newcenter)
-            cubcenterx = numpy.append(cubcenterx, x)
-            cubcentery = numpy.append(cubcentery, y)
-            cubcenterz = numpy.append(cubcenterz, z)
-            cubradius = numpy.append(cubradius, cub.get_radius()) 
-            i = i + 1
-       
-            actors.append(newcub.get_vtk_actor(0.5, 0.6, 0.1))
+        maxnumoftry = maxnumoftry + 1
+
+        print "         ", maxnumoftry, " of 7"
+
+        # se dopo 7 tentativi non risco a poszionare mi blocco
+        if (maxnumoftry == 7):
+          added = True
+
+        if (cubes[cubi].has_free_face ()):
+
+          iface = random.randint(1, 6)
+          while (not cubes[cubi].is_face_free(iface)):
+            iface = random.randint(1, 6)
+          
+          newcenter, p1, p2, p3, p4, \
+          p5, p6, p7, p8 = cubes[cubi].set_iface (iface)
+          dim = cubes[cubi].get_dim()
+          # la faccia del nuovo cubo che verra' occupata 
+          occupiediface = get_occopied_face (iface)
+          
+          if ((newcenter[0] < xmax) and (newcenter[0] > xmin) and \
+              (newcenter[1] < ymax) and (newcenter[1] > ymin) and \
+              (newcenter[2] < zmax) and (newcenter[2] > zmin)):
+          
+            # dovrebbe essere un modo semplice per vedere se il cubo si sovrappone
+            if (not (newcenter in centers)):
+            
+              newcub = cube_fill.cube(newcenter[0], newcenter[1], newcenter[2], dim)
+              newcub.set_iface (occupiediface)
+              newcub.set_points (p1, p2, p3, p4, p5, p6, p7, p8)
+           
+              if (not inside_any_cubes (newcub, cubes, cubcenterx, \
+                cubcentery, cubcenterz, cubradius)):
+
+                i = i + 1
+                newcub.set_tagnumber(cubes[cubi].get_tagnumber())
+
+                cubesets[cubes[cubi].get_tagnumber()].append(i)
+
+                cubes.append(newcub)
+                centers.append(newcenter)
+                cubcenterx = numpy.append(cubcenterx, x)
+                cubcentery = numpy.append(cubcentery, y)
+                cubcenterz = numpy.append(cubcenterz, z)
+                cubradius = numpy.append(cubradius, cub.get_radius()) 
+          
+                added = True
+           
+                actors.append(newcub.get_vtk_actor(0.5, 0.6, 0.1))
+
+print "Num of seeds : ", len(cubesets)
+for i in range(len(cubesets)):
+  for idx in cubesets[i]:
+    print idx
 
 visualize_nanop.visualize_actors (actors)
