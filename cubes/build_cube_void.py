@@ -92,7 +92,7 @@ MAX_NUM_OF_CUBE = 10*NUM_OF_STARTING_CUBE
 
 CUBE_DIM = 0.633
 
-cubesets = [ [] ]
+cubesets = []
 
 zmax = xmax = ymax = 20.0
 zmin = xmin = ymin = 0.0
@@ -115,9 +115,10 @@ cubradius = numpy.empty(0)
 centers = []
 cubes = []
 
-print "First step..."
-
 globalindex = 0
+
+print "First step... ", globalindex, " ", len(cubesets)
+
 j = 0
 while (j < (NUM_OF_STARTING_CUBE/2)):
 
@@ -159,7 +160,7 @@ while (j < (NUM_OF_STARTING_CUBE/2)):
 
       actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
 
-print "Second step... ", globalindex
+print "Second step... ", globalindex, " ", len(cubesets)
 
 j = 0
 while (j < (NUM_OF_STARTING_CUBE/2)):
@@ -195,9 +196,7 @@ while (j < (NUM_OF_STARTING_CUBE/2)):
 
       actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
 
-print "Third step... ", globalindex
-
-visualize_nanop.visualize_actors (actors)
+print "Third step... ", globalindex, " ", len(cubesets)
 
 i = len(cubes)
 while (i < MAX_NUM_OF_CUBE):
@@ -207,7 +206,7 @@ while (i < MAX_NUM_OF_CUBE):
   oldnumof = len(cubes)
 
   for cubi in range(oldnumof):
-    print "      ", cubi , " of ", oldnumof
+    #print "      ", cubi , " of ", oldnumof
 
     if (cubes[cubi].has_free_face ()):
 
@@ -218,7 +217,7 @@ while (i < MAX_NUM_OF_CUBE):
 
         maxnumoftry = maxnumoftry + 1
 
-        print "         ", maxnumoftry, " of 7"
+        #print "         ", maxnumoftry, " of 7"
 
         # se dopo 7 tentativi non risco a poszionare mi blocco
         if (maxnumoftry == 7):
@@ -267,8 +266,8 @@ while (i < MAX_NUM_OF_CUBE):
                 actors.append(newcub.get_vtk_actor(0.5, 0.6, 0.1))
 
 print "Num of seeds : ", len(cubesets)
-for i in range(len(cubesets)):
-  for idx in cubesets[i]:
-    print idx
+#for i in range(len(cubesets)):
+#  for idx in cubesets[i]:
+#    print idx
 
 visualize_nanop.visualize_actors (actors)
