@@ -86,6 +86,17 @@ def get_occopied_face (iface):
 
 ###############################################################################
 
+import os, errno
+
+def silentremove(filename):
+  try:
+    os.remove(filename)
+  except OSError as e: # this would be "except OSError, e:" before Python 2.6
+    if e.errno != errno.ENOENT: # errno.ENOENT = no such file or directory
+      raise # re-raise exception if a different error occured
+
+###############################################################################
+
 # non mi interessano le intersezioni
 nanoparticle.POINTINSIDEDIM = 0
 
@@ -267,11 +278,16 @@ while (i < MAX_NUM_OF_CUBE):
            
                 #actors.append(newcub.get_vtk_actor(0.5, 0.6, 0.1))
 
+
+silentremove("full.xyz")
+cubes_utility.cubes_to_xyzfile(cubes, "full.xyz")
+
 print "Num of seeds : ", len(cubesets)
 for i in range(len(cubesets)):
   cubs_to_print = []
   for idx in cubesets[i]:
     cubs_to_print.append(cubes[idx])
+  silentremove(str(i)+".xyz")
   cubes_utility.cubes_to_xyzfile(cubs_to_print, str(i)+".xyz")
 
 #visualize_nanop.visualize_actors (actors)
