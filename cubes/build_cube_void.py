@@ -225,7 +225,7 @@ i = len(cubes)
 while ((i < MAX_NUM_OF_CUBE) and (numofloop < 8 * MAX_NUM_OF_CUBE)) :
 
   print "  ", i , " of " , MAX_NUM_OF_CUBE
-  print "    ", numofloop  " of " , 8 * MAX_NUM_OF_CUB
+  print "    ", numofloop, " of " , 8 * MAX_NUM_OF_CUB
 
   oldnumof = len(cubes)
 
