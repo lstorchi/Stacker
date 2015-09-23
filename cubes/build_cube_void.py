@@ -211,12 +211,15 @@ while (j < (NUM_OF_STARTING_CUBE/2)):
 
 print "Third step... ", globalindex, " ", len(cubesets)
 
+numofloop = 0
 i = len(cubes)
-while (i < MAX_NUM_OF_CUBE):
+while ((i < MAX_NUM_OF_CUBE) and (numofloop < 8 * MAX_NUM_OF_CUBE)) :
 
   print "  ", i , " of " , MAX_NUM_OF_CUBE
 
   oldnumof = len(cubes)
+
+  numofloop = numofloop + 1
 
   for cubi in range(oldnumof):
     #print "      ", cubi , " of ", oldnumof
