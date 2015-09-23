@@ -262,10 +262,10 @@ while (i < MAX_NUM_OF_CUBE):
               if (not inside_any_cubes (newcub, cubes, cubcenterx, \
                 cubcentery, cubcenterz, cubradius)):
 
-                i = i + 1
                 newcub.set_tagnumber(cubes[cubi].get_tagnumber())
-
                 cubesets[cubes[cubi].get_tagnumber()].append(i)
+
+                i = i + 1
 
                 cubes.append(newcub)
                 centers.append(newcenter)
