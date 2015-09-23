@@ -20,6 +20,8 @@ import math
 import sys
 import vtk
 
+import cubes_utility
+
 ###############################################################################
 
 def inside_any_cubes (cub, cubes, cubcenterx, cubcentery, cubcenterz, 
@@ -102,10 +104,10 @@ print >> sys.stderr, "Box limits: ", xmin, xmax, ymin, ymax, zmin, zmax
 # voglio fermarmi a circa 2 D dalla vetta visto che in cima avro' sempre una
 # densita' minore(ricorda la prima sfera che supera zmax ferma la procedura.
 
-actors = []
+#actors = []
 
-actors.extend(cube.cube_to_actors (xmin, ymin, zmin, \
-    xmax, ymax, zmax))
+#actors.extend(cube.cube_to_actors (xmin, ymin, zmin, \
+#    xmax, ymax, zmax))
 
 cubcenterx = numpy.empty(0)
 cubcentery = numpy.empty(0)
@@ -158,7 +160,7 @@ while (j < (NUM_OF_STARTING_CUBE/2)):
       j = j + 1
       globalindex = globalindex + 1
 
-      actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
+      #actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
 
 print "Second step... ", globalindex, " ", len(cubesets)
 
@@ -194,7 +196,7 @@ while (j < (NUM_OF_STARTING_CUBE/2)):
       j = j + 1
       globalindex = globalindex + 1
 
-      actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
+      #actors.append(cub.get_vtk_actor(0.5, 0.6, 0.1))
 
 print "Third step... ", globalindex, " ", len(cubesets)
 
@@ -263,11 +265,13 @@ while (i < MAX_NUM_OF_CUBE):
           
                 added = True
            
-                actors.append(newcub.get_vtk_actor(0.5, 0.6, 0.1))
+                #actors.append(newcub.get_vtk_actor(0.5, 0.6, 0.1))
 
 print "Num of seeds : ", len(cubesets)
-#for i in range(len(cubesets)):
-#  for idx in cubesets[i]:
-#    print idx
+for i in range(len(cubesets)):
+  cubs_to_print = []
+  for idx in cubesets[i]:
+    cubs_to_print.append(cubes[idx])
+  cubes_utility.cubes_to_xyzfile(cubs_to_print, str(i)+".xyz")
 
-visualize_nanop.visualize_actors (actors)
+#visualize_nanop.visualize_actors (actors)

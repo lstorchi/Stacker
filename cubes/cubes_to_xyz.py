@@ -21,15 +21,7 @@ import math
 import sys
 import vtk
 
-###############################################################################
-
-def append_if_not_in (fulllist, toadd):
-
-  for i in toadd:
-    if i not in fulllist:
-      fulllist.append(i)
-
-###############################################################################
+import cubes_utility
 
 # non mi interessano le intersezioni
 
@@ -72,17 +64,7 @@ allpbc = []
 allic = []
 allcsc = []
 
-for cub in cubes:
-  pbc = []
-  cub.get_perovskite_xyz_Pb(pbc)
-  ic = []
-  cub.get_perovskite_xyz_I(ic)
-  csc = []
-  cub.get_perovskite_xyz_Cs(csc)
-  
-  append_if_not_in (allpbc, pbc)
-  append_if_not_in (allic, ic)
-  append_if_not_in (allcsc, csc)
+cubes_utility.cubes_to_list_of_atoms(cubes, allpbc, allic, allcsc)
 
 numof = len(allpbc) + len(allic) + len(allcsc)
 
