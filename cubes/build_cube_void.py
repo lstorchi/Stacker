@@ -110,6 +110,15 @@ cubesets = []
 zmax = xmax = ymax = 20.0
 zmin = xmin = ymin = 0.0
 
+# questo potrebbe essere un buon modo per trovare un massimo di numeri
+NXN = int ((xmax-xmin)/CUBE_DIM) + 1
+NYN = int ((ymax-ymin)/CUBE_DIM) + 1
+NZN = int ((zmax-zmin)/CUBE_DIM) + 1
+
+MAX_NUM_OF_CUBE = NXN * NYN * NZN
+
+print "MAX_NUM_OF_CUBE: ", MAX_NUM_OF_CUBE
+
 print >> sys.stderr, "Box limits: ", xmin, xmax, ymin, ymax, zmin, zmax
 
 # voglio fermarmi a circa 2 D dalla vetta visto che in cima avro' sempre una
