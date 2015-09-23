@@ -225,10 +225,9 @@ i = len(cubes)
 while ((i < MAX_NUM_OF_CUBE) and (numofloop < 8 * MAX_NUM_OF_CUBE)) :
 
   print "  ", i , " of " , MAX_NUM_OF_CUBE
+  print "    ", numofloop  " of " , 8 * MAX_NUM_OF_CUB
 
   oldnumof = len(cubes)
-
-  numofloop = numofloop + 1
 
   for cubi in range(oldnumof):
     #print "      ", cubi , " of ", oldnumof
@@ -241,6 +240,7 @@ while ((i < MAX_NUM_OF_CUBE) and (numofloop < 8 * MAX_NUM_OF_CUBE)) :
       while (added == False): 
 
         maxnumoftry = maxnumoftry + 1
+        numofloop = numofloop + 1
 
         #print "         ", maxnumoftry, " of 7"
 
