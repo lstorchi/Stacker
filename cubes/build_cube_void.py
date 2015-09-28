@@ -127,7 +127,7 @@ MAX_NUM_OF_CUBE = 10*NUM_OF_STARTING_CUBE
 
 cubesets = []
 
-zmax = xmax = ymax = 10*CUBE_DIM
+zmax = xmax = ymax = 30*CUBE_DIM
 zmin = xmin = ymin = 0.0
 
 # questo potrebbe essere un buon modo per trovare un massimo di numeri
@@ -146,7 +146,7 @@ print >> sys.stderr, "Box limits: ", xmin, xmax, ymin, ymax, zmin, zmax
 # voglio fermarmi a circa 2 D dalla vetta visto che in cima avro' sempre una
 # densita' minore(ricorda la prima sfera che supera zmax ferma la procedura.
 
-visactors = True
+visactors = False
 actors = []
 
 if (visactors):
@@ -256,8 +256,6 @@ while ((i < MAX_NUM_OF_CUBE) and (numofloop < 4 * MAX_NUM_OF_CUBE)) :
 
   oldnumof = len(cubes)
 
-  numofloop = numofloop + 1
-
   for cubi in range(oldnumof):
     #print "      ", cubi , " of ", oldnumof
 
@@ -275,6 +273,8 @@ while ((i < MAX_NUM_OF_CUBE) and (numofloop < 4 * MAX_NUM_OF_CUBE)) :
         # se dopo 7 tentativi non risco a posizionare mi blocco
         if (maxnumoftry == 7):
           added = True
+
+        numofloop = numofloop + 1
 
         if (cubes[cubi].has_free_face ()):
 
