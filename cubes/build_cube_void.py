@@ -24,7 +24,7 @@ import cubes_utility
 
 CUBE_DIM = 0.633
 CUBERADIUSLIMIT = CUBE_DIM*math.sqrt(3.0)
-CUBERADIUSLIMIT = CUBE_DIM
+#CUBERADIUSLIMIT = CUBE_DIM
 
 ###############################################################################
 
@@ -122,7 +122,7 @@ def is_very_close (newcenter, cubcenterx, cubcentery, cubcenterz):
 
 ###############################################################################
 
-NUM_OF_STARTING_CUBE = 4
+NUM_OF_STARTING_CUBE = 20
 MAX_NUM_OF_CUBE = 10*NUM_OF_STARTING_CUBE
 
 cubesets = []
