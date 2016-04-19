@@ -8,6 +8,73 @@ import math
 
 ###############################################################################
 
+def generate_compact_configuration_fixed_r (spheres = [], r):
+
+  zmax = common.botz
+  lowest_c = point.point(0.0, 0.0, common.topz + (10.0*common.MAXR))
+
+  s = sphere.sphere()
+
+  radius = r
+  s.set_radius(radius)
+
+  for dropped in range(1,common.drop_sphere_n_times):
+            
+    cx = random.uniform(common.botx, common.topx)
+    cy = random.uniform(common.boty, common.topy)
+    cz = common.topz + (2.0 * common.MAXR)
+                                    
+    c = point.point(cx, cy, cz)
+    s.set_center(c)
+
+    # seleziona un set di possibili vicini, distanti nel
+    # piano x,y al massimo 4R
+    near_spheres = []
+    overlap, near_spheres = get_subset_of_near_spheres(spheres, s)
+
+    # probabilmente la sfera generata si sovrappone
+    # con una gia' esistente
+    if overlap:
+      dropped = dropped - 1
+      continue
+
+    # muovi la sfera verso il basso fino che 
+    # non incontra altra sfera
+    deltaz = common.start_deltaz
+
+    while (c.get_z()+radius) > common.botz:
+      c.set_z(c.get_z() - deltaz)
+
+      touching_spheres = touched_other_sphere(near_spheres, s)
+
+      if (touching_spheres):
+        c.set_z(c.get_z() + deltaz)
+        deltaz = deltaz/10.0
+        if (deltaz <= common.min_decrement):
+          c.set_z(c.get_z() - (deltaz*10.0))
+          if (len(touching_spheres) < 3):
+            rotate_sphere (near_spheres, touching_spheres, s)
+          break
+
+    if (c.get_z()+radius < common.botz):
+      c.set_z(common.botz+radius)
+      lowest_c = c
+      break
+
+    if (c.get_z() < lowest_c.get_z()):
+      lowest_c = c
+
+  s.set_center(lowest_c)
+
+  if ((lowest_c.get_z()+radius) > zmax):
+    zmax = lowest_c.get_z()+radius
+
+  spheres.append(s)
+
+  return zmax
+
+###############################################################################
+
 def generate_compact_configuration_random_r (spheres = []):
 
   zmax = common.botz
