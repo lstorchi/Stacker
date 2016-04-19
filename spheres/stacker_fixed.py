@@ -15,6 +15,12 @@ spheres = []
 outfile = open("actual_config.txt", "wa")
 
 Radius = 2.9757477
+common.botx = 0.0 
+common.topx = 150.0
+common.boty = 0.0 
+common.topy = 150.0
+common.botz = 0.0 
+common.topz = 150.0
 
 z = common.botz
 while (z < common.topz):
