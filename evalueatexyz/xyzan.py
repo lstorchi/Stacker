@@ -32,6 +32,9 @@ filep.readline()
 filep.readline()
 
 actors = []
+xlist = []
+ylist = []
+zlist = []
 
 for line in filep:
   p = re.compile(r'\s+')
@@ -46,6 +49,10 @@ for line in filep:
    x = plist[1]
    y = plist[2]
    z = plist[3]
+
+   xlist.append(float(x))
+   ylist.append(float(y))
+   zlist.append(float(z))
 
    if atomname in radius:
      print atomname, " has ", radius[atomname], x, y, z
@@ -67,6 +74,10 @@ for line in filep:
 
 
 filep.close()
+
+print "X ", min(xlist), " " , max(xlist), " ", max(xlist)-min(xlist)
+print "Y ", min(ylist), " " , max(ylist), " ", max(ylist)-min(ylist)
+print "Z ", min(zlist), " " , max(zlist), " ", max(zlist)-min(zlist)
 
 ren = vtk.vtkRenderer()
 renWin = vtk.vtkRenderWindow()
