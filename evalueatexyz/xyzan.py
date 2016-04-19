@@ -1,6 +1,12 @@
 import vtk
 import sys 
 import re
+import numpy
+
+sys.path.append("../modules")
+
+import nanoparticle
+
 
 #####################################################################
 
@@ -74,6 +80,12 @@ for line in filep:
 
 
 filep.close()
+
+nanop = nanoparticle.nanotio2(numpy.mean(xlist), \
+    numpy.mean(ylist), numpy.mean(zlist), \
+    14.44, 23.56, 28.99)
+
+actors.append(nanop.get_vtk_actor(True, 0.8))
 
 print "X ", min(xlist), " " , max(xlist), " ", max(xlist)-min(xlist)
 print "Y ", min(ylist), " " , max(ylist), " ", max(ylist)-min(ylist)
