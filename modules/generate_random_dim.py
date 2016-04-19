@@ -8,7 +8,7 @@ import math
 
 ###############################################################################
 
-def generate_compact_configuration_fixed_r (spheres = [], r):
+def generate_compact_configuration_fixed_r (r, spheres = []):
 
   zmax = common.botz
   lowest_c = point.point(0.0, 0.0, common.topz + (10.0*common.MAXR))

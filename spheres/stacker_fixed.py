@@ -19,7 +19,7 @@ Radius = 2.9757477
 z = common.botz
 while (z < common.topz):
 #for numof in range(1,1200):
-  z = generate_random_dim.generate_compact_configuration_fixed_r(spheres, Radius)
+  z = generate_random_dim.generate_compact_configuration_fixed_r(Radius, spheres)
   print "Dropped " , len(spheres), " spheres z: ", z
 
   s = spheres[len(spheres)-1]
