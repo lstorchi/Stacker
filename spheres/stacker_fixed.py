@@ -14,13 +14,13 @@ spheres = []
 
 outfile = open("actual_config.txt", "wa")
 
-Radius = 2.9757477
+Radius = float(28.909/1.929342)
 common.botx = 0.0 
-common.topx = 150.0
+common.topx = 1000.0
 common.boty = 0.0 
-common.topy = 150.0
+common.topy = 1000.0
 common.botz = 0.0 
-common.topz = 150.0
+common.topz = 1000.0
 
 z = common.botz
 while (z < common.topz):
