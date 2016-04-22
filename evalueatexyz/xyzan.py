@@ -85,7 +85,23 @@ nanop = nanoparticle.nanotio2(numpy.mean(xlist), \
     numpy.mean(ylist), numpy.mean(zlist), \
     14.44, 23.56, 28.99)
 
+sphere = vtk.vtkSphereSource()
+sphere.SetCenter(numpy.mean(xlist), \
+        numpy.mean(ylist), numpy.mean(zlist))
+sphere.SetRadius(float(28.909/1.929342))
+
+mapper = vtk.vtkPolyDataMapper()
+if vtk.VTK_MAJOR_VERSION <= 5:
+  mapper.SetInput(sphere.GetOutput())
+else:
+  mapper.SetInputConnection(sphere.GetOutputPort())
+ 
+actor = vtk.vtkActor()
+actor.SetMapper(mapper)
+actor.GetProperty().SetOpacity(1.0)
+
 actors.append(nanop.get_vtk_actor(True, 0.8))
+actors.append(actor)
 
 print "X ", min(xlist), " " , max(xlist), " ", max(xlist)-min(xlist)
 print "Y ", min(ylist), " " , max(ylist), " ", max(ylist)-min(ylist)
