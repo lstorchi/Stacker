@@ -78,22 +78,39 @@ nanoparticles = []
 botx, topx, boty, topy, botz, topz = \
         nanoparticle.file_to_nanoparticle_list(nanopfile, nanoparticles) 
 
-for nanop in  nanoparticles:
+print len(nanoparticles)*len(xlist)
+print " "
+
+filep = open(nanopfile, "r")
+
+for line in filep:
+  p = re.compile(r'\s+')
+  line = p.sub(' ', line)
+  line = line.lstrip()
+  line = line.rstrip()
+
+  plist =  line.split(" ")
+
+  xcn = float(plist[0])
+  ycn = float(plist[1]) 
+  zcn = float(plist[2])
+
   xlistnew = xlist
   ylistnew = ylist
   zlistnew = zlist 
 
-  # translate
-  xc, yc, zc = nanop.get_center()
-  
   for i in range(len(xlist)):
-    xlistnew[i] = xlistnew[i] + xc
-    ylistnew[i] = ylistnew[i] + yc
-    zlistnew[i] = zlistnew[i] + zc
+    xlistnew[i] = xlistnew[i] + xcn
+    ylistnew[i] = ylistnew[i] + ycn
+    zlistnew[i] = zlistnew[i] + zcn
+
+  xcn2 = float(plist[6])
+  ycn2 = float(plist[7]) 
+  zcn2 = float(plist[8])
   
-  theta = nanop.get_theta()
-  p2 = nanop.get_p2()
-  p1 = point.point(xc, yc, zc)
+  theta = float(plist[9])
+  p2 = point.point(xcn2, ycn2, zcn2)
+  p1 = point.point(xcn, ycn, zcn)
   
   for i in range(len(xlist)):
     p0 = point.point(xlistnew[i], ylistnew[i], zlistnew[i])
@@ -103,6 +120,5 @@ for nanop in  nanoparticles:
     zlistnew[i] = p0.get_z()
 
   for i in range(len(xlist)):
-    print atoms[i] , " ", xlistnew[i], " ", ylistnew[i] , " " ,\
-            zlistnew[i]
+    print atoms[i] , " ", xlistnew[i], " ", ylistnew[i] , " " , zlistnew[i]
 
