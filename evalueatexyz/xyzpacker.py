@@ -95,9 +95,14 @@ for line in filep:
   ycn = float(plist[1]) 
   zcn = float(plist[2])
 
-  xlistnew = xlist
-  ylistnew = ylist
-  zlistnew = zlist 
+  xlistnew = []
+  ylistnew = []
+  zlistnew = []
+
+  for i in range(len(xlist)):
+    xlistnew.append(xlist[i])
+    ylistnew.append(ylist[i])
+    zlistnew.append(zlist[i])
 
   for i in range(len(xlist)):
     xlistnew[i] = xlistnew[i] + xcn
