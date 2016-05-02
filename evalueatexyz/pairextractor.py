@@ -61,6 +61,7 @@ def return_rototransl_xyz(nanop, xlist, ylist, zlist):
 filename = ""
 nanopfile = ""
 nanoparticle.POINTINSIDEDIM = 0
+nanoparticle.POINTINSURFACESTEP = 5.0
 
 if (len(sys.argv)) == 3:
   filename = sys.argv[1]
@@ -114,6 +115,8 @@ nanoparticles_init = []
 botx, topx, boty, topy, botz, topz = \
         nanoparticle.file_to_nanoparticle_list(nanopfile, nanoparticles_init)
 
+print >> sys.stderr, "Read done"
+ 
 nanoparticles = []
 for selectedid in range(len(nanoparticles_init)):
   nanop = nanoparticles_init[selectedid]
@@ -128,6 +131,8 @@ for selectedid in range(len(nanoparticles_init)):
 
   if (min(distx, disty, distz) > (2.0 * common.R)):
     nanoparticles.append(nanop)
+
+print >> sys.stderr, "Near done"
  
 for selectedid in range(len(nanoparticles)):
   nanop = nanoparticles[selectedid]
@@ -138,15 +143,44 @@ for selectedid in range(len(nanoparticles)):
 
   xlistnew, ylistnew, zlistnew = return_rototransl_xyz(nanop, xlist, ylist, zlist)
 
+  for a in range(len(nearnanop)):
+    for b in range(len(nearnanop)):
+      if (a != b):
+        if (not nearnanop[a].nanoparticle_touch_me(nearnanop[b])):
+          filename = str(a) + "_" + str(b) + ".xyz"
+          target = open(filename, 'w')
+          target.write(str(2*len(xlist))+"\n")
+          target.write("\n")
+
+          xlistnew, ylistnew, zlistnew = return_rototransl_xyz(nearnanop[a], xlist, ylist, zlist)
+          for i in range(len(xlist)):
+            target.write(str(atoms[i]) + " " + \
+                      str(xlistnew[i]) + " " + \
+                      str(ylistnew[i]) + " " + \
+                      str(zlistnew[i]))
+            target.write("\n")
+          
+          xlistnew, ylistnew, zlistnew = return_rototransl_xyz(nearnanop[b], xlist, ylist, zlist)
+          for i in range(len(xlist)):
+            target.write(str(atoms[i]) + " " + \
+                      str(xlistnew[i]) + " " + \
+                      str(ylistnew[i]) + " " + \
+                      str(zlistnew[i]))
+            target.write("\n")
+
+          target.close()
+
+  '''
   print (len(nearnanop)+1)*len(xlist)
   print " "
 
   for i in range(len(xlist)):
     print atoms[i] , " ", xlistnew[i], " ", ylistnew[i] , " " , zlistnew[i]
 
-  for nnanop in nearnanop:
-    xlistnew, ylistnew, zlistnew = return_rototransl_xyz(nnanop, xlist, ylist, zlist)
+  for a in range(len(nearnanop)):
+    xlistnew, ylistnew, zlistnew = return_rototransl_xyz(nearnanop[a], xlist, ylist, zlist)
     for i in range(len(xlist)):
       print atoms[i] , " ", xlistnew[i], " ", ylistnew[i] , " " , zlistnew[i]
-
+  '''
+  
   exit() 
