@@ -61,7 +61,7 @@ def return_rototransl_xyz(nanop, xlist, ylist, zlist):
 filename = ""
 nanopfile = ""
 nanoparticle.POINTINSIDEDIM = 0
-nanoparticle.POINTINSURFACESTEP = 0.0
+#nanoparticle.POINTINSURFACESTEP = 0.0
 
 if (len(sys.argv)) == 3:
   filename = sys.argv[1]
@@ -133,6 +133,7 @@ for selectedid in range(len(nanoparticles_init)):
     nanoparticles.append(nanop)
 
 print >> sys.stderr, "Near done"
+radius = {'O':0.60, 'Ti':1.40}
  
 for selectedid in range(len(nanoparticles)):
   nanop = nanoparticles[selectedid]
@@ -144,27 +145,48 @@ for selectedid in range(len(nanoparticles)):
   for a in range(len(nearnanop)):
     for b in range(len(nearnanop)):
       if (a != b):
-        filename = str(a) + "_" + str(b) + ".xyz"
-        target = open(filename, 'w')
-        target.write(str(2*len(xlist))+"\n")
-        target.write("\n")
-
         xlistnew, ylistnew, zlistnew = return_rototransl_xyz(nearnanop[a], xlist, ylist, zlist)
-        for i in range(len(xlist)):
-          target.write(str(atoms[i]) + " " + \
-                    str(xlistnew[i]) + " " + \
-                    str(ylistnew[i]) + " " + \
-                    str(zlistnew[i]))
-          target.write("\n")
-        
-        xlistnew, ylistnew, zlistnew = return_rototransl_xyz(nearnanop[b], xlist, ylist, zlist)
-        for i in range(len(xlist)):
-          target.write(str(atoms[i]) + " " + \
-                    str(xlistnew[i]) + " " + \
-                    str(ylistnew[i]) + " " + \
-                    str(zlistnew[i]))
-          target.write("\n")
 
-        target.close()
+        todo = False
+
+        xlistnewa = []
+        ylistnewa = []
+        zlistnewa = []
+        atomsa = []
+
+        for i in range(len(xlist)):
+          center = point.point(xlistnew[i], xlistnew[j], xlistnew[j])
+          s = sphere.sphere(center, radius[atoms[i]])
+          if (nearnanop[b].sphere_touch_me(s)):
+            todo = True
+          else:
+            xlistnewa.append(xlistnew[i])
+            ylistnewa.append(ylistnew[i])
+            zlistnewa.append(zlistnew[i])
+            atomsa.append(atoms[i])
+
+        if (todo):
+          xlistnew, ylistnew, zlistnew = return_rototransl_xyz(nearnanop[b], xlist, ylist, zlist)
+
+          filename = str(a) + "_" + str(b) + ".xyz"
+          target = open(filename, 'w')
+          target.write(str(len(xlistnew)+len(xlistnewa))+"\n")
+          target.write("\n")
+          
+          for i in range(len(xlistnewa)):
+            target.write(str(atomsa[i]) + " " + \
+                      str(xlistnewa[i]) + " " + \
+                      str(ylistnewa[i]) + " " + \
+                      str(zlistnewa[i]))
+            target.write("\n")
+          
+          for i in range(len(xlist)):
+            target.write(str(atoms[i]) + " " + \
+                      str(xlistnew[i]) + " " + \
+                      str(ylistnew[i]) + " " + \
+                      str(zlistnew[i]))
+            target.write("\n")
+          
+          target.close()
 
   exit() 
