@@ -149,7 +149,8 @@ for selectedid in range(len(nanoparticles)):
       if (a != b):
         xlistnew, ylistnew, zlistnew = return_rototransl_xyz(nearnanop[a], xlist, ylist, zlist)
 
-        print "running ", count , " of ", len(nearnanop)**2
+        n = len(nearnanop)
+        print "running ", count , " of ", n**2-n
 
         todo = False
 
@@ -159,7 +160,7 @@ for selectedid in range(len(nanoparticles)):
         atomsa = []
 
         for i in range(len(xlist)):
-          center = point.point(xlistnew[i], xlistnew[i], xlistnew[i])
+          center = point.point(xlistnew[i], ylistnew[i], zlistnew[i])
           s = sphere.sphere(center, radius[atoms[i]])
           if (nearnanop[b].sphere_touch_me(s)):
             todo = True
@@ -168,6 +169,8 @@ for selectedid in range(len(nanoparticles)):
             ylistnewa.append(ylistnew[i])
             zlistnewa.append(zlistnew[i])
             atomsa.append(atoms[i])
+
+        print "         ", todo
 
         if (todo):
           xlistnew, ylistnew, zlistnew = return_rototransl_xyz(nearnanop[b], xlist, ylist, zlist)
