@@ -6,6 +6,7 @@ import math
 sys.path.append("../modules")
 
 import nanoparticle
+import sphere
 import point
 import common
 import util
@@ -142,10 +143,13 @@ for selectedid in range(len(nanoparticles)):
   nearnanop, neardst = nanoparticle.get_near_nanoparticle (nanoparticles, \
       pcx, pcy, pcz, (2.0 * nanop.get_max_sphere()))
 
+  count = 1
   for a in range(len(nearnanop)):
     for b in range(len(nearnanop)):
       if (a != b):
         xlistnew, ylistnew, zlistnew = return_rototransl_xyz(nearnanop[a], xlist, ylist, zlist)
+
+        print "running ", count , " of ", len(nearnanop)**2
 
         todo = False
 
@@ -155,7 +159,7 @@ for selectedid in range(len(nanoparticles)):
         atomsa = []
 
         for i in range(len(xlist)):
-          center = point.point(xlistnew[i], xlistnew[j], xlistnew[j])
+          center = point.point(xlistnew[i], xlistnew[i], xlistnew[i])
           s = sphere.sphere(center, radius[atoms[i]])
           if (nearnanop[b].sphere_touch_me(s)):
             todo = True
@@ -188,5 +192,7 @@ for selectedid in range(len(nanoparticles)):
             target.write("\n")
           
           target.close()
+
+        count = count + 1
 
   exit() 
