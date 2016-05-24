@@ -143,10 +143,16 @@ for selectedid in range(len(nanoparticles)):
   nearnanop, neardst = nanoparticle.get_near_nanoparticle (nanoparticles, \
       pcx, pcy, pcz, (2.0 * nanop.get_max_sphere()))
 
+  pairs = []
   count = 1
   for a in range(len(nearnanop)):
     for b in range(len(nearnanop)):
-      if (a != b):
+      pair = str(a) + "_" + str(b)
+      if (a != b) and (pair not in pairs):
+        
+        pairs.append(str(a) + "_" + str(b))
+        pairs.append(str(b) + "_" + str(a))
+
         xa, ya, za = return_rototransl_xyz(nearnanop[a], xlist, ylist, zlist)
         xb, yb, zb = return_rototransl_xyz(nearnanop[b], xlist, ylist, zlist)
 
@@ -160,7 +166,8 @@ for selectedid in range(len(nanoparticles)):
             maxdist = dist
 
         if (mindist > 2.0) and (mindist < 5.0):
-          print "cluster ", selectedid, mindist, maxdist
+          print "cluster ", selectedid, " pair " , \
+                  pair , " " , mindist, maxdist
 
           filename = "cluster_" + str(selectedid) + "_" + \
                   str(a) + "_" + str(b) + ".xyz"
