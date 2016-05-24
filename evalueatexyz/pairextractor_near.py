@@ -159,8 +159,8 @@ for selectedid in range(len(nanoparticles)):
           if dist > maxdist:
             maxdist = dist
 
-        if mindist > 2.0 and mindist < 5.0:
-          print mindist, maxdist
+        if (mindist > 2.0) and (mindist < 5.0):
+          print "cluster ", selectedid, mindist, maxdist
 
           filename = "cluster_" + str(selectedid) + "_" + \
                   str(a) + "_" + str(b) + ".xyz"
