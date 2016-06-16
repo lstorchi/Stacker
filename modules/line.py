@@ -90,7 +90,7 @@ class line3d:
     d1 = math.sqrt(a1**2 + b1**2 + c1**2)
     d2 = math.sqrt(a2**2 + b2**2 + c2**2)
 
-    return math.acos (((a1*a2)+(b1*b2)+(c1*c2))/(d1*d2))
+    return (360.0 / 2.0 * math.pi) * math.acos (((a1*a2)+(b1*b2)+(c1*c2))/(d1*d2))
 
   def set_a(self, p):
     self._a = p
