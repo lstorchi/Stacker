@@ -10,6 +10,7 @@ import sphere
 import point
 import common
 import util
+import line
 
 
 #####################################################################
@@ -81,13 +82,13 @@ ylist = []
 zlist = []
 atoms = []
 
-for line in filep:
+for lin in filep:
   p = re.compile(r'\s+')
-  line = p.sub(' ', line)
-  line = line.lstrip()
-  line = line.rstrip()
+  lin = p.sub(' ', lin)
+  lin = lin.lstrip()
+  lin = lin.rstrip()
 
-  plist =  line.split(" ")
+  plist = lin.split(" ")
 
   if (len(plist) == 4):
    atomname = plist[0]
