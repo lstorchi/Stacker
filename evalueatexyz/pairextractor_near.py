@@ -181,7 +181,7 @@ for selectedid in range(len(nanoparticles)):
             maxdist = dist
 
         if (mindist > 2.0) and (mindist < 5.0) and (mind > 2.0) \
-                and (mind < 5.0) and (angle < 20.0):
+                and (mind < 5.0):
           print "cluster ", selectedid, " pair " , \
                   pair , " " , mindist, maxdist, angle, mind
 
