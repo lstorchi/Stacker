@@ -160,6 +160,14 @@ for selectedid in range(len(nanoparticles)):
         l3d = line.line3d()
         angle = l3d.get_angle_two_line(p1top, p1bottom, p2top, p2bottom)
 
+        d = []
+        d.append (p1top.get_distance_from(p2top))
+        d.append (p1top.get_distance_from(p2bottom))
+        d.append (p1bottom.get_distance_from(p2bottom))
+        d.append (p1bottom.get_distance_from(p2top))
+
+        mind = min(d)
+
         xa, ya, za = return_rototransl_xyz(nearnanop[a], xlist, ylist, zlist)
         xb, yb, zb = return_rototransl_xyz(nearnanop[b], xlist, ylist, zlist)
 
@@ -174,7 +182,7 @@ for selectedid in range(len(nanoparticles)):
 
         if (mindist > 2.0) and (mindist < 5.0):
           print "cluster ", selectedid, " pair " , \
-                  pair , " " , mindist, maxdist, angle
+                  pair , " " , mindist, maxdist, angle, mind
 
           filename = "cluster_" + str(selectedid) + "_" + \
                   str(a) + "_" + str(b) + ".xyz"
