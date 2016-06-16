@@ -44,7 +44,9 @@ renWin.AddRenderer(renderer)
 iren = vtk.vtkRenderWindowInteractor()
 iren.SetRenderWindow(renWin)
 
-for selected_index in range(0,1):
+ptop1 = point.point (x, y, z)
+
+for selected_index in range(0,2):
   nanop = nanoparticles[selected_index]
   renderer.AddActor(nanop.get_vtk_actor(True, 1.0))
 
@@ -54,6 +56,10 @@ for selected_index in range(0,1):
   p1, p2 = nanop.get_ptop_and_bottom ()
   renderer.AddActor(p1.get_actor(1.0, 1.0, 0.0, 0.0))
   renderer.AddActor(p2.get_actor(1.0, 1.0, 0.0, 0.0))
+
+
+l3d = line.line3d()
+print l3d.get_angle_two_line(ptop1, pbottom1, ptop2, pbottom2)
 
 renderer.SetBackground(255,255,255)
 
