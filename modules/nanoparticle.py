@@ -64,6 +64,28 @@ class nanotio2:
   def get_fixed (self):
     return self._fixed;
 
+  def get_lines_orientation (self):
+
+    p5  = point.point(self._x[4][0], self._x[4][1], self._x[4][2])
+    p8  = point.point(self._x[7][0], self._x[7][1], self._x[7][2])
+    p9  = point.point(self._x[8][0], self._x[8][1], self._x[8][2])
+    p10 = point.point(self._x[9][0], self._x[9][1], self._x[9][2])
+    p11 = point.point(self._x[10][0], self._x[10][1], self._x[10][2])
+    p12 = point.point(self._x[11][0], self._x[11][1], self._x[11][2])
+
+    x = (p5.get_x() + p8.get_x()) / 2.0
+    y = (p5.get_y() + p8.get_y()) / 2.0
+    z = (p5.get_z() + p8.get_z()) / 2.0
+
+    ptop = point.point (x, y, z)
+
+    x = (p9.get_x() + p12.get_x()) / 2.0
+    y = (p9.get_y() + p12.get_y()) / 2.0
+    z = (p9.get_z() + p12.get_z()) / 2.0
+
+    pbottom = point.point (x, y, z)
+
+    return pbottom.get_actor(1.0, 1, 0, 0)
 
   def get_distance (self, pp):
 

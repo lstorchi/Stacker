@@ -52,6 +52,7 @@ for selected_index in range(0,1):
   for p in nanop.inside_point_grid():
     renderer.AddActor(p.get_actor(0.1, rc = 1.0, gc = 0.0, bc = 0.0))
   renderer.AddActor(nanop.get_vtk_actor(opacity = 0.5))
+  renderer.AddActor(nanop.get_lines_orientation())
 
 renderer.SetBackground(255,255,255)
 

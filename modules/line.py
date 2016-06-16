@@ -76,6 +76,20 @@ class line3d:
     self._b = p2-p1
     self._a = p1
 
+  def get_angle_two_line (self, p1, p2, p3, p4):
+    # as in http://www.nabla.hr/PC-LinePlaneIn3DSp2.htm
+    a1 = p2.get_x() - p1.get_x()
+    b1 = p2.get_y() - p1.get_y()
+    c1 = p2.get_z() - p1.get_z()
+
+    a2 = p3.get_x() - p4.get_x()
+    b2 = p3.get_y() - p4.get_y()
+    c2 = p3.get_z() - p4.get_z()
+
+    d1 = math.sqrt(a1**2 + b1**2 + c1**2)
+    d2 = math.sqrt(a2**2 + b2**2 + c2**2)
+
+    return math.accos (((a1*a2)+(b1*b2)+(c1*c2))/(d1*d2))
 
   def set_a(self, p):
     self._a = p
