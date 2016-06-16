@@ -158,7 +158,7 @@ for selectedid in range(len(nanoparticles)):
         p1top, p1bottom = nearnanop[b].get_ptop_and_bottom ()
 
         l3d = line.line3d()
-        angle = l3d.get_angle_two_line(p1top, p1bottom, p1top, p1bottom)
+        angle = l3d.get_angle_two_line(p1top, p1bottom, p2top, p2bottom)
 
         xa, ya, za = return_rototransl_xyz(nearnanop[a], xlist, ylist, zlist)
         xb, yb, zb = return_rototransl_xyz(nearnanop[b], xlist, ylist, zlist)
