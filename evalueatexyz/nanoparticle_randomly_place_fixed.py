@@ -65,37 +65,53 @@ for i in range(len(scx)):
   cx = scx[i] 
   cy = scy[i] 
   cz = scz[i]
+  r = radius[i]
 
-  # ruota la nanoparticella random
-  p1 = point.point(cx, cy, cz)
+  todo = True
 
-  p2x = random.uniform(botx, topx)
-  p2y = random.uniform(boty, topy)
-  p2z = random.uniform(botz, topz)
-
-  p2 = point.point(p2x, p2y, p2z)
-
-  tetha = random.uniform(0.0, 2.0*math.pi) 
-
-  xlist, ylist, zlist = xyznanop.return_rototransl_xyz(p1, p2, tetha, \
-          xlistin, ylistin, zlistin)
-
-  totnumofatom = totnumofatom + len(xlist)
-
-  xlistall.append(xlist)
-  ylistall.append(ylist)
-  zlistall.append(zlist)
-  atomsall.append(atoms)
+  dx = numpy.square(lplacedcx - cx)
+  dy = numpy.square(lplacedcy - cy)
+  dz = numpy.square(lplacedcz - cz)
+  
+  dists = numpy.sqrt( dx + dy + dz)
+  selectedidx = numpy.argwhere(dists <= 3*r)
 
   lplacedcx.append(cx)
   lplacedcy.append(cy)
   lplacedcz.append(cz)
 
-  dx = numpy.square(lplacedcx - cx)
-  dy = numpy.square(lplacedcy - cy)
-  dz = numpy.square(lplacedcz - cz)
+  while todo:
+    # ruota la nanoparticella random
+    p1 = point.point(cx, cy, cz)
+  
+    p2x = random.uniform(botx, topx)
+    p2y = random.uniform(boty, topy)
+    p2z = random.uniform(botz, topz)
+  
+    p2 = point.point(p2x, p2y, p2z)
+  
+    tetha = random.uniform(0.0, 2.0*math.pi) 
+  
+    xlist, ylist, zlist = xyznanop.return_rototransl_xyz(p1, p2, tetha, \
+            xlistin, ylistin, zlistin)
+  
+    totnumofatom = totnumofatom + len(xlist)
+  
+    for i in selectedidx:
+      n1 = numpy.column_stack((xlist, ylist, zlist))
+      n2 = numpy.column_stack((xlistall[i], ylistall[i], zlistall[i]))
+      dists = scipy.spatial.distance.cdist(n1, n2)
 
-  #print numpy.sqrt( dx + dy + dz)
+      la distanza minima deve essere suoperiore alla somma dei raggi di van der wall 
+   
+    todo = False
+    xlistall.append(xlist)
+    ylistall.append(ylist)
+    zlistall.append(zlist)
+    atomsall.append(atoms)
+ 
+
+
   #print " "
 
 filename = "test.xyz"
