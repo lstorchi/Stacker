@@ -103,6 +103,7 @@ for i in range(len(scx)):
       dists = scipy.spatial.distance.cdist(n1, n2)
 
       la distanza minima deve essere suoperiore alla somma dei raggi di van der wall 
+      se cosi' csarto e riprovo altrimenti todo e false ed aggiungo la nanoparticella 
    
     todo = False
     xlistall.append(xlist)
