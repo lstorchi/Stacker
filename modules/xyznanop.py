@@ -23,7 +23,7 @@ def return_rototransl_xyz(p1, p2, theta, xlist, ylist, zlist):
     ylistnew = ylistnew + p1.get_y()
     zlistnew = zlistnew + p1.get_z()
 
-    return  xlistnew.tolist(), ylistnew.tolist(), zlistnew.tolist()
+    return  xlistnew, ylistnew, zlistnew
     
   # Rotation axis unit vector
   n = point.point(Np.get_x()/Nm, Np.get_y()/Nm, Np.get_z()/Nm)
@@ -59,7 +59,7 @@ def return_rototransl_xyz(p1, p2, theta, xlist, ylist, zlist):
   qy = qy + p1.get_y()
   qz = qz + p1.get_z()
 
-  return  qx.tolist(), qy.tolist(), qz.tolist()
+  return  qx, qy, qz
 
 #####################################################################
 

@@ -51,6 +51,7 @@ xlistall = []
 ylistall = []
 zlistall = []
 atomsall = []
+totnumofatom = 0
 
 for i in range(len(scx)): 
   cx = scx[i] 
@@ -71,21 +72,24 @@ for i in range(len(scx)):
   xlist, ylist, zlist = xyznanop.return_rototransl_xyz(p1, p2, tetha, \
           xlistin, ylistin, zlistin)
 
-  xlistall.extend(xlist)
-  ylistall.extend(ylist)
-  zlistall.extend(zlist)
-  atomsall.extend(atoms)
+  totnumofatom = totnumofatom + len(xlist)
+
+  xlistall.append(xlist)
+  ylistall.append(ylist)
+  zlistall.append(zlist)
+  atomsall.append(atoms)
 
 filename = "test.xyz"
 target = open(filename, 'w')
-target.write(str(len(xlistall))+"\n")
+target.write(str(totnumofatom)+"\n")
 target.write("\n")
 
 for i in range(len(xlistall)):
-  target.write(str(atomsall[i]) + " " + \
-            str(xlistall[i]) + " " + \
-            str(ylistall[i]) + " " + \
-            str(zlistall[i]))
-  target.write("\n")
+  for j in range(len(xlistall[i])):
+    target.write(str(atomsall[i][j]) + " " + \
+              str(xlistall[i][j]) + " " + \
+              str(ylistall[i][j]) + " " + \
+              str(zlistall[i][j]))
+    target.write("\n")
 
 target.close()
