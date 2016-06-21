@@ -1,7 +1,11 @@
 import sys
 
 import random
+import scipy
+import numpy
 import math
+
+from scipy.spatial import distance
 
 sys.path.append("../modules")
 
@@ -53,6 +57,10 @@ zlistall = []
 atomsall = []
 totnumofatom = 0
 
+lplacedcx = []
+lplacedcy = []
+lplacedcz = []
+
 for i in range(len(scx)): 
   cx = scx[i] 
   cy = scy[i] 
@@ -78,6 +86,17 @@ for i in range(len(scx)):
   ylistall.append(ylist)
   zlistall.append(zlist)
   atomsall.append(atoms)
+
+  lplacedcx.append(cx)
+  lplacedcy.append(cy)
+  lplacedcz.append(cz)
+
+  dx = numpy.square(lplacedcx - cx)
+  dy = numpy.square(lplacedcy - cy)
+  dz = numpy.square(lplacedcz - cz)
+
+  #print numpy.sqrt( dx + dy + dz)
+  #print " "
 
 filename = "test.xyz"
 target = open(filename, 'w')
