@@ -45,6 +45,8 @@ if (botx >= topx) or (boty >= topy) or \
   print "Error Invalid BOX"
   exit()
 
+xlistin, ylistin, zlistin, atoms = xyznanop.read_ncxyz(xyznc)
+
 for i in range(len(scx)): 
   cx = scx[i] 
   cy = scy[i] 
@@ -57,6 +59,10 @@ for i in range(len(scx)):
   p2y = random.uniform(boty, topy)
   p2z = random.uniform(botz, topz)
 
+  p2 = point.point(p2x, p2y, p2z)
+
   tetha = random.uniform(0.0, 2.0*math.pi) 
 
+  xlist, yist, zlist = xyznanop.return_rototransl_xyz(p1, p2, tetha, \
+          xlistin, ylistin, zlistin)
 

@@ -1,31 +1,22 @@
 import re
 import numpy
 import math
+import point
+import util
 
 #####################################################################
 
-def return_rototransl_xyz(nanop, xlist, ylist, zlist):
+def return_rototransl_xyz(p1, p2, theta, xlist, ylist, zlist):
 
-  xlistnew = []
-  ylistnew = []
-  zlistnew = []
-
-  for i in range(len(xlist)):
-    xlistnew.append(xlist[i])
-    ylistnew.append(ylist[i])
-    zlistnew.append(zlist[i])
-
-  xcn, ycn, zcn = nanop.get_center()
+  xlistnew = list(xlist)
+  ylistnew = list(ylist)
+  zlistnew = list(zlist)
 
   for i in range(len(xlist)):
-    xlistnew[i] = xlistnew[i] + xcn
-    ylistnew[i] = ylistnew[i] + ycn
-    zlistnew[i] = zlistnew[i] + zcn
+    xlistnew[i] = xlistnew[i] + p1.get_x()
+    ylistnew[i] = ylistnew[i] + p1.get_y()
+    zlistnew[i] = zlistnew[i] + p1.get_z()
 
-  theta =nanop.get_theta()
-  p2 = nanop.get_p2()
-  p1 = point.point(xcn, ycn, zcn)
-  
   for i in range(len(xlist)):
     p0 = point.point(xlistnew[i], ylistnew[i], zlistnew[i])
     p0 = util.point_rotate(p1, p2, p0, theta)
