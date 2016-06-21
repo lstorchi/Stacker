@@ -47,6 +47,11 @@ if (botx >= topx) or (boty >= topy) or \
 
 xlistin, ylistin, zlistin, atoms = xyznanop.read_ncxyz(xyznc)
 
+xlistall = []
+ylistall = []
+zlistall = []
+atomsall = []
+
 for i in range(len(scx)): 
   cx = scx[i] 
   cy = scy[i] 
@@ -63,6 +68,24 @@ for i in range(len(scx)):
 
   tetha = random.uniform(0.0, 2.0*math.pi) 
 
-  xlist, yist, zlist = xyznanop.return_rototransl_xyz(p1, p2, tetha, \
+  xlist, ylist, zlist = xyznanop.return_rototransl_xyz(p1, p2, tetha, \
           xlistin, ylistin, zlistin)
 
+  xlistall.extend(xlist)
+  ylistall.extend(ylist)
+  zlistall.extend(zlist)
+  atomsall.extend(atoms)
+
+filename = "test.xyz"
+target = open(filename, 'w')
+target.write(str(len(xlistall))+"\n")
+target.write("\n")
+
+for i in range(len(xlistall)):
+  target.write(str(atomsall[i]) + " " + \
+            str(xlistall[i]) + " " + \
+            str(ylistall[i]) + " " + \
+            str(zlistall[i]))
+  target.write("\n")
+
+target.close()
