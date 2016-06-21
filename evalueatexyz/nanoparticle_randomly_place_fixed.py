@@ -30,7 +30,6 @@ if (len(sys.argv)) == 3:
 spheres = []
 zmax = xmax = ymax = -10000.0
 zmin = xmin = ymin =  10000.0
-R = -1.0
 
 xmin, xmax, ymin, ymax, zmin, zmax = \
     util.file_to_sphere_diffr_list(filename, spheres) 
@@ -51,6 +50,14 @@ if (botx >= topx) or (boty >= topy) or \
 
 xlistin, ylistin, zlistin, atoms = xyznanop.read_ncxyz(xyznc)
 
+vdwradius = {'O':0.60, 'Ti':1.40}
+sumofvdw = numpy.zeros((len(atoms),len(atoms)))
+for i in range(0,len(atoms)):
+  for j in range(0,len(atoms)):
+    sumofvdw[i][j] = vdwradius[atoms[i]] + vdwradius[atoms[j]]
+
+#print sumofvdw
+
 xlistall = []
 ylistall = []
 zlistall = []
@@ -62,6 +69,7 @@ lplacedcy = []
 lplacedcz = []
 
 for i in range(len(scx)): 
+  
   cx = scx[i] 
   cy = scy[i] 
   cz = scz[i]
@@ -97,21 +105,29 @@ for i in range(len(scx)):
   
     totnumofatom = totnumofatom + len(xlist)
   
-    for i in selectedidx:
+    mindist = 10000.0
+    for j in selectedidx:
       n1 = numpy.column_stack((xlist, ylist, zlist))
-      n2 = numpy.column_stack((xlistall[i], ylistall[i], zlistall[i]))
+      n2 = numpy.column_stack((xlistall[j], ylistall[j], zlistall[j]))
       dists = scipy.spatial.distance.cdist(n1, n2)
+      dists = dists - sumofvdw
 
-      la distanza minima deve essere suoperiore alla somma dei raggi di van der wall 
-      se cosi' csarto e riprovo altrimenti todo e false ed aggiungo la nanoparticella 
+      md = numpy.min(dists)
+
+      if (mindist > md):
+        mindist = md
+      
+      #la distanza minima deve essere suoperiore alla somma dei raggi di van der wall 
+      #se cosi' csarto e riprovo altrimenti todo e false ed aggiungo la nanoparticella 
    
-    todo = False
-    xlistall.append(xlist)
-    ylistall.append(ylist)
-    zlistall.append(zlist)
-    atomsall.append(atoms)
- 
+    if (mindist > 0.0):
+      todo = False
+      xlistall.append(xlist)
+      ylistall.append(ylist)
+      zlistall.append(zlist)
+      atomsall.append(atoms)
 
+ 
 
   #print " "
 
