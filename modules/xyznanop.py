@@ -8,23 +8,58 @@ import util
 
 def return_rototransl_xyz(p1, p2, theta, xlist, ylist, zlist):
 
-  xlistnew = list(xlist)
-  ylistnew = list(ylist)
-  zlistnew = list(zlist)
+  xlistnew = numpy.asarray(xlist)
+  ylistnew = numpy.asarray(ylist)
+  zlistnew = numpy.asarray(zlist)
 
-  for i in range(len(xlist)):
-    xlistnew[i] = xlistnew[i] + p1.get_x()
-    ylistnew[i] = ylistnew[i] + p1.get_y()
-    zlistnew[i] = zlistnew[i] + p1.get_z()
+  # Initialize point q
+  q = point.point(0.0,0.0,0.0)
+  Np = p2 - p1
+  Nm = math.sqrt(Np.get_x()**2 + Np.get_y()**2 + Np.get_z()**2)
 
-  for i in range(len(xlist)):
-    p0 = point.point(xlistnew[i], ylistnew[i], zlistnew[i])
-    p0 = util.point_rotate(p1, p2, p0, theta)
-    xlistnew[i] = p0.get_x()
-    ylistnew[i] = p0.get_y()
-    zlistnew[i] = p0.get_z()
+  # i due punti coincidono, non faccio nulla e ritorno
+  if Nm == 0:
+    xlistnew = xlistnew + p1.get_x()
+    ylistnew = ylistnew + p1.get_y()
+    zlistnew = zlistnew + p1.get_z()
 
-  return  xlistnew, ylistnew, zlistnew
+    return  xlistnew.tolist(), ylistnew.tolist(), zlistnew.tolist()
+    
+  # Rotation axis unit vector
+  n = point.point(Np.get_x()/Nm, Np.get_y()/Nm, Np.get_z()/Nm)
+
+  # Matrix common factors     
+  c = math.cos(theta)
+  t = (1 - math.cos(theta))
+  s = math.sin(theta)
+  X = n.x
+  Y = n.y
+  Z = n.z
+
+  # Matrix 'M'
+  d11 = t*X**2 + c
+  d12 = t*X*Y - s*Z
+  d13 = t*X*Z + s*Y
+  d21 = t*X*Y + s*Z
+  d22 = t*Y**2 + c
+  d23 = t*Y*Z - s*X
+  d31 = t*X*Z - s*Y
+  d32 = t*Y*Z + s*X
+  d33 = t*Z**2 + c
+
+  #            |p.x|
+  # Matrix 'M'*|p.y|
+  #            |p.z|
+  qx = d11*xlistnew + d12*ylistnew + d13*zlistnew
+  qy = d21*xlistnew + d22*ylistnew + d23*zlistnew
+  qz = d31*xlistnew + d32*ylistnew + d33*zlistnew
+
+  # Translate axis and rotated point back to original location    
+  qx = qx + p1.get_x()
+  qy = qy + p1.get_y()
+  qz = qz + p1.get_z()
+
+  return  qx.tolist(), qy.tolist(), qz.tolist()
 
 #####################################################################
 
