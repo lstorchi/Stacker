@@ -127,7 +127,8 @@ for i in range(len(scx)):
       zlistall.append(zlist)
       atomsall.append(atoms)
 
-      print i ," of ", len(scx) 
+      print i ," of ", len(scx), " " , mindist 
+      sys.stdout.flush()
 
   #print " "
 
