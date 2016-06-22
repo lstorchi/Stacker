@@ -88,7 +88,7 @@ nanop = nanoparticle.nanotio2(numpy.mean(xlist), \
 sphere = vtk.vtkSphereSource()
 sphere.SetCenter(numpy.mean(xlist), \
         numpy.mean(ylist), numpy.mean(zlist))
-sphere.SetRadius(float(28.909/2.118))
+sphere.SetRadius(float(28.909/1.8003))
 
 mapper = vtk.vtkPolyDataMapper()
 if vtk.VTK_MAJOR_VERSION <= 5:

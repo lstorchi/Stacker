@@ -14,7 +14,7 @@ spheres = []
 
 outfile = open("actual_config.txt", "wa")
 
-Radius = float(28.909/2.118)
+Radius = float(28.909/1.8003)
 common.botx = 0.0 
 common.topx = 500.0
 common.boty = 0.0 
