@@ -120,14 +120,14 @@ for i in range(len(scx)):
       #la distanza minima deve essere suoperiore alla somma dei raggi di van der wall 
       #se cosi' csarto e riprovo altrimenti todo e false ed aggiungo la nanoparticella 
    
-    if (mindist > 0.0):
+    if (mindist > 3.0):
       todo = False
       xlistall.append(xlist)
       ylistall.append(ylist)
       zlistall.append(zlist)
       atomsall.append(atoms)
 
- 
+      print i ," of ", len(scx) 
 
   #print " "
 
