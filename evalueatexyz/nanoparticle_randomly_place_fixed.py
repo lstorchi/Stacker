@@ -134,7 +134,7 @@ for i in range(len(scx)):
       mintetha = tetha
       minp2 = p2
    
-    if (mindist > 3.0):
+    if (mindist > 2.5):
       todo = False
       xlistall.append(xlist)
       ylistall.append(ylist)
