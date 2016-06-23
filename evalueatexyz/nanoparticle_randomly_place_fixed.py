@@ -69,6 +69,10 @@ lplacedcz = []
 
 maxloopnumber = 10000
 
+H = 28.99
+B = 23.56
+A = 14.44
+
 for i in range(len(scx)): 
   
   cx = scx[i] 
@@ -126,8 +130,8 @@ for i in range(len(scx)):
       #la distanza minima deve essere suoperiore alla somma dei raggi di van der wall 
       #se cosi' csarto e riprovo altrimenti todo e false ed aggiungo la nanoparticella 
 
-    print "  idx: ", i, " ", counter ," of ", maxloopnumber, " ", mindist
-    sys.stdout.flush()
+    print >> sys.stderr, "  idx: ", i, " ", counter ," of ", maxloopnumber, " ", mindist
+    sys.stderr.flush()
 
     if (mindval > mindist):
       mindval = mindist
@@ -141,11 +145,13 @@ for i in range(len(scx)):
       zlistall.append(zlist)
       atomsall.append(atoms)
 
-      print i ," of ", len(scx), " " , mindist 
-      sys.stdout.flush()
+      print >> sys.stderr, i ," of ", len(scx), " " , mindist 
+      sys.stderr.flush()
+
+      print cx, cy, cz, A, B, H, p2.get_x(), p2.get_y(), p2.get_z(), tetha
 
     if counter >= maxloopnumber:
-      xlist, ylist, zlist = xyznanop.return_rototransl_xyz(p1, p2, tetha, \
+      xlist, ylist, zlist = xyznanop.return_rototransl_xyz(p1, minp2, tetha, \
             xlistin, ylistin, zlistin)
 
       todo = False
@@ -154,8 +160,11 @@ for i in range(len(scx)):
       zlistall.append(zlist)
       atomsall.append(atoms)
 
-      print i ," of ", len(scx), " " , mindval
-      sys.stdout.flush()
+      print cx, cy, cz, A, B, H, minp2.get_x(), minp2.get_y(), \
+              minp2.get_z(), tetha
+
+      print >> sys.stderr, i ," of ", len(scx), " " , mindval
+      sys.stderr.flush()
 
   #print " "
 
