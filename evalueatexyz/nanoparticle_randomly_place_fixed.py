@@ -68,6 +68,7 @@ lplacedcy = []
 lplacedcz = []
 
 maxloopnumber = 10000
+totnumofatom = 0
 
 H = 28.99
 B = 23.56
@@ -145,6 +146,8 @@ for i in range(len(scx)):
       zlistall.append(zlist)
       atomsall.append(atoms)
 
+      totnumofatom = totnumofatom + len(xlist)
+
       print >> sys.stderr, i ," of ", len(scx), " " , mindist 
       sys.stderr.flush()
 
@@ -159,6 +162,8 @@ for i in range(len(scx)):
       ylistall.append(ylist)
       zlistall.append(zlist)
       atomsall.append(atoms)
+
+      totnumofatom = totnumofatom + len(xlist)
 
       print cx, cy, cz, A, B, H, minp2.get_x(), minp2.get_y(), \
               minp2.get_z(), tetha
