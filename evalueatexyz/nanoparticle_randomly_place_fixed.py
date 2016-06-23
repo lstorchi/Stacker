@@ -99,9 +99,6 @@ for i in range(len(scx)):
   while todo:
     counter = counter + 1
 
-    print counter ," of ", maxloopnumber
-    sys.stdout.flush()
-
     # ruota la nanoparticella random
     p2x = random.uniform(botx, topx)
     p2y = random.uniform(boty, topy)
@@ -128,6 +125,9 @@ for i in range(len(scx)):
       
       #la distanza minima deve essere suoperiore alla somma dei raggi di van der wall 
       #se cosi' csarto e riprovo altrimenti todo e false ed aggiungo la nanoparticella 
+
+    print "  idx: ", i, " ", counter ," of ", maxloopnumber, " ", mindist
+    sys.stdout.flush()
 
     if (mindval > mindist):
       mindval = mindist
