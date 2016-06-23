@@ -62,11 +62,12 @@ xlistall = []
 ylistall = []
 zlistall = []
 atomsall = []
-totnumofatom = 0
 
 lplacedcx = []
 lplacedcy = []
 lplacedcz = []
+
+maxloopnumber = 10000
 
 for i in range(len(scx)): 
   
@@ -88,10 +89,20 @@ for i in range(len(scx)):
   lplacedcy.append(cy)
   lplacedcz.append(cz)
 
+  counter = 0
+  mintetha = 0.0
+  minp2 = point.point(0.0, 0.0, 0.0)
+  mindval = 10000.0
+
+  p1 = point.point(cx, cy, cz)
+
   while todo:
+    counter = counter + 1
+
+    print counter ," of ", maxloopnumber
+    sys.stdout.flush()
+
     # ruota la nanoparticella random
-    p1 = point.point(cx, cy, cz)
-  
     p2x = random.uniform(botx, topx)
     p2y = random.uniform(boty, topy)
     p2z = random.uniform(botz, topz)
@@ -102,8 +113,6 @@ for i in range(len(scx)):
   
     xlist, ylist, zlist = xyznanop.return_rototransl_xyz(p1, p2, tetha, \
             xlistin, ylistin, zlistin)
-  
-    totnumofatom = totnumofatom + len(xlist)
   
     mindist = 10000.0
     for j in selectedidx:
@@ -119,6 +128,11 @@ for i in range(len(scx)):
       
       #la distanza minima deve essere suoperiore alla somma dei raggi di van der wall 
       #se cosi' csarto e riprovo altrimenti todo e false ed aggiungo la nanoparticella 
+
+    if (mindval > mindist):
+      mindval = mindist
+      mintetha = tetha
+      minp2 = p2
    
     if (mindist > 3.0):
       todo = False
@@ -128,6 +142,19 @@ for i in range(len(scx)):
       atomsall.append(atoms)
 
       print i ," of ", len(scx), " " , mindist 
+      sys.stdout.flush()
+
+    if counter >= maxloopnumber:
+      xlist, ylist, zlist = xyznanop.return_rototransl_xyz(p1, p2, tetha, \
+            xlistin, ylistin, zlistin)
+
+      todo = False
+      xlistall.append(xlist)
+      ylistall.append(ylist)
+      zlistall.append(zlist)
+      atomsall.append(atoms)
+
+      print i ," of ", len(scx), " " , mindval
       sys.stdout.flush()
 
   #print " "
