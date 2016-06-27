@@ -42,10 +42,25 @@ botx, topx, boty, topy, botz, topz = \
 print >> sys.stderr, "Read done"
 
 radius = {'O':0.60, 'Ti':1.40}
- 
-for selectedid in range(len(nanoparticles)):
-  nanop = nanoparticles[selectedid]
-  pcx, pcy, pcz = nanop.get_center()
 
-  nearnanop, neardst = nanoparticle.get_near_nanoparticle (nanoparticles, \
-      pcx, pcy, pcz, (2.0 * nanop.get_max_sphere()))
+pairs = []
+for id1 in range(len(nanoparticles)):
+  nanop1 = nanoparticles[id1]
+  p1cx, p1cy, p1cz = nanop1.get_center()
+  sumr = 2.25 * nanop1.get_max_sphere()
+
+  indices, d = nanoparticle.get_near_nanoparticle_indexs(nanoparticles, \
+          p1cx, p1cy, p1cz, sumr)
+
+  for i in range(len(indices)):
+    id2 = indices[i]
+ 
+    pair = str(id1) + "_" + str(id2)
+    if (id1 != id2) and (pair not in pairs):
+      pairs.append(str(id1) + "_" + str(id2))
+      pairs.append(str(id2) + "_" + str(id1))
+    
+      nanop2 = nanoparticles[id2]
+    
+
+print "Num. of Pairs: ", len(pairs)
