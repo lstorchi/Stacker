@@ -96,5 +96,8 @@ for id1 in range(len(nanoparticles)):
 
       if (md > 2.0 and md < 5.0):
         print md
+
+        le distanze per il clustering direi sono le distanze tra tutti i vertici 
+        appure posso usare g_cluster 
  
 print "Num. of Pairs: ", len(pairs)
