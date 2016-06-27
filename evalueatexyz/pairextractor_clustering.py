@@ -1,7 +1,10 @@
-import sys 
 import re
-import numpy
+import sys 
 import math
+import scipy 
+import numpy
+
+from scipy.spatial import distance
 
 sys.path.append("../modules")
 
@@ -41,7 +44,11 @@ botx, topx, boty, topy, botz, topz = \
 
 print >> sys.stderr, "Read done"
 
-radius = {'O':0.60, 'Ti':1.40}
+vdwradius = {'O':0.60, 'Ti':1.40}
+sumofvdw = numpy.zeros((len(atoms),len(atoms)))
+for i in range(0,len(atoms)):
+  for j in range(0,len(atoms)):
+    sumofvdw[i][j] = vdwradius[atoms[i]] + vdwradius[atoms[j]]
 
 pairs = []
 for id1 in range(len(nanoparticles)):
@@ -52,6 +59,15 @@ for id1 in range(len(nanoparticles)):
   indices, d = nanoparticle.get_near_nanoparticle_indexs(nanoparticles, \
           p1cx, p1cy, p1cz, sumr)
 
+  theta = nanop1.get_theta()
+  p2 = nanop1.get_p2()
+  p1 = point.point(p1cx, p1cy, p1cz)
+
+  xlist1, ylist1, zlist1 = xyznanop.return_rototransl_xyz(p1, p2, theta, \
+          xlist, ylist, zlist)
+  
+  n1 = numpy.column_stack((xlist1, ylist1, zlist1))
+  
   for i in range(len(indices)):
     id2 = indices[i]
  
@@ -61,6 +77,24 @@ for id1 in range(len(nanoparticles)):
       pairs.append(str(id2) + "_" + str(id1))
     
       nanop2 = nanoparticles[id2]
-    
 
+      p2cx, p2cy, p2cz = nanop2.get_center()
+ 
+      theta = nanop2.get_theta()
+      p2 = nanop2.get_p2()
+      p1 = point.point(p2cx, p2cy, p2cz)
+
+      xlist2, ylist2, zlist2 = xyznanop.return_rototransl_xyz(p1, p2, theta, \
+              xlist, ylist, zlist)
+
+      n2 = numpy.column_stack((xlist2, ylist2, zlist2))
+ 
+      dists = scipy.spatial.distance.cdist(n1, n2)
+      dists = dists - sumofvdw
+
+      md = numpy.min(dists)
+
+      if (md > 2.0 and md < 5.0):
+        print md
+ 
 print "Num. of Pairs: ", len(pairs)
