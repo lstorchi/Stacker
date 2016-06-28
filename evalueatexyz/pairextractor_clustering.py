@@ -95,9 +95,24 @@ for id1 in range(len(nanoparticles)):
       md = numpy.min(dists)
 
       if (md > 2.0 and md < 5.0):
+        plist1 = nanop1.get_corners ()
+        plist2 = nanop2.get_corners ()
+
+        p1top, p1bottom = nanop1.get_ptop_and_bottom ()
+        p2top, p2bottom = nanop2.get_ptop_and_bottom ()
+
+        plist1.append(p1top)
+        plist1.append(p1bottom)
+
+        plist2.append(p2top)
+        plist2.append(p2bottom)
+
+        l3d = line.line3d()
+        angle = l3d.get_angle_two_line(p1top, p1bottom, p2top, p2bottom)
+
         print md
 
-        le distanze per il clustering direi sono le distanze tra tutti i vertici 
-        appure posso usare g_cluster 
+        #le distanze per il clustering direi sono le distanze tra tutti i vertici 
+        #appure posso usare g_cluster 
  
 print "Num. of Pairs: ", len(pairs)

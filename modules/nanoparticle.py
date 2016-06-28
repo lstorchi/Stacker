@@ -551,6 +551,25 @@ class nanotio2:
     return nanopActor
 
 
+  def get_corners (self):
+
+    plist = []
+
+    plist.append(point.point(self._x[0][0], self._x[0][1], self._x[0][2]))
+    plist.append(point.point(self._x[1][0], self._x[1][1], self._x[1][2]))
+    plist.append(point.point(self._x[2][0], self._x[2][1], self._x[2][2]))
+    plist.append(point.point(self._x[3][0], self._x[3][1], self._x[3][2]))
+    plist.append(point.point(self._x[4][0], self._x[4][1], self._x[4][2]))
+    plist.append(point.point(self._x[5][0], self._x[5][1], self._x[5][2]))
+    plist.append(point.point(self._x[6][0], self._x[6][1], self._x[6][2]))
+    plist.append(point.point(self._x[7][0], self._x[7][1], self._x[7][2]))
+    plist.append(point.point(self._x[8][0], self._x[8][1], self._x[8][2]))
+    plist.append(point.point(self._x[9][0], self._x[9][1], self._x[9][2]))
+    plist.append(point.point(self._x[10][0], self._x[10][1], self._x[10][2]))
+    plist.append(point.point(self._x[11][0], self._x[11][1], self._x[11][2]))
+
+    return plist
+
   def get_surface (self):
 
     count001 = 0
