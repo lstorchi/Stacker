@@ -51,6 +51,9 @@ for i in range(0,len(atoms)):
     sumofvdw[i][j] = vdwradius[atoms[i]] + vdwradius[atoms[j]]
 
 pairs = []
+tocluster = [] 
+print "Start pair selection ..."
+
 for id1 in range(len(nanoparticles)):
   nanop1 = nanoparticles[id1]
   p1cx, p1cy, p1cz = nanop1.get_center()
@@ -110,9 +113,33 @@ for id1 in range(len(nanoparticles)):
         l3d = line.line3d()
         angle = l3d.get_angle_two_line(p1top, p1bottom, p2top, p2bottom)
 
-        print md
+        if (len(plist1) != len(plist2)):
+          print "Orrore " 
+          exit(1)
+
+        dists = []
+        for i in range(len(plist1)):
+          d = plist1[i].get_distance_from (plist2[i])
+          dists.append(d)
+
+        dists.append(angle)
+        tocluster.append(dists)
 
         #le distanze per il clustering direi sono le distanze tra tutti i vertici 
         #appure posso usare g_cluster 
  
-print "Num. of Pairs: ", len(pairs)
+print "Num. of Pairs: ", len(pairs), " check == " , len(tocluster)
+
+print "Start Clustering..." 
+pointstocluster = numpy.zeros((len(tocluster), len(tocluster[0])))
+for i in range(0,len(tocluster)):
+  for j in range(0,len(tocluster[i])):
+    pointstocluster[i,j] = tocluster[i][j]
+
+NUMOFCLUST = 1000
+
+centroids, selected = cluster.vq.kmeans2 (pointstocluster, NUMOFCLUST, 
+        iter=200, thresh=1e-9)
+
+print centroids
+print selected 
