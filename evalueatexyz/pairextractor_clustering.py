@@ -154,7 +154,53 @@ for i in range(len(selected)):
   clustnum = selected[i]
   pair = clusterpair[i]
 
-  pair to idx1 e idx2
+  idxs = pair.split("_")
 
+  if (len(idxs) > 2):
+    print "Orrore 1"
+    exit(1)
+
+  idx1 = int(idxs[0])
+  idx2 = int(idxs[1])
+
+  nanop1 = nanoparticles[idx1]
+  nanop2 = nanoparticles[idx2]
+
+  p1cx, p1cy, p1cz = nanop1.get_center()
+  p2cx, p2cy, p2cz = nanop2.get_center()
  
+  theta = nanop1.get_theta()
+  p2 = nanop1.get_p2()
+  p1 = point.point(p1cx, p1cy, p1cz)
+  xlist1, ylist1, zlist1 = xyznanop.return_rototransl_xyz(p1, p2, theta, \
+          xlist, ylist, zlist)
 
+  theta = nanop2.get_theta()
+  p2 = nanop2.get_p2()
+  p1 = point.point(p2cx, p2cy, p2cz)
+  xlist2, ylist2, zlist2 = xyznanop.return_rototransl_xyz(p1, p2, theta, \
+          xlist, ylist, zlist)
+
+  filename = "cluster_" + str(clustnum) + "_" + \
+          str(idx1) + "_" + str(idx2) + ".xyz"
+
+
+  target = open(filename, 'w')
+  target.write(str(len(xlist1)*len(xlist2))+"\n")
+  target.write("\n")
+
+  for i in range(len(xlist1)):
+    target.write(str(atoms[i]) + " " + \
+              str(xlist1[i]) + " " + \
+              str(ylist1[i]) + " " + \
+              str(zlist1[i]))
+    target.write("\n")
+  
+  for i in range(len(xlist2)):
+    target.write(str(atoms[i]) + " " + \
+              str(xlist2[i]) + " " + \
+              str(ylist2[i]) + " " + \
+              str(zlist2[i]))
+    target.write("\n")
+
+  target.close()
