@@ -186,7 +186,7 @@ for i in range(len(selected)):
 
 
   target = open(filename, 'w')
-  target.write(str(len(xlist1)*len(xlist2))+"\n")
+  target.write(str(len(xlist1)+len(xlist2))+"\n")
   target.write("\n")
 
   for i in range(len(xlist1)):
