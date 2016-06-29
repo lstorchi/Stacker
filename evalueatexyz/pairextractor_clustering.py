@@ -5,6 +5,7 @@ import scipy
 import numpy
 
 from scipy.spatial import distance
+from scipy import cluster
 
 sys.path.append("../modules")
 
@@ -42,7 +43,7 @@ nanoparticles = []
 botx, topx, boty, topy, botz, topz = \
         nanoparticle.file_to_nanoparticle_list(nanopfile, nanoparticles)
 
-print >> sys.stderr, "Read done"
+print "Read done"
 
 vdwradius = {'O':0.60, 'Ti':1.40}
 sumofvdw = numpy.zeros((len(atoms),len(atoms)))
@@ -52,6 +53,7 @@ for i in range(0,len(atoms)):
 
 pairs = []
 tocluster = [] 
+clusterpair = []
 print "Start pair selection ..."
 
 for id1 in range(len(nanoparticles)):
@@ -124,11 +126,12 @@ for id1 in range(len(nanoparticles)):
 
         dists.append(angle)
         tocluster.append(dists)
+        clusterpair.append(str(id1) + "_" + str(id2))
 
         #le distanze per il clustering direi sono le distanze tra tutti i vertici 
         #appure posso usare g_cluster 
  
-print "Num. of Pairs: ", len(pairs), " check == " , len(tocluster)
+print "Num. of Pairs: ", len(pairs), " after second check " , len(tocluster)
 
 print "Start Clustering..." 
 pointstocluster = numpy.zeros((len(tocluster), len(tocluster[0])))
@@ -136,10 +139,22 @@ for i in range(0,len(tocluster)):
   for j in range(0,len(tocluster[i])):
     pointstocluster[i,j] = tocluster[i][j]
 
-NUMOFCLUST = 1000
+NUMOFCLUST = 500
 
 centroids, selected = cluster.vq.kmeans2 (pointstocluster, NUMOFCLUST, 
         iter=200, thresh=1e-9)
 
-print centroids
-print selected 
+#print centroids
+
+print "Done"
+
+print "Producing XYZ..."
+
+for i in range(len(selected)):
+  clustnum = selected[i]
+  pair = clusterpair[i]
+
+  pair to idx1 e idx2
+
+ 
+
