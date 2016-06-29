@@ -68,12 +68,8 @@ for id1 in range(len(nanoparticles)):
   p2 = nanop1.get_p2()
   p1 = point.point(p1cx, p1cy, p1cz)
 
-  xlistin = xlist + p1cx
-  ylistin = ylist + p1cy
-  zlistin = zlist + p1cz
-
   xlist1, ylist1, zlist1 = xyznanop.return_rototransl_xyz(p1, p2, theta, \
-          xlistin, ylistin, zlistin)
+          xlist, ylist, zlist)
   
   n1 = numpy.column_stack((xlist1, ylist1, zlist1))
   
@@ -93,12 +89,8 @@ for id1 in range(len(nanoparticles)):
       p2 = nanop2.get_p2()
       p1 = point.point(p2cx, p2cy, p2cz)
 
-      xlistin = xlist + p2cx
-      ylistin = ylist + p2cy
-      zlistin = zlist + p2cz
-
       xlist2, ylist2, zlist2 = xyznanop.return_rototransl_xyz(p1, p2, theta, \
-              xlistin, ylistin, zlistin)
+              xlist, ylist, zlist)
 
       n2 = numpy.column_stack((xlist2, ylist2, zlist2))
  
@@ -181,23 +173,15 @@ for i in range(len(selected)):
   p2 = nanop1.get_p2()
   p1 = point.point(p1cx, p1cy, p1cz)
 
-  xlistin = xlist + p1cx
-  ylistin = ylist + p1cy
-  zlistin = zlist + p1cz
-
   xlist1, ylist1, zlist1 = xyznanop.return_rototransl_xyz(p1, p2, theta, \
-          xlistin, ylistin, zlistin)
+          xlist, ylist, zlist)
 
   theta = nanop2.get_theta()
   p2 = nanop2.get_p2()
   p1 = point.point(p2cx, p2cy, p2cz)
 
-  xlistin = xlist + p2cx
-  ylistin = ylist + p2cy
-  zlistin = zlist + p2cz
-
   xlist2, ylist2, zlist2 = xyznanop.return_rototransl_xyz(p1, p2, theta, \
-          xlistin, ylistin, zlistin)
+          xlist, ylist, zlist)
 
   filename = "cluster_" + str(clustnum) + "_" + \
           str(idx1) + "_" + str(idx2) + ".xyz"
