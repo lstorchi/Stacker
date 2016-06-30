@@ -99,7 +99,7 @@ for id1 in range(len(nanoparticles)):
 
       md = numpy.min(dists)
 
-      if (md > 0.0 and md < 2.0):
+      if (md > 0.0 and md < 3.0):
         clusterpair.append(str(id1) + "_" + str(id2))
 
         #le distanze per il clustering direi sono le distanze tra tutti i vertici 
@@ -134,9 +134,9 @@ for i in range(len(clusterpair)):
   xlist1, ylist1, zlist1 = xyznanop.return_rototransl_xyz(p1, p2, theta, \
           xlist, ylist, zlist)
 
-  xlistall = xlist1
-  ylistall = ylist1
-  zlistall = zlist1
+  xlistall = xlist1.tolist()
+  ylistall = ylist1.tolist()
+  zlistall = zlist1.tolist()
 
   theta = nanop2.get_theta()
   p2 = nanop2.get_p2()
@@ -145,9 +145,9 @@ for i in range(len(clusterpair)):
   xlist2, ylist2, zlist2 = xyznanop.return_rototransl_xyz(p1, p2, theta, \
           xlist, ylist, zlist)
 
-  xlistall.extend(xlist2)
-  ylistall.extend(ylist2)
-  zlistall.extend(zlist2)
+  xlistall.extend(xlist2.tolist())
+  ylistall.extend(ylist2.tolist())
+  zlistall.extend(zlist2.tolist())
 
   filename = "pair_" + \
           str(idx1) + "_" + str(idx2) + ".xyz"
