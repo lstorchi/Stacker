@@ -99,7 +99,7 @@ for id1 in range(len(nanoparticles)):
 
       md = numpy.min(dists)
 
-      if (md > 2.0 and md < 5.0):
+      if (md > 0.0 and md < 2.0):
         plist1 = nanop1.get_corners ()
         plist2 = nanop2.get_corners ()
 
