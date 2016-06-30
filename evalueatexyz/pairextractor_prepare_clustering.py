@@ -109,7 +109,7 @@ print "Num. of Pairs: ", len(pairs), " after second check " , len(tocluster)
 
 print "Start preparing PDB..." 
 
-for i in range(len(selected)):
+for i in range(len(clusterpair)):
   pair = clusterpair[i]
 
   idxs = pair.split("_")
