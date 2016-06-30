@@ -74,6 +74,8 @@ H = 28.99
 B = 23.56
 A = 14.44
 
+safenanop = 0
+
 for i in range(len(scx)): 
   
   cx = scx[i] 
@@ -139,8 +141,8 @@ for i in range(len(scx)):
       mintetha = tetha
       minp2 = p2
    
-    # se mindist > 6 nemmeno ci provo a riposizionare
-    if ((mindist > 0.0) and (mindist < 2.0)) or (mindist > 6.0):
+    if (mindist > 0.0) and (mindist < 2.0):
+      safenanop = safenanop + 1
       todo = False
       xlistall.append(xlist)
       ylistall.append(ylist)
@@ -154,7 +156,8 @@ for i in range(len(scx)):
 
       print cx, cy, cz, A, B, H, p2.get_x(), p2.get_y(), p2.get_z(), tetha
 
-    if counter >= maxloopnumber:
+    # se mindist > 7.0 nemmeno ci provo a riposizionare
+    if ((counter >= maxloopnumber) or (mindist > 7.0)):
       xlist, ylist, zlist = xyznanop.return_rototransl_xyz(p1, minp2, tetha, \
             xlistin, ylistin, zlistin)
 
@@ -173,6 +176,8 @@ for i in range(len(scx)):
       sys.stderr.flush()
 
   #print " "
+
+print >> sys.stderr, "Within the ranges: ", safenanop, " of ", len(spheres) 
 
 filename = "test.xyz"
 target = open(filename, 'w')
