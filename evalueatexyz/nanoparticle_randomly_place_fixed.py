@@ -139,7 +139,8 @@ for i in range(len(scx)):
       mintetha = tetha
       minp2 = p2
    
-    if (mindist > 0.0):
+    # se mindist > 6 nemmeno ci provo a riposizionare
+    if ((mindist > 0.0) and (mindist < 2.0)) or (mindist > 6.0):
       todo = False
       xlistall.append(xlist)
       ylistall.append(ylist)
