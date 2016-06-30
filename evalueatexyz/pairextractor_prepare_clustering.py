@@ -52,7 +52,6 @@ for i in range(0,len(atoms)):
     sumofvdw[i][j] = vdwradius[atoms[i]] + vdwradius[atoms[j]]
 
 pairs = []
-tocluster = [] 
 clusterpair = []
 print "Start pair selection ..."
 
@@ -105,7 +104,7 @@ for id1 in range(len(nanoparticles)):
         #le distanze per il clustering direi sono le distanze tra tutti i vertici 
         #appure posso usare g_cluster 
  
-print "Num. of Pairs: ", len(pairs), " after second check " , len(tocluster)
+print "Num. of Pairs: ", len(pairs), " after second check " , len(clusterpair)
 
 print "Start preparing PDB..." 
 
