@@ -14,7 +14,8 @@ spheres = []
 
 outfile = open("actual_config.txt", "wa")
 
-Radius = float(28.909/1.8003)
+# 10% piu' piu' grande di quello necessario ad avere sfere dello stesso volume
+Radius = float(28.909/1.90602)
 common.botx = 0.0 
 common.topx = 500.0
 common.boty = 0.0 
