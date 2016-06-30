@@ -151,9 +151,10 @@ for i in range(len(clusterpair)):
   filename = "pair_" + \
           str(idx1) + "_" + str(idx2) + ".xyz"
 
+  molname = "pair_"+ str(idx1) + "_" + str(idx2)
+  dim = len(xlist1)+len(xlist2)
   target = open(filename, 'w')
-  target.write(str(len(xlist1)+len(xlist2))+"\n")
-  target.write("\n")
+  target.write("%d\n%s\n" % (dim, molname))
 
   # direi che devo ritraslare tutto su zero credo 
   xc = numpy.mean(xlistall)
@@ -169,17 +170,11 @@ for i in range(len(clusterpair)):
   zlist2 = zlist2 - zc
 
   for i in range(len(xlist1)):
-    target.write(str(atoms[i]) + " " + \
-              str(xlist1[i]) + " " + \
-              str(ylist1[i]) + " " + \
-              str(zlist1[i]))
-    target.write("\n")
+    target.write("%3s %10.5g %10.5g %10.5g\n" % \
+            (atoms[i], xlist1[i], ylist1[i], zlist1[i]))
   
   for i in range(len(xlist2)):
-    target.write(str(atoms[i]) + " " + \
-              str(xlist2[i]) + " " + \
-              str(ylist2[i]) + " " + \
-              str(zlist2[i]))
-    target.write("\n")
-
+    target.write("%3s %10.5g %10.5g %10.5g\n" % \
+            (atoms[i], xlist2[i], ylist2[i], zlist2[i]))
+ 
   target.close()
