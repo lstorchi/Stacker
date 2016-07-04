@@ -188,7 +188,7 @@ for i in range(len(selected)):
   filename = "cluster_" + str(clustnum) + "_" + \
           str(idx1) + "_" + str(idx2) + ".xyz"
 
-  print "Cluster: " , clustnum, " d: ". minidists[i]
+  print "Cluster: " , clustnum, " d: ", minidists[i]
 
   target = open(filename, 'w')
   target.write(str(len(xlist1)+len(xlist2))+"\n")
