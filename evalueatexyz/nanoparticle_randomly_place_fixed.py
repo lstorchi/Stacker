@@ -141,7 +141,7 @@ for i in range(len(scx)):
       mintetha = tetha
       minp2 = p2
    
-    if (mindist > 0.0) and (mindist < 2.0):
+    if (mindist > -1.1) and (mindist <= 0.0):
       safenanop = safenanop + 1
       todo = False
       xlistall.append(xlist)
