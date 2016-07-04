@@ -54,6 +54,7 @@ for i in range(0,len(atoms)):
 pairs = []
 tocluster = [] 
 clusterpair = []
+minidists = []
 print "Start pair selection ..."
 
 for id1 in range(len(nanoparticles)):
@@ -99,7 +100,7 @@ for id1 in range(len(nanoparticles)):
 
       md = numpy.min(dists)
 
-      if (md > 0.0 and md < 2.0):
+      if (md > 0.0 and md < 1.0):
         plist1 = nanop1.get_corners ()
         plist2 = nanop2.get_corners ()
 
@@ -127,6 +128,7 @@ for id1 in range(len(nanoparticles)):
         dists.append(angle)
         tocluster.append(dists)
         clusterpair.append(str(id1) + "_" + str(id2))
+        minidists.append(md)
 
         #le distanze per il clustering direi sono le distanze tra tutti i vertici 
         #appure posso usare g_cluster 
@@ -186,6 +188,7 @@ for i in range(len(selected)):
   filename = "cluster_" + str(clustnum) + "_" + \
           str(idx1) + "_" + str(idx2) + ".xyz"
 
+  print "Cluster: " , clustnum, " d: ". minidists[i]
 
   target = open(filename, 'w')
   target.write(str(len(xlist1)+len(xlist2))+"\n")
