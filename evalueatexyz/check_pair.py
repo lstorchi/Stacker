@@ -61,13 +61,11 @@ n1 = numpy.column_stack((xlist1, ylist1, zlist1))
 n2 = numpy.column_stack((xlist2, ylist2, zlist2))
  
 dists = scipy.spatial.distance.cdist(n1, n2)
-
 md = numpy.min(dists)
 
 print "Min. Dist: ", md
 
 dists = dists - sumofvdw
-
 md = numpy.min(dists)
 
 print "Min. Dist: ", md
