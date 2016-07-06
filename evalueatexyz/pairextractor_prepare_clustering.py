@@ -98,7 +98,7 @@ for id1 in range(len(nanoparticles)):
 
       md = numpy.min(dists)
 
-      if (md > 0.0 and md < 3.0):
+      if (md > -1.1 and md <= 0.0):
         clusterpair.append(str(id1) + "_" + str(id2))
 
         #le distanze per il clustering direi sono le distanze tra tutti i vertici 
@@ -170,11 +170,11 @@ for i in range(len(clusterpair)):
   zlist2 = zlist2 - zc
 
   for i in range(len(xlist1)):
-    target.write("%3s %10.5g %10.5g %10.5g\n" % \
+    target.write("%3s %12.5g %12.5g %12.5g\n" % \
             (atoms[i], xlist1[i], ylist1[i], zlist1[i]))
   
   for i in range(len(xlist2)):
-    target.write("%3s %10.5g %10.5g %10.5g\n" % \
+    target.write("%3s %12.5g %12.5g %12.5g\n" % \
             (atoms[i], xlist2[i], ylist2[i], zlist2[i]))
  
   target.close()
