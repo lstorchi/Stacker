@@ -36,6 +36,19 @@ xmin, xmax, ymin, ymax, zmin, zmax = \
 
 scx, scy, scz, radius = util.sphere_to_arrays (spheres)
 
+cx = scx[0] 
+cy = scy[0] 
+cz = scz[0]
+H = 28.99
+B = 23.56
+A = 14.44
+
+n = nanoparticle.nanotio2(cx, cy, cz, A, B, H)
+
+print >> sys.stderr, "Sphere volume: ", spheres[0].get_volume(), \
+        "Nanoparticle: ", n.get_volume(), " [", \
+          math.fabs(spheres[0].get_volume() - n.get_volume()), "] "
+
 botx = min(scx)
 boty = min(scy)
 botz = min(scz)
