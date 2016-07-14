@@ -52,6 +52,7 @@ for i in range(0,len(atoms)):
     sumofvdw[i][j] = vdwradius[atoms[i]] + vdwradius[atoms[j]]
 
 pairs = []
+angles = []
 tocluster = [] 
 clusterpair = []
 minidists = []
@@ -129,6 +130,7 @@ for id1 in range(len(nanoparticles)):
         tocluster.append(dists)
         clusterpair.append(str(id1) + "_" + str(id2))
         minidists.append(md)
+        angles.append(angle)
 
         #le distanze per il clustering direi sono le distanze tra tutti i vertici 
         #appure posso usare g_cluster 
@@ -141,7 +143,7 @@ for i in range(0,len(tocluster)):
   for j in range(0,len(tocluster[i])):
     pointstocluster[i,j] = tocluster[i][j]
 
-NUMOFCLUST = 500
+NUMOFCLUST = 10
 
 centroids, selected = cluster.vq.kmeans2 (pointstocluster, NUMOFCLUST, 
         iter=200, thresh=1e-9)
@@ -188,7 +190,8 @@ for i in range(len(selected)):
   filename = "cluster_" + str(clustnum) + "_" + \
           str(idx1) + "_" + str(idx2) + ".xyz"
 
-  print "Cluster: " , clustnum, " d: ", minidists[i]
+  print "Cluster " , clustnum, "  pair ", idx1 , " ", idx2 , " d: ", \
+          minidists[i], " a: ", angles[i]
 
   target = open(filename, 'w')
   target.write(str(len(xlist1)+len(xlist2))+"\n")
