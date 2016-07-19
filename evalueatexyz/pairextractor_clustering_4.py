@@ -102,7 +102,7 @@ for id1 in range(len(nanoparticles)):
 
       md = numpy.min(dists)
 
-      if (md >= 0.0 and md <= 1.0):
+      if (md > -1.1 and md <= 0.0):
         p1top, p1bottom = nanop1.get_ptop_and_bottom ()
         p2top, p2bottom = nanop2.get_ptop_and_bottom ()
 
@@ -111,9 +111,6 @@ for id1 in range(len(nanoparticles)):
 
         dists = []
         dists.append(p1top.get_distance_from (p2top))
-        dists.append(p1top.get_distance_from (p2bottom))
-        dists.append(p1bottom.get_distance_from (p2top))
-        dists.append(p1bottom.get_distance_from (p2bottom))
 
         dists.append(angle)
         tocluster.append(dists)
