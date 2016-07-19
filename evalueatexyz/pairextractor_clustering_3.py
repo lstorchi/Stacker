@@ -56,6 +56,7 @@ angles = []
 tocluster = [] 
 clusterpair = []
 minidists = []
+alldists = []
 print "Start pair selection ..."
 
 for id1 in range(len(nanoparticles)):
@@ -110,16 +111,16 @@ for id1 in range(len(nanoparticles)):
 
         dists = []
         dists.append(p1top.get_distance_from (p2top))
-
-        for i in range(len(plist1)):
-          d = plist1[i].get_distance_from (plist2[i])
-          dists.append(d)
+        dists.append(p1top.get_distance_from (p2bottom))
+        dists.append(p1bottom.get_distance_from (p2top))
+        dists.append(p1bottom.get_distance_from (p2bottom))
 
         dists.append(angle)
         tocluster.append(dists)
         clusterpair.append(str(id1) + "_" + str(id2))
         minidists.append(md)
         angles.append(angle)
+        alldists.append(dists)
 
         #le distanze per il clustering direi sono le distanze tra tutti i vertici 
         #appure posso usare g_cluster 
@@ -179,8 +180,12 @@ for i in range(len(selected)):
   filename = "cluster_" + str(clustnum) + "_" + \
           str(idx1) + "_" + str(idx2) + ".xyz"
 
+  dists = alldists[i]
+
   print "Cluster " , clustnum, "  pair ", idx1 , " ", idx2 , " d: ", \
-          minidists[i], " a: ", angles[i]
+          minidists[i], " a: ", angles[i], " p1tp2t: " , dists[0], \
+          " p1tp2b: " , dists[1], " p1bp2t: " , dists[2], \
+          " p1bp2b: " , dists[3],
 
   target = open(filename, 'w')
   target.write(str(len(xlist1)+len(xlist2))+"\n")
