@@ -26,6 +26,18 @@ def funcg1(x, a, b, c, d, e, f, g, h, i):
 
 ###############################################################################
 
+def funcg2(x, a, b, c, d, e, f):
+    return a*numpy.exp(-1.0 * (((x - b)**2)/(2*c**2))) + \
+           d*numpy.exp(-1.0 * (((x - e)**2)/(2*f**2)))
+
+###############################################################################
+
+def funcg3(x, a, b, c, d, e, f):
+    return a*numpy.sin(x)*numpy.exp(-1.0 * (((x - b)**2)/(2*c**2))) + \
+           d*numpy.cos(x)*numpy.exp(-1.0 * (((x - e)**2)/(2*f**2)))
+
+###############################################################################
+
 def func(x, a, b, c, d, e, f):
     return a + b*x + c*x*x + d*x*x*x + e*numpy.cos(x) + f*numpy.sin(x)
 
@@ -58,7 +70,7 @@ for l in fp:
     e.append(float(linelist[0]))
     values.append(float(linelist[1]))
 
-    if (float(linelist[0]) > -7.0) and (float(linelist[0]) < 3.0):
+    if (float(linelist[0]) > -2.0) and (float(linelist[0]) < 2.0):
       em.append(float(linelist[0]))
       valuesm.append(float(linelist[1]))
 
@@ -95,7 +107,6 @@ gfit = scipy.ndimage.filters.gaussian_filter1d (values, sigma=2.0,
 # minimi quadrati gaussian
 
 #params, cmtx = scipy.optimize.curve_fit (funcg, e, values, maxfev=20000)
-
 #cgfit = []
 #for i in e:
 #    cgfit.append(funcg(i, params[0], params[1], params[2], 
@@ -103,36 +114,47 @@ gfit = scipy.ndimage.filters.gaussian_filter1d (values, sigma=2.0,
 #        params[6], params[7], params[8],
 #        params[9], params[10], params[11]))
 
-params, cmtx = scipy.optimize.curve_fit (funcg, em, valuesm, maxfev=20000)
+#params, cmtx = scipy.optimize.curve_fit (funcg, em, valuesm, maxfev=20000)
+#cgfitm = []
+#for i in e:
+#    cgfitm.append(funcg(i, params[0], params[1], params[2], 
+#        params[3], params[4], params[5], 
+#        params[6], params[7], params[8],
+#        params[9], params[10], params[11]))
 
+#params, cmtx = scipy.optimize.curve_fit (funcg1, em, valuesm, maxfev=20000)
+#cgfitm = []
+#for i in e:
+#    cgfitm.append(funcg1(i, params[0], params[1], params[2], 
+#        params[3], params[4], params[5], 
+#        params[6], params[7], params[8]))
+
+params, cmtx = scipy.optimize.curve_fit (funcg2, em, valuesm, maxfev=20000)
 cgfitm = []
 for i in e:
-    cgfitm.append(funcg(i, params[0], params[1], params[2], 
-        params[3], params[4], params[5], 
-        params[6], params[7], params[8],
-        params[9], params[10], params[11]))
+    cgfitm.append(funcg2(i, params[0], params[1], params[2], 
+        params[3], params[4], params[5]))
 
 # interpolate
 
 #ffit = scipy.interpolate.interp1d(e, values, kind='cubic')
-
 #ifit = ffit(e) 
-
 #s = scipy.interpolate.InterpolatedUnivariateSpline(e, values)
 #ifit = s(e)
-
 #tck = scipy.interpolate.splrep(e, values, s = 0.0)
 #ifit = scipy.interpolate.splev(e, tck, der=0)
 
 plt.clf()
 plt.plot(e, values, '.')
-plt.plot(em, valuesm, '.')
+#plt.plot(em, valuesm, '.')
+
 #plt.plot(e, gfit)   
 #plt.plot(e, ngfit)   
 #plt.plot(e, cfit)
 #plt.plot(e, cgfit)
-plt.plot(e, cgfitm)
 #plt.plot(e, ifit)
+
+plt.plot(e, cgfitm)
 plt.xlabel('X')
 plt.ylabel('Y')
 plt.show()
