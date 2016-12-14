@@ -34,6 +34,9 @@ valuesm = []
 #em.append(-3.0)
 #valuesm.append(0.0)
 
+MIN = -2.0
+MAX = 2.5
+
 for l in fp:
     p = re.compile(r'\s+')
     line = p.sub(' ', l)
@@ -44,7 +47,7 @@ for l in fp:
     e.append(float(linelist[0]))
     values.append(float(linelist[1]))
 
-    if (float(linelist[0]) > -2.0) and (float(linelist[0]) < 2.0):
+    if (float(linelist[0]) > MIN) and (float(linelist[0]) < MAX):
       em.append(float(linelist[0]))
       valuesm.append(float(linelist[1]))
 

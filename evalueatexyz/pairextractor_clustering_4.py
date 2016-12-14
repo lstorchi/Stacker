@@ -180,9 +180,7 @@ for i in range(len(selected)):
   dists = alldists[i]
 
   print "Cluster " , clustnum, "  pair ", idx1 , " ", idx2 , " d: ", \
-          minidists[i], " a: ", angles[i], " p1tp2t: " , dists[0], \
-          " p1tp2b: " , dists[1], " p1bp2t: " , dists[2], \
-          " p1bp2b: " , dists[3]
+          minidists[i], " a: ", angles[i], " p1tp2t: " , dists[0]
 
   target = open(filename, 'w')
   target.write(str(len(xlist1)+len(xlist2))+"\n")
