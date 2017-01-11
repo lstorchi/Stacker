@@ -23,3 +23,35 @@ if  mol1.OBMol.NumAtoms() == mol2.OBMol.NumAtoms() and \
     a1 = bond1.GetBeginAtomIdx()
     a2 = bond1.GetEndAtomIdx()
     bond2 = mol2.OBMol.GetBond(a1, a2)
+
+    if bond2 is None :
+      print a1, " and ", a2 , " are not connected in molecule 2"
+      atom1 = mol2.OBMol.GetAtomById(a1)
+      atom2 = mol2.OBMol.GetAtomById(a2)
+      print "  ", a1, " is ", atom1.GetAtomicNum() , " ", atom1.GetX(), " " , \
+              atom1.GetY() , " ", atom1.GetZ()
+      print "  ", a2, " is ", atom2.GetAtomicNum() , " ", atom2.GetX(), " " , \
+              atom2.GetY() , " ", atom2.GetZ()
+      d1 = (atom1.GetX() - atom2.GetX())**2 + (atom1.GetY() - atom2.GetY())**2 + \
+              (atom1.GetZ() - atom2.GetZ())**2 
+      print " distance: ", d1
+
+      atom1 = mol1.OBMol.GetAtomById(a1)
+      atom2 = mol1.OBMol.GetAtomById(a2)
+      print "  ", a1, " is ", atom1.GetAtomicNum() , " ", atom1.GetX(), " " , \
+              atom1.GetY() , " ", atom1.GetZ()
+      print "  ", a2, " is ", atom2.GetAtomicNum() , " ", atom2.GetX(), " " , \
+              atom2.GetY() , " ", atom2.GetZ()
+
+      d2 = (atom1.GetX() - atom2.GetX())**2 + (atom1.GetY() - atom2.GetY())**2 + \
+              (atom1.GetZ() - atom2.GetZ())**2 
+      print " distance: ", d2
+
+
+    else:
+      if bond1.GetBondOrder() == bond2.GetBondOrder():
+        l1 = bond1.GetLength()
+        l2 = bond2.GetLength()
+        print l1 - l2
+      else:
+        print "bond order differ"
