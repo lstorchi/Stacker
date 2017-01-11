@@ -63,7 +63,7 @@ def return_rototransl_xyz(p1, p2, theta, xlist, ylist, zlist):
 
 #####################################################################
 
-def read_ncxyz (filename):
+def read_ncxyz (filename, trans = True):
 
   filep = open(filename, "r")
   
@@ -96,14 +96,15 @@ def read_ncxyz (filename):
   
   filep.close()
   
-  xc = numpy.mean(xlist)
-  yc = numpy.mean(ylist)
-  zc = numpy.mean(zlist)
+  if trans:
+    xc = numpy.mean(xlist)
+    yc = numpy.mean(ylist)
+    zc = numpy.mean(zlist)
   
-  for i in range(len(xlist)):
-    xlist[i] = xlist[i] - xc
-    ylist[i] = ylist[i] - yc
-    zlist[i] = zlist[i] - zc
+    for i in range(len(xlist)):
+      xlist[i] = xlist[i] - xc
+      ylist[i] = ylist[i] - yc
+      zlist[i] = zlist[i] - zc
   
   return xlist, ylist, zlist, atoms
 
