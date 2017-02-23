@@ -50,14 +50,12 @@ if  mol1.OBMol.NumAtoms() == mol2.OBMol.NumAtoms() and \
     #if bond2 is None :
     #  print a1, " and ", a2 , " are not connected in molecule 2 ", math.fabs(d2-d1) 
 
-    print d2
-
     #if math.fabs(d2-d1) > 0.5:
     if bond2 is None :
       atomlist.append(a1)
       atomlist.append(a2)
-      #print " H   ", atom1.GetX() , " ", atom1.GetY(), " ", atom1.GetZ()
-      #print " H   ", atom2.GetX() , " ", atom2.GetY(), " ", atom2.GetZ()
+      print " H   ", atom1.GetX() , " ", atom1.GetY(), " ", atom1.GetZ()
+      print " H   ", atom2.GetX() , " ", atom2.GetY(), " ", atom2.GetZ()
  
 
     #else:

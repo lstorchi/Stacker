@@ -49,11 +49,11 @@ for i in range(len(atoms1)):
 
 import matplotlib.pyplot
 
-matplotlib.pyplot.hist(distances)
-matplotlib.pyplot.title("Istogramma")
-matplotlib.pyplot.xlabel("Valore")
-matplotlib.pyplot.ylabel("Freq.")
-matplotlib.pyplot.show()
+#matplotlib.pyplot.hist(distances)
+#matplotlib.pyplot.title("Istogramma")
+#matplotlib.pyplot.xlabel("Valore")
+#matplotlib.pyplot.ylabel("Freq.")
+#matplotlib.pyplot.show()
 
 duesigma = 2.0 * numpy.std(distances)
 print "Mean: ", numpy.mean(distances) 
