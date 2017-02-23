@@ -109,3 +109,15 @@ def read_ncxyz (filename, trans = True):
   return xlist, ylist, zlist, atoms
 
 #####################################################################
+
+def write_ncxyz (filename, xl, yl, zl, al):
+
+  filep = open(filename, "w")
+  
+  filep.write("%6d\n"%(len(al)))
+  filep.write("\n")
+  for i in range(0, len(al)):
+      filep.write("%3s %10.5f %10.5f %10.5f\n"%(al[i], xl[i], \
+              yl[i], zl[i]))
+  
+#####################################################################
