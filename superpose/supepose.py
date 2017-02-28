@@ -15,6 +15,7 @@ import xyznanop
 
 filename1 = ""
 filename2 = ""
+verbose = False
 
 if (len(sys.argv)) == 3: 
   filename1 = sys.argv[1]
@@ -40,21 +41,26 @@ if len(atoms1) == len(atoms2):
     mol2list[i, 1] = ylist2[i]
     mol2list[i, 2] = zlist2[i]
 
-  print "RMSD: ", kabsch_minima.rmsd(mol1list, mol2list)
+  if (verbose):
+    print "RMSD: ", kabsch_minima.rmsd(mol1list, mol2list)
 
   rmatrix, translate2, translate1 = \
           kabsch_minima.return_rotation_matrix(mol1list, mol2list)
 
-  print "Start translate: ", filename1
+  if verbose:
+    print "Start translate: ", filename1
   for i in range(0, len(atoms1)):
     xlist1[i] -= translate1[0]
     ylist1[i] -= translate1[1]
     zlist1[i] -= translate1[2]
-  print "Done"
+  if verbose:
+    print "Done"
 
-  xyznanop.write_ncxyz("out1.xyz", xlist1, ylist1, zlist1, atoms1)
+  if verbose:
+    xyznanop.write_ncxyz("out1.xyz", xlist1, ylist1, zlist1, atoms1)
 
-  print "Start translate: ", filename2
+  if verbose:
+    print "Start translate: ", filename2
   for i in range(0, len(atoms1)):
     xlist2[i] -= translate2[0]
     ylist2[i] -= translate2[1]
@@ -75,15 +81,18 @@ if len(atoms1) == len(atoms2):
   qx = []
   qy = []
   qz = []
-  print "Start rotate: ", filename2
+  if verbose:
+    print "Start rotate: ", filename2
   for i in range(0,len(atoms2)):
     qx.append(d11*xlist2[i] + d12*ylist2[i] + d13*zlist2[i])
     qy.append(d21*xlist2[i] + d22*ylist2[i] + d23*zlist2[i]) 
     qz.append(d31*xlist2[i] + d32*ylist2[i] + d33*zlist2[i]) 
 
-  print "Done"
+  if verbose:
+    print "Done"
 
-  xyznanop.write_ncxyz("out2.xyz", qx, qy, qz, atoms2)
+  if verbose:
+    xyznanop.write_ncxyz("out2.xyz", qx, qy, qz, atoms2)
 
   for i in range(0, len(atoms1)):
     mol1list[i, 0] = xlist1[i]
@@ -95,7 +104,8 @@ if len(atoms1) == len(atoms2):
     mol2list[i, 1] = qy[i]
     mol2list[i, 2] = qz[i]
 
-  print "RMSD: ", kabsch_minima.rmsd(mol1list, mol2list)
+  print filename1, " ", filename2, " ", "RMSD: ", \
+          kabsch_minima.rmsd(mol1list, mol2list)
   
   #ormatrix = pybel.ob.matrix3x3()
   #for i in range(3):
