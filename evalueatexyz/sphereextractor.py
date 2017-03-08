@@ -141,21 +141,21 @@ for selectedid in range(len(nanoparticles)):
   nearnanop, neardst = nanoparticle.get_near_nanoparticle (nanoparticles, \
       pcx, pcy, pcz, (2.8* nanop.get_max_sphere()))
 
-  print len(nearnanop)
+  print len(nearnanop)+1
 
   xlistnew, ylistnew, zlistnew = return_rototransl_xyz(nanop, xlist, ylist, zlist)
 
   filename = str(selectedid) + ".xyz"
   target = open(filename, 'w')
-  target.write(str((len(nearnanop)+1)*len(xlist))+"\n")
+  target.write(str((len(nearnanop))*len(xlist))+"\n")
   target.write("\n")
 
-  for i in range(len(xlist)):
-    target.write(str(atoms[i]) + " " + \
-              str(xlistnew[i]) + " " + \
-              str(ylistnew[i]) + " " + \
-              str(zlistnew[i]))
-    target.write("\n")
+ #for i in range(len(xlist)):
+ #  target.write(str(atoms[i]) + " " + \
+ #            str(xlistnew[i]) + " " + \
+ #            str(ylistnew[i]) + " " + \
+ #            str(zlistnew[i]))
+ #  target.write("\n")
 
   for a in range(len(nearnanop)):
     xlistnew, ylistnew, zlistnew = return_rototransl_xyz(nearnanop[a], xlist, ylist, zlist)
