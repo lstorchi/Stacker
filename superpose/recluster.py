@@ -14,6 +14,7 @@ elif (len(sys.argv) == 3 ):
 
 file = open(filename, "r")
 
+pairsandvalues = {}
 allpairs = []
 values = []
 single = []
@@ -38,7 +39,12 @@ for l in file:
       single.append(linelist[1])
 
 
-print >> sys.stderr, numpy.mean(values) , " +/- ", numpy.std(values)
+m = numpy.mean(values)
+print >> sys.stderr, m , " +/- ", numpy.std(values)
 print >> sys.stderr, "Num. of pairs  ", len(values)
 print >> sys.stderr, "Num. of single ", len(single)
+
+for i in range(len(values)):
+    if (values[i] < m):
+      print allpairs[i] , " ", values[i]
 
