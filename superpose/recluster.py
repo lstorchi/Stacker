@@ -56,7 +56,7 @@ inserted = []
 for l in single:
     if not (l in inserted):
         idx += 1
-        fp = open("set_"+str(idx)+".txt", "w")
+        fp = open(filename+"_set_"+str(idx)+".txt", "w")
         for i in range(len(lowerpairs)):
           lv = lowerpairs[i].split(" ")
           if lv[0] == l or lv[1] == l:
