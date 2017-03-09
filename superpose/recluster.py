@@ -40,11 +40,26 @@ for l in file:
 
 
 m = numpy.mean(values)
-print >> sys.stderr, m , " +/- ", numpy.std(values)
-print >> sys.stderr, "Num. of pairs  ", len(values)
-print >> sys.stderr, "Num. of single ", len(single)
+print m , " +/- ", numpy.std(values)
+print "Num. of pairs  ", len(values)
+print "Num. of single ", len(single)
 
+lowervalue = []
+lowerpairs = []
 for i in range(len(values)):
     if (values[i] < m):
-      print allpairs[i] , " ", values[i]
+        lowerpairs.append(allpairs[i]) 
+        lowervalue.append(values[i])
 
+idx = 0
+inserted = []
+for l in single:
+    if not (l in inserted):
+        idx += 1
+        fp = open("set_"+str(idx)+".txt")
+        for i in range(len(lowerpairs)):
+          lv = lowerpairs[i].split(" ")
+          if lv[0] == l or lv[1] == l:
+              fp.write("%s %f\n"%(lowerpairs[i], lowervalue[i]))
+              inserted.append(l)
+        fp.close()
