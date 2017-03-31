@@ -15,7 +15,8 @@ import xyznanop
 
 filename1 = ""
 filename2 = ""
-verbose = False
+verbose = True
+dumpalsoobmol = False
 
 if (len(sys.argv)) == 3: 
   filename1 = sys.argv[1]
@@ -45,10 +46,10 @@ if len(atoms1) == len(atoms2):
     print "RMSD: ", kabsch_minima.rmsd(mol1list, mol2list)
 
   rmatrix, translate2, translate1 = \
-          kabsch_minima.return_rotation_matrix(mol1list, mol2list)
+          kabsch_minima.return_rotation_matrix(mol2list, mol1list, verbose)
 
   if verbose:
-    print "Start translate: ", filename1
+    print "Translate: ", filename1
   for i in range(0, len(atoms1)):
     xlist1[i] -= translate1[0]
     ylist1[i] -= translate1[1]
@@ -60,7 +61,7 @@ if len(atoms1) == len(atoms2):
     xyznanop.write_ncxyz("out1.xyz", xlist1, ylist1, zlist1, atoms1)
 
   if verbose:
-    print "Start translate: ", filename2
+    print "Translate: ", filename2
   for i in range(0, len(atoms1)):
     xlist2[i] -= translate2[0]
     ylist2[i] -= translate2[1]
@@ -81,13 +82,13 @@ if len(atoms1) == len(atoms2):
   qx = []
   qy = []
   qz = []
+  
   if verbose:
-    print "Start rotate: ", filename2
+    print "Rotate: ", filename2
   for i in range(0,len(atoms2)):
     qx.append(d11*xlist2[i] + d12*ylist2[i] + d13*zlist2[i])
     qy.append(d21*xlist2[i] + d22*ylist2[i] + d23*zlist2[i]) 
     qz.append(d31*xlist2[i] + d32*ylist2[i] + d33*zlist2[i]) 
-
   if verbose:
     print "Done"
 
@@ -107,34 +108,35 @@ if len(atoms1) == len(atoms2):
   print filename1, " ", filename2, " ", "RMSD: ", \
           kabsch_minima.rmsd(mol1list, mol2list)
   
-  #ormatrix = pybel.ob.matrix3x3()
-  #for i in range(3):
-  #  for j in range(3):
-  #    ormatrix.Set(i, j, rmatrix[i,j]) 
-  #    myrm = pybel.ob.doubleArray(9)
-  #    ormatrix.GetArray(myrm)
-
-  #print "Start translate: ", filename1
-  #mol1 = pybel.readfile("xyz", filename1).next()
-  #print "  read file"
-  #mol1.OBMol.Translate(pybel.ob.vector3(-translate1[0], -translate1[1], -translate1[2]));
-  #print "  translate"
-  #output = pybel.Outputfile("xyz", "out1.xyz", overwrite=True)
-  #output.write(mol1)
-  #output.close()
-  #print "Done"
-  #
-  #print "Start rototra: ", filename1
-  #mol2 = pybel.readfile("xyz", filename2).next()
-  #print "  read file"
-  #mol2.OBMol.Translate(pybel.ob.vector3(-translate2[0], -translate2[1], -translate2[2]));
-  #print "  translate"
-  #mol2.OBMol.Rotate(myrm)
-  #print "  rotate"
-  #output = pybel.Outputfile("xyz", "out2.xyz", overwrite=True)
-  #output.write(mol2)
-  #output.close()
-  #print "Done"
+  if dumpalsoobmol:
+    ormatrix = pybel.ob.matrix3x3()
+    for i in range(3):
+      for j in range(3):
+        ormatrix.Set(i, j, rmatrix[i,j]) 
+        myrm = pybel.ob.doubleArray(9)
+        ormatrix.GetArray(myrm)
+    
+    print "Translate: ", filename1
+    mol1 = pybel.readfile("xyz", filename1).next()
+    print "  read file"
+    mol1.OBMol.Translate(pybel.ob.vector3(-translate1[0], -translate1[1], -translate1[2]));
+    print "  translate"
+    output = pybel.Outputfile("xyz", "pout1.xyz", overwrite=True)
+    output.write(mol1)
+    output.close()
+    print "Done"
+    
+    print "Rotate and Translate: ", filename1
+    mol2 = pybel.readfile("xyz", filename2).next()
+    print "  read file"
+    mol2.OBMol.Translate(pybel.ob.vector3(-translate2[0], -translate2[1], -translate2[2]));
+    print "  translate"
+    mol2.OBMol.Rotate(myrm)
+    print "  rotate"
+    output = pybel.Outputfile("xyz", "pout2.xyz", overwrite=True)
+    output.write(mol2)
+    output.close()
+    print "Done"
 
 else:
-  print "Wrong dims"
+  print "Wrong dim"
