@@ -78,7 +78,7 @@ def move_mindist_vers (xlist, ylist, zlist, atoms, s):
 ###############################################################################
 
 filename = ""
-step = 4.0
+step = 1.0
 nstep = 10 # se nstep == 1 unico spostamento 
 
 if (len(sys.argv)) == 2:
