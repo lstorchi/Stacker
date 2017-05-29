@@ -49,17 +49,36 @@ xout = []
 yout = []
 zout = []
 aout = []
+uniq1 = []
 
 for i in val[0]:
-    xout.append(xlist1[i])
-    yout.append(ylist1[i])
-    zout.append(zlist1[i])
-    aout.append(atoms1[i])
-    
+    if not (i in uniq1):
+      xout.append(xlist1[i])
+      yout.append(ylist1[i])
+      zout.append(zlist1[i])
+      aout.append(atoms1[i])
+      uniq1.append(i)
+
+uniq2 = []
 for j in val[1]:
-    xout.append(xlist2[j])
-    yout.append(ylist2[j])
-    zout.append(zlist2[j])
-    aout.append(atoms2[j])
+    if not (j in uniq2):
+      xout.append(xlist2[j])
+      yout.append(ylist2[j])
+      zout.append(zlist2[j])
+      aout.append(atoms2[j])
+      uniq2.append(j)
  
 xyznanop.write_ncxyz ("out.xyz", xout, yout, zout, aout)
+
+for i in range(len(xlist1)):
+    if not (i in uniq1):
+        sys.stdout.write("%d "%(i+1))
+
+
+for i in range(len(xlist2)):
+    if not (i in uniq2):
+        sys.stdout.write("%d "%(len(xlist1)+i+1))
+
+
+
+
