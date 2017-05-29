@@ -70,15 +70,11 @@ for j in val[1]:
  
 xyznanop.write_ncxyz ("out.xyz", xout, yout, zout, aout)
 
-for i in range(len(xlist1)):
-    if not (i in uniq1):
-        sys.stdout.write("%d "%(i+1))
+sys.stdout.write("MovedAtoms = ")
+for i in uniq1:
+    sys.stdout.write("%d "%(i+1))
 
+for i in uniq2:
+    sys.stdout.write("%d "%(len(xlist1)+i+1))
 
-for i in range(len(xlist2)):
-    if not (i in uniq2):
-        sys.stdout.write("%d "%(len(xlist1)+i+1))
-
-
-
-
+sys.stdout.write("\n")
