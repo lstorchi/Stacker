@@ -36,6 +36,7 @@ def move_mindist_vers (xlist, ylist, zlist, atoms, s):
    dists = distance.cdist(coords1, coords2)
     
    mindist = numpy.min(dists)
+   print "Computed: " , mindist
    val =  numpy.where(dists==mindist)
    
    i = val[0][0]
@@ -78,8 +79,8 @@ def move_mindist_vers (xlist, ylist, zlist, atoms, s):
 ###############################################################################
 
 filename = ""
-step = 3.0
-nstep = 10 # se nstep == 1 unico spostamento 
+step = 6.1
+nstep = 1 # se nstep == 1 unico spostamento 
 
 if (len(sys.argv)) == 2:
   filename = sys.argv[1]
