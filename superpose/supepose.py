@@ -15,7 +15,7 @@ import xyznanop
 
 filename1 = ""
 filename2 = ""
-verbose = True
+verbose = False
 dumpalsoobmol = False
 
 if (len(sys.argv)) == 3: 
