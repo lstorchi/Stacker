@@ -176,7 +176,5 @@ for l in file:
 
 slist = sorted(listatosort, key=itemgetter(2))
 
-lastpair = slist[-1]
-
-print lastpair
-compare (lastpair[0], lastpair[1], True, False)
+for l in slist:
+    print l
