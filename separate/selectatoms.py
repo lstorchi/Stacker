@@ -68,7 +68,7 @@ for j in val[1]:
       aout.append(atoms2[j])
       uniq2.append(j)
  
-xyznanop.write_ncxyz ("out.xyz", xout, yout, zout, aout)
+xyznanop.write_ncxyz ("out_selected.xyz", xout, yout, zout, aout)
 
 sys.stdout.write("MovedAtoms = ")
 for i in uniq1:
