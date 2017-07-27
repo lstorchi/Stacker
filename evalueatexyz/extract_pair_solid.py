@@ -48,7 +48,10 @@ for l in fp:
 
     id1 = int(subtokens[2])
     id2 = int(re.sub('\.xyz$', '', subtokens[-1]))
-
-    print allstring[id1], allstring[id2]
+     
+    fpwrt = open(str(clusterid) + ".txt", "w")
+    fpwrt.write(allstring[id1])
+    fpwrt.write(allstring[id2])
+    fpwrt.close() 
 
 fp.close()
