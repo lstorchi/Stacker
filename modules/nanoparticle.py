@@ -1313,12 +1313,13 @@ def nanoparticle_to_arrays (nanoparticles = []):
 def file_to_nanoparticle_list(filename, nanaparticles):
 
   file = open(filename, "r")
+  alllines = file.readlines()
 
   zmax = xmax = ymax = -10000.0
   zmin = xmin = ymin =  10000.0
  
   #i = 0
-  for sp in file:
+  for sp in alllines:
 
     #print "ID: ", i+1
     #i = i + 1
@@ -1339,8 +1340,6 @@ def file_to_nanoparticle_list(filename, nanaparticles):
 
     nanop.rotate_nanoparticle(p1, p2, float(tetha))
 
-    nanaparticles.append(nanop)
-
     dm = max(H, B, A) / 2.0
 
     if (zmax < (float(z) + dm)):
@@ -1356,6 +1355,8 @@ def file_to_nanoparticle_list(filename, nanaparticles):
       xmin = (float(x) - dm)
     if (ymin > (float(y) - dm)):
       ymin = (float(y) - dm)
+
+    nanaparticles.append(nanop)
   
   file.close()
 
