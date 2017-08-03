@@ -46,4 +46,4 @@ minbox_z = 100000.0
 maxbox_z =-100000.0
 
 for nanop in nanaparticles: 
-  x = nanop.get_edge_points()
+  p1, p2, p3, p4 = nanop.get_middle_points ()
