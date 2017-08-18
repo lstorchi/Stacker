@@ -476,6 +476,15 @@ class nanotio2:
  
     return self._x
 
+  def get_middle_points (self):
+ 
+    p1  = point.point(self._x[0][0], self._x[0][1], self._x[0][2])
+    p2  = point.point(self._x[1][0], self._x[1][1], self._x[1][2])
+    p3  = point.point(self._x[2][0], self._x[2][1], self._x[2][2])
+    p4  = point.point(self._x[3][0], self._x[3][1], self._x[3][2])
+
+    return p1, p2, p3, p4
+ 
 
   def get_points_connection (self):
 
