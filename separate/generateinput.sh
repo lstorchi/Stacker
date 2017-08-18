@@ -1,6 +1,9 @@
 echo "Geometry = GenFormat {"
 ./xyz2gen $1
-cat $1".gen"
+
+NAME=`echo "$1" | cut -d'.' -f1`
+
+cat $NAME".gen"
 echo "}" 
 echo ""
 echo "Driver = ConjugateGradient {"
