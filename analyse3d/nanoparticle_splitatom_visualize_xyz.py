@@ -12,6 +12,7 @@ import xyznanop
 import sphere
 import plane
 import point
+import line
 import util
 import cube
 
@@ -75,7 +76,12 @@ if len(nanaparticles) != 2:
     exit(1)
 
 nanop1 = nanaparticles[0]
+ptop, pbot = nanop1.get_ptop_and_bottom()
+#renderer.AddActor(ptop.get_actor(2.0, 0.0, 1.0, 0.0))
+#renderer.AddActor(pbot.get_actor(2.0, 0.0, 1.0, 0.0))
 #renderer.AddActor(nanop1.get_vtk_actor(color=True,opacity=1.0))
+l1 = line.line3d()
+l1.set_two_point(ptop, pbot)
 p1, p2, p3, p4 = nanop1.get_middle_points ()
 mdplane = plane.plane(p1, p2, p3)
 #renderer.AddActor(p1.get_actor(1.0))
@@ -84,15 +90,24 @@ mdplane = plane.plane(p1, p2, p3)
 for i in range(len(xlist1)):
   p = point.point(xlist1[i], ylist1[i], zlist1[i])
 
-
   dist = mdplane.get_distance(p) * mdplane.check_point_side(p)
   if dist < 5.0:
-      renderer.AddActor(p.get_actor(1.0, 1.0, 0.0, 0.0))
+      dline3d = l1.get_distance(p)
+      if dline3d > 9.0:
+          renderer.AddActor(p.get_actor(1.0, 1.0, 0.0, 0.0))
+  elif dist >= 5.0 and dist < 10.0:
+      dline3d = l1.get_distance(p)
+      if dline3d > 7.0:
+          renderer.AddActor(p.get_actor(1.0, 0.0, 1.0, 0.0))
   else:
-      renderer.AddActor(p.get_actor(1.0))
+      renderer.AddActor(p.get_actor(1.0, 0.0, 0.0, 1.0))
+
 
 nanop2 = nanaparticles[1]
+ptop, pbot = nanop2.get_ptop_and_bottom()
 #renderer.AddActor(nanop1.get_vtk_actor(color=True,opacity=1.0))
+l2 = line.line3d()
+l2.set_two_point(ptop, pbot)
 p1, p2, p3, p4 = nanop2.get_middle_points ()
 mdplane = plane.plane(p1, p2, p3)
 #renderer.AddActor(p1.get_actor(1.0))
@@ -103,9 +118,15 @@ for i in range(len(xlist2)):
 
   dist = mdplane.get_distance(p) * mdplane.check_point_side(p)
   if dist < 5.0:
-      renderer.AddActor(p.get_actor(1.0, 1.0, 0.0, 0.0))
+      dline3d = l2.get_distance(p)
+      if dline3d > 9.0:
+          renderer.AddActor(p.get_actor(1.0, 1.0, 0.0, 0.0))
+  elif dist >= 5.0 and dist < 10.0:
+      dline3d = l2.get_distance(p)
+      if dline3d > 7.0:
+          renderer.AddActor(p.get_actor(1.0, 0.0, 1.0, 0.0))
   else:
-      renderer.AddActor(p.get_actor(1.0))
+      renderer.AddActor(p.get_actor(1.0, 0.0, 0.0, 1.0))
 
 
 renderer.SetActiveCamera(camera)

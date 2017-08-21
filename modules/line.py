@@ -70,6 +70,15 @@ class line3d:
     self._a = point.point(0.0, 0.0, 0.0)
     self._b = point.point(0.0, 0.0, 0.0) 
 
+  def get_distance(self, p):
+    
+    x1 = self._a 
+    x2 = self._b + self._a
+
+    num = point.cross_prod(p - x1, p- x2)
+    den = self._b
+
+    return point.norm(num) / point.norm(den)
 
   def set_two_point (self, p1, p2):
 

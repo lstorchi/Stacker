@@ -93,3 +93,29 @@ def norm (point):
       point.get_z()*point.get_z()
 
   return math.sqrt(f)
+
+def dot_prod (p1, p2):
+    s = p1.get_x()*p2.get_x() + \
+            p1.get_y()*p2.get_y() + \
+            p1.get_z()*p2.get_z()
+
+    return s
+
+def cross_prod (p1, p2):
+
+    ux = p1.get_x()
+    uy = p1.get_y()
+    uz = p1.get_z()
+
+    vx = p2.get_x()
+    vy = p2.get_y()
+    vz = p2.get_z()
+
+    x = uy * vz - uz * vy
+    y = uz * vx - ux * vz
+    z = ux * vy - uy * vx
+
+    r = point(x, y, z)
+
+    return r
+
