@@ -42,8 +42,8 @@ if (len(sys.argv)) == 3:
   filename = sys.argv[1]
   xyzfile = sys.argv[2]
 else:
-    print "usage: ", sys.argv[0], " nanofname.txt xyzfname.xyz"
-    exit(1)
+  print "usage: ", sys.argv[0], " nanofname.txt xyzfname.xyz"
+  exit(1)
 
 nanaparticles = []
 
