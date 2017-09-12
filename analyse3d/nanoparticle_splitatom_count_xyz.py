@@ -151,7 +151,9 @@ counter21 = count_dists (group2_np1, group1_np2)
 counter31 = count_dists (group3_np1, group1_np2)
 counter32 = count_dists (group3_np1, group2_np2)
 
-print counter11, counter22, counter33, counter12, counter13, counter23, counter21, counter31, counter32
+print counter11, " , " , counter22, " , " , counter33, " , " , \
+        counter12, " , " , counter13, " , " , counter23, " , " , \
+        counter21, " , " , counter31, " , " , counter32
 
 visualg1 = False
 
