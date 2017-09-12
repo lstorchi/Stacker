@@ -19,6 +19,32 @@ import line
 import util
 import cube
 
+MINDIST = 5.0
+
+###############################################################################
+
+def count_dists (group_np1, group_np2):
+
+    coords1 = numpy.array(group_np1, dtype=float)
+    coords2 = numpy.array(group_np2, dtype=float)
+    dists = distance.cdist(coords1, coords2)
+    counter = 0
+    for i in range(dists.shape[0]):
+        for j in range(dists.shape[1]):
+            if dists[i][j] < MINDIST:
+                counter += 1
+
+    #for i in range(dists.shape[0]):
+    #    for j in range(dists.shape[1]):
+    #        sys.stdout.write(str(dists[i][j]) + " ")
+    #    sys.stdout.write("\n")
+    #print numpy.allclose(dists, dists.T, atol=1.0e-8)
+    #out = sum(x < 5.0 for x in dists)
+                
+    return counter
+
+###############################################################################
+
 # init 
 
 # no mi interessano le intersezioni
@@ -113,13 +139,51 @@ for i in range(len(xlist2)):
 
 coords1 = numpy.array(group1_np1, dtype=float)
 coords2 = numpy.array(group1_np2, dtype=float)
-
 dists = distance.cdist(coords1, coords2)
-#print numpy.allclose(dists, dists.T, atol=1.0e-8)
-out = sum(x < 5.0 for x in dists)
-val = 0
-for o in out:
-    val += o
-print val
-print sum(i != 0 for i in out)
+
+counter11 = count_dists (group1_np1, group1_np2)
+counter22 = count_dists (group2_np1, group2_np2)
+counter33 = count_dists (group3_np1, group3_np2)
+counter12 = count_dists (group1_np1, group2_np2)
+counter13 = count_dists (group1_np1, group3_np2)
+counter23 = count_dists (group2_np1, group3_np2)
+counter21 = count_dists (group2_np1, group1_np2)
+counter31 = count_dists (group3_np1, group1_np2)
+counter32 = count_dists (group3_np1, group2_np2)
+
+print counter11, counter22, counter33, counter12, counter13, counter23, counter21, counter31, counter32
+
+visualg1 = False
+
+if visualg1:
+   camera = vtk.vtkCamera()
+   camera.SetPosition(1,1,1)
+   camera.SetFocalPoint(0,0,0)
+   
+   renderer = vtk.vtkRenderer()
+   renWin = vtk.vtkRenderWindow()
+   renWin.AddRenderer(renderer)
+   
+   iren = vtk.vtkRenderWindowInteractor()
+   iren.SetRenderWindow(renWin)
+   
+   for nanop in nanaparticles: 
+       renderer.AddActor(nanop.get_vtk_actor(color=True,opacity=0.9))
+   
+   for i in range(dists.shape[0]):
+       for j in range(dists.shape[1]):
+           if dists[i][j] < MINDIST:
+               p1 = point.point(group1_np1[i][0], group1_np1[i][1], group1_np1[i][2])
+               p2 = point.point(group1_np2[j][0], group1_np2[j][1], group1_np2[j][2])
+               renderer.AddActor(p1.get_actor(1.0, 1.0, 0.0, 0.0))
+               renderer.AddActor(p2.get_actor(1.0, 0.0, 1.0, 0.0))
+   
+   
+   renderer.SetActiveCamera(camera)
+   renderer.ResetCamera()
+   renderer.SetBackground(0,0,0)
+   
+   renWin.SetSize(1024, 768)
+   renWin.Render()
+   iren.Start()
 
