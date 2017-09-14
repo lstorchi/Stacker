@@ -148,33 +148,11 @@ filename2 = ""
 verbose = False
 dumpalsoobmol = False
 
-filename = ""
-if (len(sys.argv) == 2 ):
-  filename = sys.argv[1]
+file1 = ""
+file2 = ""
+if (len(sys.argv) == 3 ):
+  file1 = sys.argv[1]
+  file2 = sys.argv[1]
 
-file = open(filename, "r")
-
-p = re.compile(r'\s+')
-file1 = file.readline()
-file1 = file1.replace("\n", "")
-l = p.sub(' ', file1)
-line = l.lstrip()
-file1 = line.rstrip()
-
-listatosort = []
-for l in file:
-
-    l = l.replace("\n", "")
-    line = p.sub(' ', l)
-    l = line.lstrip()
-    file2 = l.rstrip()
-
-    rmsd = compare (file1, file2, False, False)
-
-    print  file1, " ", file2, " ", rmsd
-    listatosort.append((file1, file2, rmsd))
-
-slist = sorted(listatosort, key=itemgetter(2))
-
-for l in slist:
-    print l
+rmsd = compare (file1, file2, False, False)
+print  file1, " ", file2, " ", rmsd
