@@ -152,7 +152,9 @@ file1 = ""
 file2 = ""
 if (len(sys.argv) == 3 ):
   file1 = sys.argv[1]
-  file2 = sys.argv[1]
+  file2 = sys.argv[2]
+else:
+    exit(1)
 
 rmsd = compare (file1, file2, False, False)
 print  file1, " ", file2, " ", rmsd
