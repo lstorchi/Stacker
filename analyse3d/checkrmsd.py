@@ -21,7 +21,7 @@ def compare (filename1, filename2, verbose, dumpalsoobmol):
 
     xlist1, ylist1, zlist1, atoms1 = xyznanop.read_ncxyz (filename1)
     xlist2, ylist2, zlist2, atoms2 = xyznanop.read_ncxyz (filename2)
-    
+
     if len(atoms1) == len(atoms2):
       mol1list = numpy.zeros((len(atoms1), 3))
       mol2list = numpy.zeros((len(atoms2), 3))
@@ -30,7 +30,7 @@ def compare (filename1, filename2, verbose, dumpalsoobmol):
         mol1list[i, 0] = xlist1[i]
         mol1list[i, 1] = ylist1[i]
         mol1list[i, 2] = zlist1[i]
-    
+
       for i in range(0, len(atoms2)):
         mol2list[i, 0] = xlist2[i]
         mol2list[i, 1] = ylist2[i]
@@ -138,6 +138,7 @@ def compare (filename1, filename2, verbose, dumpalsoobmol):
       return rmsdfinal
     else:
       print "Wrong dim"
+      print len(atoms1) , len(atoms2)
 
     return None
 
@@ -154,7 +155,9 @@ if (len(sys.argv) == 3 ):
   file1 = sys.argv[1]
   file2 = sys.argv[2]
 else:
-    exit(1)
+  exit(1)
 
 rmsd = compare (file1, file2, False, False)
+if rmsd < 1e-3:
+    rmsd = 0.0
 print  file1, " ", file2, " ", rmsd

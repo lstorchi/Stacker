@@ -122,6 +122,13 @@ l2.set_two_point(ptop, pbot)
 p1, p2, p3, p4 = nanop2.get_middle_points ()
 mdplane = plane.plane(p1, p2, p3)
 
+p1top, p1bottom = nanop1.get_ptop_and_bottom ()
+p2top, p2bottom = nanop2.get_ptop_and_bottom ()
+
+l3d = line.line3d()
+angle = l3d.get_angle_two_line(p1top, p1bottom, p2top, p2bottom)
+
+
 group1_np2 = []
 group2_np2 = []
 group3_np2 = []
@@ -153,7 +160,8 @@ counter32 = count_dists (group3_np1, group2_np2)
 
 print counter11, " , " , counter22, " , " , counter33, " , " , \
         counter12, " , " , counter13, " , " , counter23, " , " , \
-        counter21, " , " , counter31, " , " , counter32
+        counter21, " , " , counter31, " , " , counter32, " , ", \
+        angle
 
 visualg1 = False
 

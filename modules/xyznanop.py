@@ -82,16 +82,16 @@ def read_ncxyz (filename, trans = True):
     line = line.rstrip()
   
     plist =  line.split(" ")
-  
-    if (len(plist) == 4):
+
+    if (len(plist) == 4) or (len(plist) == 5):
      atomname = plist[0]
      x = plist[1]
      y = plist[2]
      z = plist[3]
   
-     xlist.append(float(x))
-     ylist.append(float(y))
-     zlist.append(float(z))
+     xlist.append(numpy.float64(x))
+     ylist.append(numpy.float64(y))
+     zlist.append(numpy.float64(z))
      atoms.append(atomname)
   
   filep.close()
@@ -100,7 +100,7 @@ def read_ncxyz (filename, trans = True):
     xc = numpy.mean(xlist)
     yc = numpy.mean(ylist)
     zc = numpy.mean(zlist)
-  
+
     for i in range(len(xlist)):
       xlist[i] = xlist[i] - xc
       ylist[i] = ylist[i] - yc
