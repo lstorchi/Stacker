@@ -79,7 +79,7 @@ nanop1 = nanaparticles[0]
 ptop, pbot = nanop1.get_ptop_and_bottom()
 #renderer.AddActor(ptop.get_actor(2.0, 0.0, 1.0, 0.0))
 #renderer.AddActor(pbot.get_actor(2.0, 0.0, 1.0, 0.0))
-#renderer.AddActor(nanop1.get_vtk_actor(color=True,opacity=1.0))
+renderer.AddActor(nanop1.get_vtk_actor(color=True,opacity=1.0))
 l1 = line.line3d()
 l1.set_two_point(ptop, pbot)
 p1, p2, p3, p4 = nanop1.get_middle_points ()
@@ -105,7 +105,7 @@ for i in range(len(xlist1)):
 
 nanop2 = nanaparticles[1]
 ptop, pbot = nanop2.get_ptop_and_bottom()
-#renderer.AddActor(nanop1.get_vtk_actor(color=True,opacity=1.0))
+renderer.AddActor(nanop2.get_vtk_actor(color=True,opacity=1.0))
 l2 = line.line3d()
 l2.set_two_point(ptop, pbot)
 p1, p2, p3, p4 = nanop2.get_middle_points ()
