@@ -19,11 +19,9 @@ import line
 import util
 import cube
 
-MINDIST = 3.0
-
 ###############################################################################
 
-def count_dists (group_np1, group_np2):
+def count_dists (group_np1, group_np2, mdist):
 
     coords1 = numpy.array(group_np1, dtype=float)
     coords2 = numpy.array(group_np2, dtype=float)
@@ -31,7 +29,7 @@ def count_dists (group_np1, group_np2):
     counter = 0
     for i in range(dists.shape[0]):
         for j in range(dists.shape[1]):
-            if dists[i][j] < MINDIST:
+            if dists[i][j] < mdist:
                 counter += 1
 
     #for i in range(dists.shape[0]):
@@ -148,20 +146,33 @@ coords1 = numpy.array(group1_np1, dtype=float)
 coords2 = numpy.array(group1_np2, dtype=float)
 dists = distance.cdist(coords1, coords2)
 
-counter11 = count_dists (group1_np1, group1_np2)
-counter22 = count_dists (group2_np1, group2_np2)
-counter33 = count_dists (group3_np1, group3_np2)
-counter12 = count_dists (group1_np1, group2_np2)
-counter13 = count_dists (group1_np1, group3_np2)
-counter23 = count_dists (group2_np1, group3_np2)
-counter21 = count_dists (group2_np1, group1_np2)
-counter31 = count_dists (group3_np1, group1_np2)
-counter32 = count_dists (group3_np1, group2_np2)
+counter11 = count_dists (group1_np1, group1_np2, 3.0)
+counter22 = count_dists (group2_np1, group2_np2, 3.0)
+counter33 = count_dists (group3_np1, group3_np2, 3.0)
+counter12 = count_dists (group1_np1, group2_np2, 3.0)
+counter13 = count_dists (group1_np1, group3_np2, 3.0)
+counter23 = count_dists (group2_np1, group3_np2, 3.0)
+counter21 = count_dists (group2_np1, group1_np2, 3.0)
+counter31 = count_dists (group3_np1, group1_np2, 3.0)
+counter32 = count_dists (group3_np1, group2_np2, 3.0)
+
+counter11_5 = count_dists (group1_np1, group1_np2, 5.0)
+counter22_5 = count_dists (group2_np1, group2_np2, 5.0)
+counter33_5 = count_dists (group3_np1, group3_np2, 5.0)
+counter12_5 = count_dists (group1_np1, group2_np2, 5.0)
+counter13_5 = count_dists (group1_np1, group3_np2, 5.0)
+counter23_5 = count_dists (group2_np1, group3_np2, 5.0)
+counter21_5 = count_dists (group2_np1, group1_np2, 5.0)
+counter31_5 = count_dists (group3_np1, group1_np2, 5.0)
+counter32_5 = count_dists (group3_np1, group2_np2, 5.0)
 
 print counter11, " , " , counter22, " , " , counter33, " , " , \
-        counter12, " , " , counter13, " , " , counter23, " , " , \
-        counter21, " , " , counter31, " , " , counter32, " , ", \
-        angle
+      counter12, " , " , counter13, " , " , counter23, " , " , \
+      counter21, " , " , counter31, " , " , counter32, " , ", \
+      counter11_5, " , " , counter22_5, " , " , counter33_5, " , " , \
+      counter12_5, " , " , counter13_5, " , " , counter23_5, " , " , \
+      counter21_5, " , " , counter31_5, " , " , counter32_5, " , ", \
+      angle
 
 visualg1 = False
 
