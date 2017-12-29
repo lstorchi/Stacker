@@ -75,6 +75,9 @@ if len(nanaparticles) != 2:
     print "Only two nanoparticles can be used"
     exit(1)
 
+DITS1 = 2.6
+DIST2 = 11.4
+
 nanop1 = nanaparticles[0]
 ptop, pbot = nanop1.get_ptop_and_bottom()
 #renderer.AddActor(ptop.get_actor(2.0, 0.0, 1.0, 0.0))
@@ -91,11 +94,11 @@ for i in range(len(xlist1)):
   p = point.point(xlist1[i], ylist1[i], zlist1[i])
 
   dist = mdplane.get_distance(p) * mdplane.check_point_side(p)
-  if dist < 5.0:
+  if dist < DITS1:
       #dline3d = l1.get_distance(p)
       #if dline3d > 9.0:
       renderer.AddActor(p.get_actor(1.0, 1.0, 0.0, 0.0))
-  elif dist >= 5.0 and dist < 10.0:
+  elif dist >= DITS1 and dist < DIST2:
       #dline3d = l1.get_distance(p)
       #if dline3d > 7.0:
       renderer.AddActor(p.get_actor(1.0, 0.0, 1.0, 0.0))
@@ -117,12 +120,12 @@ for i in range(len(xlist2)):
   p = point.point(xlist2[i], ylist2[i], zlist2[i])
 
   dist = mdplane.get_distance(p) * mdplane.check_point_side(p)
-  if dist < 5.0:
+  if dist < DITS1:
       #dline3d = l2.get_distance(p)
       #if dline3d > 9.0:
       
       renderer.AddActor(p.get_actor(1.0, 1.0, 0.0, 0.0))
-  elif dist >= 5.0 and dist < 10.0:
+  elif dist >= DITS1 and dist < DIST2:
       #dline3d = l2.get_distance(p)
       #if dline3d > 7.0:
       
