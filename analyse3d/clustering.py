@@ -28,9 +28,25 @@ for line in fp:
 
     if len(plist) == 7:
         names.append(plist[0])
-        allxv.append([float(plist[1]), float(plist[2]), float(plist[3]), \
-            float(plist[4]), float(plist[5]), float(plist[6])])
- 
+        x1 = float(plist[1])
+        if x1 > 10:
+            x1 = 0
+        x2 = float(plist[2])
+        if x2 > 10:
+            x2 = 0
+        x3 = float(plist[3])
+        if x3 > 10:
+            x3 = 0
+        x4 = float(plist[4])
+        if x4 > 10:
+            x4 = 0
+        x5 = float(plist[5])
+        if x5 > 10:
+            x5 = 0
+        x6 = float(plist[6])
+        if x6 > 10:
+            x6 = 0
+        allxv.append([x1, x2, x3, x4, x5, x6])
 
 fp.close()
 

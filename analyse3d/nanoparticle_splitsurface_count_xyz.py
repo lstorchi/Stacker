@@ -184,9 +184,72 @@ counter32_5 = count_dists (group3_np1, group2_np2, 5.0)
 #      counter21_5, " , " , counter31_5, " , " , counter32_5, " , ", \
 #      angle
 
+sset = "" 
+
+cc = counter11
+ff = counter22
+tt = counter33
+cf = counter12+counter21
+ct = counter13+counter31
+ft = counter23+counter32
+
+if (sset == ""):
+  if (cc >= 10):
+    sset = "CC+"
+    if (tt >= 10) or (ct >= 10) or (ft >= 10):
+      sset = ""
+
+if (sset == ""):
+  if (ct >= 10):
+    sset = "CT"
+    if (tt >= 10) or (cf >= 10) or (cc >= 10):
+      sset = ""
+
+if (sset == ""):
+  if (ft >= 10):
+    sset = "FT"
+    if (cc >= 10) or (tt >= 10) or (cf >= 10) or (ct >= 10):
+      sset = ""
+
+if (sset == ""):
+  if (cf >= 10):
+    sset = "CF"
+    if (cc >= 10) or (ff >= 10) or (tt >= 10) or (ct >= 10) or (ft >= 10):
+      sset = ""
+
+if (sset == ""):
+  if (tt >= 10):
+    sset = "TT"
+    if (cc >= 10) or (ff >= 10) or (cf >= 10) or (ct >= 10) or (ft >= 10):
+      sset = ""
+
+if (sset == ""):
+  if (ct >= 10) and (ft >= 10):
+    sset = "CTF"
+    if (cc >= 10) or (ff >= 10) or (tt >= 10) or (cf >= 10):
+      sset = ""
+
+if (sset == ""):
+  if (ct >= 10) and (ft >= 10):
+    sset = "FCT"
+    if (cc >= 10) or (ff >= 10) or (tt >= 10) or (cf >= 10):
+      sset = ""
+
+if (sset == ""):
+  if (ct >= 10) and (cf >= 10):
+    sset = "FCT"
+    if (cc >= 10) or (ff >= 10) or (tt >= 10) or (ft >= 10):
+      sset = ""
+
+if (sset == ""):
+  if (ff >= 10):
+    sset = "FF"
+    if (cc >= 10) or (ct >= 10) or (tt >= 10) or (ft >= 10):
+      sset = ""
+
 print counter11, " , " , counter22, " , " , counter33, " , " , \
       counter12+counter21, " , " , counter13+counter31, " , " , counter23+counter32, " , " , \
-      angle
+      angle, " , " , sset
 
 visualg1 = False
 
