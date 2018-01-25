@@ -76,7 +76,7 @@ if len(nanaparticles) != 2:
     exit(1)
 
 DITS1 = 2.6
-DIST2 = 11.4
+DIST2 = 12.6
 
 nanop1 = nanaparticles[0]
 ptop, pbot = nanop1.get_ptop_and_bottom()
