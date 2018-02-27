@@ -2,6 +2,8 @@ import sys
 import vtk
 import re
 
+from shutil import copyfile
+
 import random
 import numpy
 import math
@@ -48,15 +50,16 @@ def count_dists (group_np1, group_np2, mdist):
 # no mi interessano le intersezioni
 nanoparticle.POINTINSIDEDIM = 0
 
-filename = "nanoparticle_final_config.txt"
-xyzfile = "test.xyz"
+basiscfname = ""
 
-if (len(sys.argv)) == 3:
-    filename = sys.argv[1]
-    xyzfile = sys.argv[2]
+if (len(sys.argv)) == 2:
+    basiscfname = sys.argv[1]
 else:
-    print "usage: ", sys.argv[0], " nanofname.txt xyzfname.xyz"
+    print "usage: ", sys.argv[0], " basiscfname"
     exit(1)
+
+filename = basiscfname + ".txt"
+xyzfile = basiscfname + ".xyz"
 
 nanaparticles = []
 
@@ -275,11 +278,12 @@ if (sset == ""):
     if (ft == max_values):
         sset = "FT"
 
-
-
 print counter11, " , " , counter22, " , " , counter33, " , " , \
       counter12+counter21, " , " , counter13+counter31, " , " , counter23+counter32, " , " , \
       angle, " , " , sset
+
+copyfile(filename, "./"+sset)
+copyfile(xyzfile, "./"+sset)
 
 visualg1 = False
 
