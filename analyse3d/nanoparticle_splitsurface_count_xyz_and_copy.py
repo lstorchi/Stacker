@@ -282,8 +282,8 @@ print counter11, " , " , counter22, " , " , counter33, " , " , \
       counter12+counter21, " , " , counter13+counter31, " , " , counter23+counter32, " , " , \
       angle, " , " , sset
 
-copyfile(filename, "./"+sset)
-copyfile(xyzfile, "./"+sset)
+copyfile(filename, "./"+sset+"/"+filename)
+copyfile(xyzfile, "./"+sset+"/"+xyzfile)
 
 visualg1 = False
 
