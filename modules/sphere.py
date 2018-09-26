@@ -63,7 +63,7 @@ class sphere:
         self.center.get_z())
     source.SetRadius(self.radius)
     mapper = vtk.vtkPolyDataMapper()
-    mapper.SetInput(source.GetOutput())
+    mapper.SetInputConnection(source.GetOutputPort())
     actor = vtk.vtkActor()
     actor.SetMapper(mapper)
     actor.GetProperty().SetOpacity(opacity)
