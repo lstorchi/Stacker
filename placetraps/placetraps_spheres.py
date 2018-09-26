@@ -126,6 +126,9 @@ for s in spheres:
      
          if trapcounter >= numoftraps:
              todo = False
+
+for trap in traps:
+    print trap 
      
 # add cube
 if read_cube:
