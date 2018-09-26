@@ -160,4 +160,5 @@ else:
 rmsd = compare (file1, file2, False, False)
 if rmsd < 1e-3:
     rmsd = 0.0
-print  file1, " ", file2, " ", rmsd
+#print  file1, " , ", file2, " , ", rmsd
+print  rmsd
