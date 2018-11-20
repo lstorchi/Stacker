@@ -1,6 +1,7 @@
 import sys
 import math
 import numpy
+import random
 
 from operator import attrgetter
 
@@ -35,13 +36,13 @@ class trap:
         self.release_time = 0.0
 
     def __lt__(self, other):
-        return self.__release_time__ < other.release_time()
+        return self.release_time < other.release_time
 
     def __gt__(self, other):
-        return self.__release_time__ > other.release_time()
+        return self.release_time > other.release_time
 
     def __repr__(self):
-        return 'R Time({})'.format(self.__release_time__)
+        return 'R Time({})'.format(self.release_time)
 
     def x(self):
         return self.__x__
@@ -51,6 +52,9 @@ class trap:
 
     def z(self):
         return self.__z__
+
+    def get_position(self):
+        return numpy.array([self.__x__, self.__y__, self.__z__])
 
     def electron(self):
         return self.__electron__
@@ -199,31 +203,74 @@ Ec = 10.0
 Ei = 11.0 
 kB = 1.0
 T = 298
-numofiter = 100
+numofiter = 1000
+mindist = 100.0 # radius of the traps where to jump
 
 # filling the trap initial 
 electrons = numpy.random.choice(2, len(traps))
 for i in range(len(traps)):
     traps[i].set_electron(electrons[i])
-    R = numpy.random.uniform(0.0, 1.0)
-    t = -1.0 * math.log(R) * t0 * math.exp((Ec - Ei)/(kB*T))
-    traps[i].release_time = t
-    #print traps[i].x(), traps[i].y(), traps[i].z(), traps[i].electron()
+
+    if electrons[i] == 1:
+        R = numpy.random.uniform(0.0, 1.0)
+        t = -1.0 * math.log(R) * t0 * math.exp((Ec - Ei)/(kB*T))
+        traps[i].release_time = t
+        #print traps[i].x(), traps[i].y(), traps[i].z(), traps[i].electron()
+    else:
+        traps[i].release_time = float('inf')
 
 # sort by releaase time maybe is better not to, so near traps are near in list 
 #print ""
 #print "Sorting by release time "
 #traps.sort(key=lambda x: x.release_time, reverse=False)
+print ""
+print ""
+print "Storing traps' positions"
+np_traps_position = numpy.zeros((len(traps), 3), numpy.float)
+i = 0
+for t in traps:
+    np_traps_position[i,:] = t.get_position()
+    i = i + 1
 
 for i in range(numofiter):
     idxtomove = traps.index(min(traps, key=attrgetter('release_time')))
+    tmin = traps[idxtomove].release_time
     print idxtomove , traps[idxtomove].release_time
-    
-    # move it 
-    # search near traps
-    # TODO old electron set to zero
+
+    # find near by traps
+    dist_2 = numpy.sum((np_traps_position - traps[idxtomove].get_position())**2, axis=1)
+    # all indexes of dist_2 where values is lower than 
+    idexes = numpy.where(dist_2 < mindist)[0]
+
+    # are they free traps ?
+    free_near_traps = []
+    for near_i  in idexes:
+        if (traps[near_i].electron() == 0):
+            free_near_traps.append(near_i)
+
+    if len(free_near_traps) == 0:
+        print "No free traps"
+        exit(1)
+
+    # randomly choose a trap
+    indextojump = 0
+    if len(free_near_traps) > 1:
+        indextojump = random.randint(0, len(free_near_traps)-1)
+
+    # move electron
+    traps[idxtomove].set_electron(0)
+    traps[idxtomove].release_time = float('inf')
+    traps[indextojump].set_electron(1)
 
     # new release time is computed and trap 
+    R = numpy.random.uniform(0.0, 1.0)
+    t = -1.0 * math.log(R) * t0 * math.exp((Ec - Ei)/(kB*T))
+    traps[indextojump].release_time = t
+ 
+    # reduce realease time of tmin 
+    for t in traps:
+        if t.release_time > float("inf"):
+            t.release_time -= tmin
 
     # position = bisect.insort_left(traps, movedtrap)
     #traps.sort(key=lambda x: x.release_time, reverse=False)
