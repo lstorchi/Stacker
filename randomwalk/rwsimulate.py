@@ -2,6 +2,8 @@ import sys
 import math
 import numpy
 
+from operator import attrgetter
+
 import sys
 sys.path.append("../modules")
 
@@ -29,7 +31,17 @@ class trap:
         self.__x__ = x
         self.__y__ = y
         self.__z__ = z
-        self.__release_time__ = 0.0
+
+        self.release_time = 0.0
+
+    def __lt__(self, other):
+        return self.__release_time__ < other.release_time()
+
+    def __gt__(self, other):
+        return self.__release_time__ > other.release_time()
+
+    def __repr__(self):
+        return 'R Time({})'.format(self.__release_time__)
 
     def x(self):
         return self.__x__
@@ -43,9 +55,6 @@ class trap:
     def electron(self):
         return self.__electron__
 
-    def release_time(self):
-        return self.__release_time__
-
     def set_x(self, i):
         self.__x__ = i
 
@@ -57,9 +66,6 @@ class trap:
 
     def set_electron(self, i):
         self.__electron__ = i
-
-    def set_release_time(self, i):
-        self.__release_time__ = i
 
 ###############################################################################
 
@@ -186,18 +192,38 @@ for s in spheres:
          if trapcounter >= numoftraps:
              todo = False
 
-electrons = numpy.random.choice(2, len(traps))
-
+# need to set proper values
 v0 = 2.5
-t0 = 1.0 /v0
+t0 = 1.0 / v0
 Ec = 10.0
 Ei = 11.0 
 kB = 1.0
 T = 298
+numofiter = 100
 
+# filling the trap initial 
+electrons = numpy.random.choice(2, len(traps))
 for i in range(len(traps)):
     traps[i].set_electron(electrons[i])
     R = numpy.random.uniform(0.0, 1.0)
     t = -1.0 * math.log(R) * t0 * math.exp((Ec - Ei)/(kB*T))
-    traps[i].set_release_time(t)
-    print traps[i].x(), traps[i].y(), traps[i].z(), traps[i].electron()
+    traps[i].release_time = t
+    #print traps[i].x(), traps[i].y(), traps[i].z(), traps[i].electron()
+
+# sort by releaase time maybe is better not to, so near traps are near in list 
+#print ""
+#print "Sorting by release time "
+#traps.sort(key=lambda x: x.release_time, reverse=False)
+
+for i in range(numofiter):
+    idxtomove = traps.index(min(traps, key=attrgetter('release_time')))
+    print idxtomove , traps[idxtomove].release_time
+    
+    # move it 
+    # search near traps
+    # TODO old electron set to zero
+
+    # new release time is computed and trap 
+
+    # position = bisect.insort_left(traps, movedtrap)
+    #traps.sort(key=lambda x: x.release_time, reverse=False)
