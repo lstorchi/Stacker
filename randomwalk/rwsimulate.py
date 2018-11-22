@@ -73,6 +73,47 @@ class trap:
 
 ###############################################################################
 
+import argparse
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument("-f","--filename", help="Packed spheres filename", \
+        type=str, required=True, dest="filename")
+parser.add_argument("-v", "--verbose", help="increase output verbosity", \
+        default=False, action="store_true")
+parser.add_argument("-n", "--num-of-iter", help="Number of iterations ", \
+        type=int, required=False, default=100, dest="numofiter")
+parser.add_argument("--v0", help="v0 value ", \
+        type=float, required=False, default=2.5)
+parser.add_argument("--Ec", help="Ec value ", \
+        type=float, required=False, default=10.0)
+parser.add_argument("--Ei", help="Ei value ", \
+        type=float, required=False, default=11.0)
+parser.add_argument("-T", help="T value ", \
+        type=float, required=False, default=298.0)
+parser.add_argument("--min-dist", help="Cut-off radius to neighboured traps ", \
+        type=float, required=False, default=100.0, dest="mindist")
+
+if len(sys.argv) == 1:
+    parser.print_help()
+    exit(1)
+
+args = parser.parse_args()
+
+filename = args.filename
+
+# need to set proper values
+numofiter = args.numofiter
+v0 = args.v0
+t0 = 1.0 / v0
+Ec = args.Ec
+Ei = args.Ei
+T = args.T
+mindist = args.mindist # radius of the traps where to jump
+
+kB = 1.0
+
+verbose = args.verbose
 
 # create a rendering window and renderer
 ren = vtk.vtkRenderer()
@@ -83,7 +124,6 @@ renWin.AddRenderer(ren)
 iren = vtk.vtkRenderWindowInteractor()
 iren.SetRenderWindow(renWin)
 
-filename = "final_config.txt"
 read_cube = False
 
 if (len(sys.argv)) == 2:
@@ -127,7 +167,7 @@ for sp in file:
 
 file.close()
 
-counter = 0
+counter = 1
 traps = []
 # find neighbourhood
 for s in spheres:
@@ -196,16 +236,6 @@ for s in spheres:
          if trapcounter >= numoftraps:
              todo = False
 
-# need to set proper values
-v0 = 2.5
-t0 = 1.0 / v0
-Ec = 10.0
-Ei = 11.0 
-kB = 1.0
-T = 298
-numofiter = 1000
-mindist = 100.0 # radius of the traps where to jump
-
 # filling the trap initial 
 electrons = numpy.random.choice(2, len(traps))
 for i in range(len(traps)):
@@ -218,6 +248,16 @@ for i in range(len(traps)):
         #print traps[i].x(), traps[i].y(), traps[i].z(), traps[i].electron()
     else:
         traps[i].release_time = float('inf')
+
+Nelectron = 0
+fp = open("starting_conf.txt", "w")
+for t in traps:
+    if t.electron() != 0:
+        fp.write( "%10.4f %10.4f %10.4f\n"%(t.x(), t.y(), t.z()))
+        Nelectron += 1
+    #fp.write( "%10.4f %10.4f %10.4f %2d %10.4f\n"%(t.x(), t.y(), t.z(), \
+    #        t._electron(), t.release_time))
+fp.close()
 
 # sort by releaase time maybe is better not to, so near traps are near in list 
 #print ""
@@ -235,7 +275,11 @@ for t in traps:
 for i in range(numofiter):
     idxtomove = traps.index(min(traps, key=attrgetter('release_time')))
     tmin = traps[idxtomove].release_time
-    print idxtomove , traps[idxtomove].release_time
+    if verbose:
+        print idxtomove , traps[idxtomove].release_time, traps[idxtomove].electron()
+    
+    if not verbose:
+        progress_bar (i+1, numofiter)
 
     # find near by traps
     dist_2 = numpy.sum((np_traps_position - traps[idxtomove].get_position())**2, axis=1)
@@ -247,30 +291,58 @@ for i in range(numofiter):
     for near_i  in idexes:
         if (traps[near_i].electron() == 0):
             free_near_traps.append(near_i)
+    
+    #TODO IMPORTANT "Need to add boundary conditions"
 
     if len(free_near_traps) == 0:
-        print "No free traps"
-        exit(1)
+        if verbose:
+            print "No free traps near by"
+        for t in traps:
+            if t.release_time < float("inf"):
+                t.release_time -= tmin
+    else:
+        # randomly choose a trap
+        selectidx = 0
+        if len(free_near_traps) > 1:
+            selectidx = random.randint(0, len(free_near_traps)-1)
 
-    # randomly choose a trap
-    indextojump = 0
-    if len(free_near_traps) > 1:
-        indextojump = random.randint(0, len(free_near_traps)-1)
+        indextojump = free_near_traps[selectidx]
+        
+        # move electron
+        traps[idxtomove].set_electron(0)
+        traps[idxtomove].release_time = float('inf')
 
-    # move electron
-    traps[idxtomove].set_electron(0)
-    traps[idxtomove].release_time = float('inf')
-    traps[indextojump].set_electron(1)
-
-    # new release time is computed and trap 
-    R = numpy.random.uniform(0.0, 1.0)
-    t = -1.0 * math.log(R) * t0 * math.exp((Ec - Ei)/(kB*T))
-    traps[indextojump].release_time = t
+        traps[indextojump].set_electron(1)
+        
+        # new release time is computed and trap 
+        R = numpy.random.uniform(0.0, 1.0)
+        t = -1.0 * math.log(R) * t0 * math.exp((Ec - Ei)/(kB*T))
+        traps[indextojump].release_time = t
+        
+        # reduce realease time of tmin 
+        for t in traps:
+            if t.release_time < float("inf"):
+                t.release_time -= tmin
+        
+        # position = bisect.insort_left(traps, movedtrap)
+        #traps.sort(key=lambda x: x.release_time, reverse=False)
+        
+        if verbose:
+            print idxtomove , traps[idxtomove].release_time, traps[idxtomove].electron()
+            print indextojump , traps[indextojump].release_time, traps[indextojump].electron()
  
-    # reduce realease time of tmin 
-    for t in traps:
-        if t.release_time > float("inf"):
-            t.release_time -= tmin
+ 
+Nfinalelectron = 0
+fp = open("final_conf.txt", "w")
+for t in traps:
+    if t.electron() != 0:
+        fp.write( "%10.4f %10.4f %10.4f\n"%(t.x(), t.y(), t.z()))
+        Nfinalelectron += 1
+    #fp.write( "%10.4f %10.4f %10.4f %2d %10.4f\n"%(t.x(), t.y(), t.z(), \
+    #        t.electron, t.release_time))
+fp.close()
 
-    # position = bisect.insort_left(traps, movedtrap)
-    #traps.sort(key=lambda x: x.release_time, reverse=False)
+print ""
+if Nfinalelectron != Nelectron:
+    print "Error number of starting electron is: ", Nelectron
+    print "     number of final electron is: ", Nfinalelectron
