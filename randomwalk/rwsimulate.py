@@ -272,6 +272,15 @@ for t in traps:
     np_traps_position[i,:] = t.get_position()
     i = i + 1
 
+
+print np_traps_position.shape
+print np_traps_position[0,:]
+print traps[0].get_position()
+print np_traps_position.min(0)
+print np_traps_position.max(0)
+
+exit(1)
+
 for i in range(numofiter):
     idxtomove = traps.index(min(traps, key=attrgetter('release_time')))
     tmin = traps[idxtomove].release_time
@@ -286,13 +295,13 @@ for i in range(numofiter):
     # all indexes of dist_2 where values is lower than 
     idexes = numpy.where(dist_2 < mindist)[0]
 
+    #TODO IMPORTANT "Need to add boundary conditions"
+
     # are they free traps ?
     free_near_traps = []
     for near_i  in idexes:
         if (traps[near_i].electron() == 0):
             free_near_traps.append(near_i)
-    
-    #TODO IMPORTANT "Need to add boundary conditions"
 
     if len(free_near_traps) == 0:
         if verbose:
