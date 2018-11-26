@@ -26,6 +26,13 @@ def progress_bar (count, total, status=''):
 
 ###############################################################################
 
+def distance(x0, x1, dimensions):
+    delta = numpy.abs(x0 - x1)
+    delta = numpy.where(delta > 0.5 * dimensions, delta - dimensions, delta)
+    return numpy.sqrt((delta ** 2).sum(axis=-1))
+
+###############################################################################
+
 class trap:
     def __init__(self, x = 0.0, y = 0.0, z = 0.0):
         self.__electron__ = 0
@@ -167,7 +174,7 @@ for sp in file:
 
 file.close()
 
-print "Generate traps only if a NP has two near NPs"
+print "Generate traps only if a NP has at least two near NPs"
 
 counter = 1
 traps = []
@@ -274,20 +281,29 @@ for t in traps:
     np_traps_position[i,:] = t.get_position()
     i = i + 1
 
+trapsxmin = numpy.amin(np_traps_position[:,0])
+trapsymin = numpy.amin(np_traps_position[:,1])
+trapszmin = numpy.amin(np_traps_position[:,2])
 
-print np_traps_position[0,:]
-print traps[0].get_position()
+trapsxmax = numpy.amax(np_traps_position[:,0])
+trapsymax = numpy.amax(np_traps_position[:,1])
+trapszmax = numpy.amax(np_traps_position[:,2])
+
 print ""
 print "Check should be more or less the same values: "
-print "X min: " , numpy.amin(np_traps_position[:,0])
-print "Y min: " , numpy.amin(np_traps_position[:,1])
-print "Z min: " , numpy.amin(np_traps_position[:,2])
+print "Traps X min: %10.5f Spheres X min: %10.5f "%(trapsxmin, xmin)
+print "Traps Y min: %10.5f Spheres Y min: %10.5f "%(trapsymin, ymin)
+print "Traps Z min: %10.5f Spheres Z min: %10.5f "%(trapszmin, zmin)
 
-print "SX min: " , xmin
-print "SY min: " , ymin
-print "SZ min: " , zmin
+print "Check should be more or less the same values: "
+print "Traps X max: %10.5f Spheres X max: %10.5f "%(trapsxmax, xmax)
+print "Traps Y max: %10.5f Spheres Y max: %10.5f "%(trapsymax, ymax)
+print "Traps Z max: %10.5f Spheres Z max: %10.5f "%(trapszmax, zmax)
+print ""
 
-exit(1)
+# box dim to be used in the boundary conditions
+dimensions = numpy.array(\
+        [(trapsxmax-trapsxmin), (trapsxmax-trapsymin), (trapszmax-trapszmin)])
 
 for i in range(numofiter):
     idxtomove = traps.index(min(traps, key=attrgetter('release_time')))
@@ -298,12 +314,12 @@ for i in range(numofiter):
     if not verbose:
         progress_bar (i+1, numofiter)
 
-    # find near by traps
-    dist_2 = numpy.sum((np_traps_position - traps[idxtomove].get_position())**2, axis=1)
+    # find near by traps imposing boundary conditions
+    dists = distance(np_traps_position, traps[idxtomove].get_position(), dimensions)
+    # without boundary conditions
+    # dist_2 = numpy.sum((np_traps_position - traps[idxtomove].get_position())**2, axis=1)
     # all indexes of dist_2 where values is lower than 
-    idexes = numpy.where(dist_2 < mindist)[0]
-
-    #TODO IMPORTANT "Need to add boundary conditions"
+    idexes = numpy.where(dists < mindist)[0]
 
     # are they free traps ?
     free_near_traps = []
