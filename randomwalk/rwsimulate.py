@@ -167,6 +167,8 @@ for sp in file:
 
 file.close()
 
+print "Generate traps only if a NP has two near NPs"
+
 counter = 1
 traps = []
 # find neighbourhood
@@ -199,42 +201,42 @@ for s in spheres:
 
   if len(nearspheres) >= 2:
 
-     # generate traps
-     numoftraps = 100
-     todo = True
-     
-     trapcounter = 0
-     while todo:
-         theta = 2.0 * math.pi * numpy.random.uniform(0.0, 1.0)
-         phi = math.pi * numpy.random.uniform(0.0, 1.0)
-         x = c.get_x() + r * math.sin(phi) * math.cos(theta)
-         y = c.get_y() + r * math.sin(phi) * math.sin(theta)
-         z = c.get_z() + r * math.cos(phi)
-         
-         placethetrap = True
-     
-         for snear in nearspheres:
-             cnear = snear.get_center()
-             rnear = snear.get_radius()
-     
-             xdiff = cnear.get_x() - x
-             ydiff = cnear.get_y() - y
-             zdiff = cnear.get_z() - z
-     
-             dist = math.sqrt((xdiff * xdiff) + (ydiff * ydiff) + \
-                     (zdiff * zdiff))
-     
-             if dist <= rnear*PERCSME:
-                 placethetrap = False
-                 break;
-     
-         if placethetrap:
-             t = trap(x, y, z)
-             traps.append(t)
-             trapcounter += 1
-     
-         if trapcounter >= numoftraps:
-             todo = False
+    # generate traps
+    numoftraps = 100
+    todo = True
+    
+    trapcounter = 0
+    while todo:
+        theta = 2.0 * math.pi * numpy.random.uniform(0.0, 1.0)
+        phi = math.pi * numpy.random.uniform(0.0, 1.0)
+        x = c.get_x() + r * math.sin(phi) * math.cos(theta)
+        y = c.get_y() + r * math.sin(phi) * math.sin(theta)
+        z = c.get_z() + r * math.cos(phi)
+        
+        placethetrap = True
+    
+        for snear in nearspheres:
+            cnear = snear.get_center()
+            rnear = snear.get_radius()
+    
+            xdiff = cnear.get_x() - x
+            ydiff = cnear.get_y() - y
+            zdiff = cnear.get_z() - z
+    
+            dist = math.sqrt((xdiff * xdiff) + (ydiff * ydiff) + \
+                    (zdiff * zdiff))
+    
+            if dist <= rnear*PERCSME:
+                placethetrap = False
+                break;
+    
+        if placethetrap:
+            t = trap(x, y, z)
+            traps.append(t)
+            trapcounter += 1
+    
+        if trapcounter >= numoftraps:
+            todo = False
 
 # filling the trap initial 
 electrons = numpy.random.choice(2, len(traps))
@@ -273,11 +275,17 @@ for t in traps:
     i = i + 1
 
 
-print np_traps_position.shape
 print np_traps_position[0,:]
 print traps[0].get_position()
-print np_traps_position.min(0)
-print np_traps_position.max(0)
+print ""
+print "Check should be more or less the same values: "
+print "X min: " , numpy.amin(np_traps_position[:,0])
+print "Y min: " , numpy.amin(np_traps_position[:,1])
+print "Z min: " , numpy.amin(np_traps_position[:,2])
+
+print "SX min: " , xmin
+print "SY min: " , ymin
+print "SZ min: " , zmin
 
 exit(1)
 
