@@ -88,6 +88,8 @@ parser.add_argument("-f","--filename", help="Packed spheres filename", \
         type=str, required=True, dest="filename")
 parser.add_argument("-v", "--verbose", help="increase output verbosity", \
         default=False, action="store_true")
+parser.add_argument("--checksingleelectron", help="use a single electron for debugging", \
+        default=False, action="store_true")
 parser.add_argument("-n", "--num-of-iter", help="Number of iterations ", \
         type=int, required=False, default=100, dest="numofiter")
 parser.add_argument("--v0", help="v0 value ", \
@@ -99,7 +101,7 @@ parser.add_argument("--Ei", help="Ei value ", \
 parser.add_argument("-T", help="T value ", \
         type=float, required=False, default=298.0)
 parser.add_argument("--min-dist", help="Cut-off radius to neighboured traps ", \
-        type=float, required=False, default=100.0, dest="mindist")
+        type=float, required=False, default=20.0, dest="mindist")
 
 if len(sys.argv) == 1:
     parser.print_help()
@@ -108,6 +110,8 @@ if len(sys.argv) == 1:
 args = parser.parse_args()
 
 filename = args.filename
+
+checksingle = args.checksingleelectron
 
 # need to set proper values
 numofiter = args.numofiter
@@ -258,6 +262,16 @@ for i in range(len(traps)):
     else:
         traps[i].release_time = float('inf')
 
+# check single electron
+if checksingle:
+    traps[0].set_electron(1)
+    R = numpy.random.uniform(0.0, 1.0)
+    t = -1.0 * math.log(R) * t0 * math.exp((Ec - Ei)/(kB*T))
+    traps[0].release_time = t
+    for i in range(1, len(traps)):
+        traps[i].set_electron(0)
+        traps[i].release_time = float('inf')
+
 Nelectron = 0
 fp = open("starting_conf.txt", "w")
 for t in traps:
@@ -306,24 +320,35 @@ dimensions = numpy.array(\
         [(trapsxmax-trapsxmin), (trapsxmax-trapsymin), (trapszmax-trapszmin)])
 
 for i in range(numofiter):
-    idxtomove = traps.index(min(traps, key=attrgetter('release_time')))
-    tmin = traps[idxtomove].release_time
+    idxfrom = traps.index(min(traps, key=attrgetter('release_time')))
+    tmin = traps[idxfrom].release_time
     if verbose:
-        print idxtomove , traps[idxtomove].release_time, traps[idxtomove].electron()
+        print idxfrom , traps[idxfrom].release_time, traps[idxfrom].electron()
+
+    if traps[idxfrom].electron() != 1:
+        print "ERROR traps[idxfrom] has finite release time but zero electron"
+        print traps[idxfrom].release_time
+        exit(1)
     
     if not verbose:
-        progress_bar (i+1, numofiter)
+        if not checksingle:
+            progress_bar (i+1, numofiter)
+
+    if checksingle:
+        print "%10.5f %10.5f %10.5f"%(traps[idxfrom].get_position()[0], \
+                traps[idxfrom].get_position()[1], \
+                traps[idxfrom].get_position()[2])
 
     # find near by traps imposing boundary conditions
-    dists = distance(np_traps_position, traps[idxtomove].get_position(), dimensions)
+    dists = distance(np_traps_position, traps[idxfrom].get_position(), dimensions)
     # without boundary conditions
-    # dist_2 = numpy.sum((np_traps_position - traps[idxtomove].get_position())**2, axis=1)
+    # dist_2 = numpy.sum((np_traps_position - traps[idxfrom].get_position())**2, axis=1)
     # all indexes of dist_2 where values is lower than 
     idexes = numpy.where(dists < mindist)[0]
 
     # are they free traps ?
     free_near_traps = []
-    for near_i  in idexes:
+    for near_i in idexes:
         if (traps[near_i].electron() == 0):
             free_near_traps.append(near_i)
 
@@ -342,8 +367,8 @@ for i in range(numofiter):
         indextojump = free_near_traps[selectidx]
         
         # move electron
-        traps[idxtomove].set_electron(0)
-        traps[idxtomove].release_time = float('inf')
+        traps[idxfrom].set_electron(0)
+        traps[idxfrom].release_time = float('inf')
 
         traps[indextojump].set_electron(1)
         
@@ -361,8 +386,13 @@ for i in range(numofiter):
         #traps.sort(key=lambda x: x.release_time, reverse=False)
         
         if verbose:
-            print idxtomove , traps[idxtomove].release_time, traps[idxtomove].electron()
+            print idxfrom , traps[idxfrom].release_time, traps[idxfrom].electron()
             print indextojump , traps[indextojump].release_time, traps[indextojump].electron()
+
+        if checksingle:
+            print "%10.5f %10.5f %10.5f"%(traps[indextojump].get_position()[0], \
+                traps[indextojump].get_position()[1], \
+                traps[indextojump].get_position()[2])
  
  
 Nfinalelectron = 0
