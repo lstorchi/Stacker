@@ -43,6 +43,13 @@ plt.plot(x_range,y_spl(x_range))
 y_spl_2d = y_spl.derivative(n=2)
 y_dev = y_spl_2d(x_range)
 
+minmax = numpy.r_[True, y_dev[1:] < y_dev[:-1]] & numpy.r_[y_dev[:-1] < y_dev[1:], True]
+
+for i in range(minmax.size):
+    if minmax[i]:
+        print x_range[i], y_dev[i]
+        plt.plot(x_range[i], y_dev[i], 'rv',label = 'data')
+
 plt.plot(x_range,y_dev)
 
 # dal plot delle derivate secone e dal grafico vedo il flesso 
