@@ -36,25 +36,33 @@ fp.close()
 
 y_spl = UnivariateSpline(x,y,s=0,k=4)
 
-plt.plot(x,y,'ro',label = 'data')
-x_range = numpy.linspace(x[0],x[-1],1000)
-plt.plot(x_range,y_spl(x_range))
+plt.plot(x,y,'go',label = 'data')
+#x_range = numpy.linspace(x[0],x[int(float(len(x))/2.0)],1000)
+#plt.plot(x_range,y_spl(x_range))
 
-y_spl_2d = y_spl.derivative(n=2)
-y_dev = y_spl_2d(x_range)
+x1 = -5.418
+x2 = -3.139
 
-minmax = numpy.r_[True, y_dev[1:] < y_dev[:-1]] & numpy.r_[y_dev[:-1] < y_dev[1:], True]
+y1 = y_spl(x1)
+y2 = y_spl(x2)
 
-for i in range(minmax.size):
-    if minmax[i]:
-        plt.plot(x_range[i], y_dev[i], 'rv',label = 'data')
+y_spl_1d = y_spl.derivative(n=1)
+m1 = y_spl_1d(-5.418)
+m2 = y_spl_1d(-3.139)
 
-plt.plot(x_range,y_dev)
+q1 = y1 - m1*x1
+q2 = y2 - m2*x2
 
-# dal plot delle derivate secone e dal grafico vedo il flesso 
-# piu' ragionevole
-
+x_range = numpy.linspace(x[0],x[int(float(len(x))/2.0)],1000)
 for i in range(len(x_range)):
-    print "%20.8f %20.8f"%(x_range[i], y_dev[i])
+    plt.plot(x_range[i], x_range[i] * m1 + q1, 'go--')
+
+x_range = numpy.linspace(x[int(float(len(x))/2.0)], x[-1], 1000)
+for i in range(len(x_range)):
+    plt.plot(x_range[i], x_range[i] * m2 + q2, 'go--')
+
+
+print m1, q1, -q1/m1
+print m2, q2, -q2/m2
 
 plt.show()
