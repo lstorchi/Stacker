@@ -157,7 +157,7 @@ sources = []
 for trap in traps_xyz_pdf:
   source = vtk.vtkSphereSource()
   source.SetCenter(trap[0], trap[1], trap[2])
-  source.SetRadius(trap[3])
+  source.SetRadius(100.0*trap[3])
 
   sources.append(source)
 
@@ -176,7 +176,7 @@ actors = []
 
 for mapper in mappers:
   actor = vtk.vtkActor()
-  #actor.GetProperty().SetOpacity(0.5)
+  #actor.GetProperty().SetOpacity(0.9)
   actor.SetMapper(mapper)
 
   actors.append(actor);
