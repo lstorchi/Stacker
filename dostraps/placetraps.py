@@ -74,6 +74,14 @@ x -= centerx
 y -= centery
 z -= centerz
 
+curveminx = min(x)
+curvemaxx = max(x)
+curveminy = min(y)
+curvemaxy = max(y)
+curveminz = min(z)
+curvemaxz = max(z)
+
+
 print "Curves limits: "
 print min(x), max(x) 
 print min(y), max(y) 
@@ -141,7 +149,11 @@ for i in range(len(atoms)):
         traps_xyz_pdf.append([xlist[i], ylist[i], zlist[i], p])
 
 for i in range(len(traps_xyz_pdf)):
-    traps_xyz_pdf[i][3] = traps_xyz_pdf[i][3] / totp 
+    traps_xyz_pdf[i][3] = 100.0 * (traps_xyz_pdf[i][3] / totp )
+    print traps_xyz_pdf[i][0], \
+            traps_xyz_pdf[i][1], \
+            traps_xyz_pdf[i][2], \
+            traps_xyz_pdf[i][3]
 
 # create a rendering window and renderer
 ren = vtk.vtkRenderer()
@@ -154,10 +166,17 @@ iren.SetRenderWindow(renWin)
 
 sources = []
 
+print min(x), max(x) 
+print min(y), max(y) 
+print min(z), max(z)
+
+cube.addcube_to_source (sources, curveminx, curveminy, curveminz, \
+     curvemaxx, curvemaxy, curvemaxz)
+
 for trap in traps_xyz_pdf:
   source = vtk.vtkSphereSource()
   source.SetCenter(trap[0], trap[1], trap[2])
-  source.SetRadius(100.0*trap[3])
+  source.SetRadius(trap[3])
 
   sources.append(source)
 
