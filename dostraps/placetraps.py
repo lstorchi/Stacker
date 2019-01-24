@@ -1,6 +1,7 @@
 import re
 import sys
 import vtk
+import math
 import numpy
 
 from scipy.interpolate import interp1d
@@ -12,6 +13,51 @@ import sphere
 import point
 import util
 import cube
+
+#######################################################################`
+
+def visualize_all_sources (sources):
+
+    # mapper
+    mappers = []
+    
+    for source in sources:
+      mapper = vtk.vtkPolyDataMapper()
+      #mapper.SetInput(source.GetOutput())
+      mapper.SetInputConnection(source.GetOutputPort())
+      
+      mappers.append(mapper)
+    
+    # actor
+    actors = []
+    
+    for mapper in mappers:
+      actor = vtk.vtkActor()
+      #actor.GetProperty().SetOpacity(0.9)
+      actor.SetMapper(mapper)
+    
+      actors.append(actor);
+     
+    # assign actor to the renderer
+    
+    for actor in actors:
+      ren.AddActor(actor)
+    
+    # enable user interface interactor
+    try:
+      iren.Initialize()
+      renWin.Render()
+      #writer = vtk.vtkGL2PSExporter()
+      #writer.SetRenderWindow(renWin)
+      #writer.SetFileFormatToSVG ()
+      #writer.SetFilePrefix("largeImage")
+      #writer.Write()
+      iren.Start()
+    except Exception as e:
+      print e
+    
+    #for trap in traps_xyz_pdf:
+    #    print trap[0], trap[1], trap[2], trap[3]
 
 #######################################################################`
 
@@ -52,6 +98,8 @@ xcurvefname = ""
 ycurvefname = "" 
 zcurvefname = ""
 xyzfname = ""
+
+showalsomainspheres = True
 
 if (len(sys.argv)) == 5:
     xcurvefname = sys.argv[1]
@@ -178,49 +226,45 @@ for trap in traps_xyz_pdf:
   source.SetCenter(trap[0], trap[1], trap[2])
   source.SetRadius(trap[3])
 
-  sources.append(source)
+  if showalsomainspheres:
+      sources.append(source)
 
-# mapper
-mappers = []
+realtraps = []
+numoftotaltraps = 1000
+for trap in traps_xyz_pdf:
+    numoftraps_per_atom = int(numoftotaltraps*trap[3]/100.0)
 
-for source in sources:
-  mapper = vtk.vtkPolyDataMapper()
-  #mapper.SetInput(source.GetOutput())
-  mapper.SetInputConnection(source.GetOutputPort())
-  
-  mappers.append(mapper)
+    print numoftraps_per_atom
 
-# actor
-actors = []
+    r = trap[3]
+    cx = trap[0]
+    cy = trap[1]
+    cz = trap[2]
 
-for mapper in mappers:
-  actor = vtk.vtkActor()
-  #actor.GetProperty().SetOpacity(0.9)
-  actor.SetMapper(mapper)
+    trapcounter = 0
+    todo = True
+    while todo:
+        theta = 2.0 * math.pi * numpy.random.uniform(0.0, 1.0)
+        phi = math.pi * numpy.random.uniform(0.0, 1.0)
+        xt = cx + r * math.sin(phi) * math.cos(theta)
+        yt = cy + r * math.sin(phi) * math.sin(theta)
+        zt = cz + r * math.cos(phi)
+        
+        realtraps.append((xt, yt, zt))
+        trapcounter += 1
+        
+        source = vtk.vtkSphereSource()
+        source.SetCenter(xt, yt, zt)
+        source.SetRadius(0.1)
+        sources.append(source)
 
-  actors.append(actor);
- 
-# assign actor to the renderer
+        if trapcounter >= numoftraps_per_atom:
+            todo = False
 
-for actor in actors:
-  ren.AddActor(actor)
 
-# enable user interface interactor
-try:
-  iren.Initialize()
-  renWin.Render()
-  #writer = vtk.vtkGL2PSExporter()
-  #writer.SetRenderWindow(renWin)
-  #writer.SetFileFormatToSVG ()
-  #writer.SetFilePrefix("largeImage")
-  #writer.Write()
-  iren.Start()
-except Exception as e:
-  print e
+visualize_all_sources (sources)
 
 #for trap in traps_xyz_pdf:
 #    print trap[0], trap[1], trap[2], trap[3]
 
-numoftraps = 10000
-random_array = numpy.random.uniform(0.0, 1.0, numoftraps)
 
