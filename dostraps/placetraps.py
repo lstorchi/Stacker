@@ -325,8 +325,6 @@ if __name__ == "__main__":
 
    alltraps = []
 
-   import matplotlib.pyplot as plt
-   
    for pair in args.curvefiles.split(";"):
        id, fname = pair.split(":")
    
@@ -336,6 +334,11 @@ if __name__ == "__main__":
                y, yval, sumy, \
                z, zval, sumz = read_filecurve (fname)
    
+       import matplotlib.pyplot as plt
+
+       plt.clf() 
+       plt.cla()
+
        realtraps = generate_traps (x, xval, sumx, y, yval, sumy, \
                z, zval, sumz, xlist, ylist, zlist, atoms, plt, \
                verbose)
