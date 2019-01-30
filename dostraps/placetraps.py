@@ -121,7 +121,7 @@ def read_filecurve (fname):
 
 def generate_traps (x, xval, sumx, y, yval, sumy, \
         z, zval, sumz, xlist, ylist, zlist, atoms,\
-        verbose = False):
+        plt, verbose = False):
 
     activevgtk = False
     showalsomainspheres = True
@@ -151,14 +151,24 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
     fy = interp1d(y, yval, kind='cubic')
     fz = interp1d(z, zval, kind='cubic')
     
-    """
+    plt.subplot(3, 1, 1)
     xnew = numpy.linspace(min(x), max(x), num=10000, endpoint=True)
-    ynew = fx(xnew)
-    import matplotlib.pyplot as plt
-    plt.plot(x, xval, 'o', xnew, ynew, '-')
-    plt.show()
-    """
-    
+    xvalnew = fx(xnew)
+    plt.title('X values')
+    plt.plot(x, xval, 'o', xnew, xvalnew, '-')
+
+    plt.subplot(3, 1, 2)
+    ynew = numpy.linspace(min(y), max(y), num=10000, endpoint=True)
+    yvalnew = fy(ynew)
+    plt.title('Y values')
+    plt.plot(y, yval, 'o', ynew, yvalnew, '-')
+ 
+    plt.subplot(3, 1, 3)
+    znew = numpy.linspace(min(z), max(z), num=10000, endpoint=True)
+    zvalnew = fz(znew)
+    plt.title('Z values')
+    plt.plot(z, zval, 'o', znew, zvalnew, '-')
+ 
     np_centerx = numpy.mean(xlist)
     np_centery = numpy.mean(ylist)
     np_centerz = numpy.mean(zlist)
@@ -314,6 +324,8 @@ if __name__ == "__main__":
    xlist, ylist, zlist, atoms = xyznanop.read_ncxyz (xyzfname)
 
    alltraps = []
+
+   import matplotlib.pyplot as plt
    
    for pair in args.curvefiles.split(";"):
        id, fname = pair.split(":")
@@ -325,12 +337,14 @@ if __name__ == "__main__":
                z, zval, sumz = read_filecurve (fname)
    
        realtraps = generate_traps (x, xval, sumx, y, yval, sumy, \
-               z, zval, sumz, xlist, ylist, zlist, atoms, \
+               z, zval, sumz, xlist, ylist, zlist, atoms, plt, \
                verbose)
 
        realtraps[:] = [ t for t in realtraps if t.set_id(int(id)) ]
 
        alltraps.extend(realtraps)
+
+       plt.savefig("curve_" + id + ".png", bbox_inches='tight')
        
    if verbose:
        for t in alltraps:
