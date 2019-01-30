@@ -19,6 +19,17 @@ TWOPI = 6.283185307179586476925287
 
 #######################################################
 
+def is_a_float (val):
+
+    try:
+        float(val)
+    except ValueError:
+        return False
+
+    return True
+
+#######################################################
+
 def generate_random_spheres (spheres = []):
 
   # suddivido in box dove posizionare le sfere
