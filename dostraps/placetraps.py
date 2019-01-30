@@ -120,7 +120,8 @@ def read_filecurve (fname):
 #######################################################################
 
 def generate_traps (x, xval, sumx, y, yval, sumy, \
-        z, zval, sumz, xlist, ylist, zlist, atoms):
+        z, zval, sumz, xlist, ylist, zlist, atoms,\
+        verbose = False):
 
     activevgtk = False
     showalsomainspheres = True
@@ -279,11 +280,9 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
     
     if (activevgtk):
         visualize_all_sources (ren, iren, sources)
-    
-    for t in realtraps:
-        print "%10.5f %10.5f %10.5f"%(t.get_x(), \
-                t.get_y(), t.get_z())
 
+    return realtraps
+    
 #######################################################################
 
 if __name__ == "__main__":
@@ -313,6 +312,8 @@ if __name__ == "__main__":
    xyzfname = args.xyzfile
    
    xlist, ylist, zlist, atoms = xyznanop.read_ncxyz (xyzfname)
+
+   alltraps = []
    
    for pair in args.curvefiles.split(";"):
        id, fname = pair.split(":")
@@ -323,5 +324,17 @@ if __name__ == "__main__":
                y, yval, sumy, \
                z, zval, sumz = read_filecurve (fname)
    
-       generate_traps (x, xval, sumx, y, yval, sumy, \
-               z, zval, sumz, xlist, ylist, zlist, atoms)
+       realtraps = generate_traps (x, xval, sumx, y, yval, sumy, \
+               z, zval, sumz, xlist, ylist, zlist, atoms, \
+               verbose)
+
+       realtraps[:] = [ t for t in realtraps if t.set_id(int(id)) ]
+
+       alltraps.extend(realtraps)
+       
+   if verbose:
+       for t in alltraps:
+           print "%10d %10.5f %10.5f %10.5f"%(t.get_id(), t.get_x(), \
+                   t.get_y(), t.get_z())
+
+

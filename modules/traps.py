@@ -10,6 +10,12 @@ class trap:
         self.__id = 0
         self.__energy = energy
 
+    def get_id(self):
+        return self.__id
+
+    def set_id(self, v):
+        self.__id = v
+        return True
 
     def get_x(self):
         return self.__x
