@@ -10,6 +10,7 @@ import argparse
 
 sys.path.append("../modules")
 
+import nanoparticle
 import xyznanop
 import sphere
 import traps
@@ -19,7 +20,27 @@ import cube
 
 #######################################################################`
 
-def visualize_all_sources (ren, iren, sources):
+def rototranslate_traps (intraps, cx, cy, cz, p1, p2, tetha):
+  
+    trap_centerx = numpy.mean([t.get_x() for t in intraps])
+    trap_centery = numpy.mean([t.get_y() for t in intraps])
+    trap_centerz = numpy.mean([t.get_z() for t in intraps])
+    
+    distx = math.fabs(trap_centerx-cx)
+    disty = math.fabs(trap_centery-cy)
+    distz = math.fabs(trap_centerz-cz)
+
+    vals = [point.point(t.get_x()+distx, t.get_y()+disty, \
+        t.get_z()+distz) for t in intraps]
+    #rotvals = [util.point_rotate(p1, p2, p, tetha) for p in vals]
+    rettraps = [traps.trap(p.get_x(), p.get_y(), p.get_z()) \
+        for p in vals]
+
+    return rettraps
+
+#######################################################################`
+
+def visualize_all_sources (renWin, iren, sources):
 
     # mapper
     mappers = []
@@ -39,8 +60,8 @@ def visualize_all_sources (ren, iren, sources):
       #actor.GetProperty().SetOpacity(0.9)
       actor.SetMapper(mapper)
     
-      actors.append(actor);
-     
+      actors.append(actor)
+      
     # assign actor to the renderer
     
     for actor in actors:
@@ -49,7 +70,7 @@ def visualize_all_sources (ren, iren, sources):
     # enable user interface interactor
     try:
       iren.Initialize()
-      ren.Render()
+      renWin.Render()
       #writer = vtk.vtkGL2PSExporter()
       #writer.SetRenderWindow(renWin)
       #writer.SetFileFormatToSVG ()
@@ -123,7 +144,7 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
         z, zval, sumz, xlist, ylist, zlist, atoms,\
         plt, verbose = False):
 
-    activatevtk = True
+    activatevtk = False
     showalsomainspheres = True
 
     centerx = numpy.mean(x)
@@ -289,7 +310,7 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
     
     
     if (activatevtk):
-        visualize_all_sources (ren, iren, sources)
+        visualize_all_sources (renWin, iren, sources)
 
     return realtraps
     
@@ -350,10 +371,57 @@ if __name__ == "__main__":
        alltraps.extend(realtraps)
 
        plt.savefig("curve_" + id + ".png", bbox_inches='tight')
+
+   if args.filmfile != "":
+       # non mi interessano le intersezioni
+       nanoparticle.POINTINSIDEDIM = 0
+
+       nanoparticles = []
+
+       print "Reading nanoparticles file"
+
+       botx, topx, boty, topy, botz, topz = \
+               nanoparticle.file_to_nanoparticle_list(args.filmfile, \
+               nanoparticles) 
+
+       if (botx >= topx) or (boty >= topy) or (boty >= topy):
+          print "Error Invalid BOX"
+          exit()
+
+       sources = []
+
+       for nanop in nanoparticles:
+         p1, p2, tetha = nanop.get_rotation_info ()
+
+         cx, cy, cz = nanop.get_center()
+
+         centerdtraps = rototranslate_traps (alltraps, cx, cy, cz, \
+             p1, p2, tetha)
+         
+         for c in centerdtraps:
+           print c.get_x(), c.get_y(), c.get_z()
+
+           source = vtk.vtkSphereSource()
+           source.SetCenter(c.get_x(), c.get_y(), c.get_z())
+           source.SetRadius(0.5)
+           sources.append(source)
+ 
+       cube.addcube_to_source(sources, botx, topx, boty, \
+           topy, botz, topz)
+
+       # create a rendering window and renderer
+       ren = vtk.vtkRenderer()
+       renWin = vtk.vtkRenderWindow()
+       renWin.AddRenderer(ren)
+         
+       # create a renderwindowinteractor
+       iren = vtk.vtkRenderWindowInteractor()
+       iren.SetRenderWindow(renWin)
        
+       visualize_all_sources (renWin, iren, sources)
+
    if verbose:
        for t in alltraps:
            print "%10d %10.5f %10.5f %10.5f"%(t.get_id(), t.get_x(), \
                    t.get_y(), t.get_z())
-
 
