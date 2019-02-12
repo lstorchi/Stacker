@@ -49,7 +49,7 @@ def visualize_all_sources (ren, iren, sources):
     # enable user interface interactor
     try:
       iren.Initialize()
-      renWin.Render()
+      ren.Render()
       #writer = vtk.vtkGL2PSExporter()
       #writer.SetRenderWindow(renWin)
       #writer.SetFileFormatToSVG ()
@@ -123,7 +123,7 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
         z, zval, sumz, xlist, ylist, zlist, atoms,\
         plt, verbose = False):
 
-    activatevtk = False
+    activatevtk = True
     showalsomainspheres = True
 
     centerx = numpy.mean(x)
