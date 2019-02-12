@@ -26,15 +26,15 @@ def rototranslate_traps (intraps, cx, cy, cz, p1, p2, tetha):
     trap_centery = numpy.mean([t.get_y() for t in intraps])
     trap_centerz = numpy.mean([t.get_z() for t in intraps])
     
-    distx = math.fabs(trap_centerx-cx)
-    disty = math.fabs(trap_centery-cy)
-    distz = math.fabs(trap_centerz-cz)
+    distx = trap_centerx-cx
+    disty = trap_centery-cy
+    distz = trap_centerz-cz
 
-    vals = [point.point(t.get_x()+distx, t.get_y()+disty, \
-        t.get_z()+distz) for t in intraps]
-    #rotvals = [util.point_rotate(p1, p2, p, tetha) for p in vals]
+    vals = [point.point(t.get_x()-distx, t.get_y()-disty, \
+        t.get_z()-distz) for t in intraps]
+    rotvals = [util.point_rotate(p1, p2, p, tetha) for p in vals]
     rettraps = [traps.trap(p.get_x(), p.get_y(), p.get_z()) \
-        for p in vals]
+        for p in rotvals]
 
     return rettraps
 
@@ -395,19 +395,22 @@ if __name__ == "__main__":
 
          cx, cy, cz = nanop.get_center()
 
+         source = vtk.vtkSphereSource()
+         source.SetCenter(cx, cy, cz)
+         source.SetRadius(1.0)
+         sources.append(source)
+
          centerdtraps = rototranslate_traps (alltraps, cx, cy, cz, \
              p1, p2, tetha)
          
          for c in centerdtraps:
-           print c.get_x(), c.get_y(), c.get_z()
-
            source = vtk.vtkSphereSource()
            source.SetCenter(c.get_x(), c.get_y(), c.get_z())
            source.SetRadius(0.5)
            sources.append(source)
  
-       cube.addcube_to_source(sources, botx, topx, boty, \
-           topy, botz, topz)
+       cube.addcube_to_source(sources, botx, boty, botz, \
+           topx, topy, topz)
 
        # create a rendering window and renderer
        ren = vtk.vtkRenderer()
