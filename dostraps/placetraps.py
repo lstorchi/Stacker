@@ -123,7 +123,7 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
         z, zval, sumz, xlist, ylist, zlist, atoms,\
         plt, verbose = False):
 
-    activevgtk = False
+    activatevtk = False
     showalsomainspheres = True
 
     centerx = numpy.mean(x)
@@ -239,11 +239,11 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
     #print min(y), max(y) 
     #print min(z), max(z)
     
-    if (activevgtk):
+    if (activatevtk):
         cube.addcube_to_source (sources, curveminx, curveminy, curveminz, \
                 curvemaxx, curvemaxy, curvemaxz)
     
-    if (activevgtk):
+    if (activatevtk):
         for trap in traps_xyz_pdf:
             source = vtk.vtkSphereSource()
             source.SetCenter(trap[0], trap[1], trap[2])
@@ -278,7 +278,7 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
             realtraps.append(t)
             trapcounter += 1
             
-            if (activevgtk):
+            if (activatevtk):
                 source = vtk.vtkSphereSource()
                 source.SetCenter(xt, yt, zt)
                 source.SetRadius(0.1)
@@ -288,7 +288,7 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
                 todo = False
     
     
-    if (activevgtk):
+    if (activatevtk):
         visualize_all_sources (ren, iren, sources)
 
     return realtraps
@@ -309,6 +309,8 @@ if __name__ == "__main__":
            type=str, required=True, default="", dest="curvefiles")
    parser.add_argument("-I", "--input-xyz", help="input XYZ file", \
            type=str, required=True, default="", dest="xyzfile")
+   parser.add_argument("-f", "--input-film", help="input the film file if needed", \
+           type=str, required=False, default="", dest="filmfile")
    parser.add_argument("-v", "--verbose", help="increase output verbosity", \
            default=False, action="store_true")
    
