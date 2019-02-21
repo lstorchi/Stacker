@@ -18,6 +18,8 @@ import point
 import util
 import cube
 
+CONVERTFCT = 1.889725989
+
 #######################################################################`
 
 def rototranslate_traps (intraps, cx, cy, cz, p1, p2, tetha):
@@ -346,6 +348,10 @@ if __name__ == "__main__":
    
    xlist, ylist, zlist, atoms = xyznanop.read_ncxyz (xyzfname)
 
+   xlist = numpy.divide(xlist, CONVERTFCT)
+   ylist = numpy.divide(ylist, CONVERTFCT)
+   zlist = numpy.divide(zlist, CONVERTFCT)
+
    alltraps = []
 
    for pair in args.curvefiles.split(";"):
@@ -356,6 +362,10 @@ if __name__ == "__main__":
        x, xval, sumx, \
                y, yval, sumy, \
                z, zval, sumz = read_filecurve (fname)
+
+       x = numpy.divide(x, CONVERTFCT)
+       y = numpy.divide(y, CONVERTFCT)
+       z = numpy.divide(z, CONVERTFCT)
    
        import matplotlib.pyplot as plt
 
