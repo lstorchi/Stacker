@@ -19,6 +19,8 @@ import util
 import cube
 
 CONVERTFCT = 1.889725989
+# if not needed 
+# CONVERTFCT = 1.0
 
 #######################################################################`
 
@@ -372,6 +374,7 @@ if __name__ == "__main__":
        plt.clf() 
        plt.cla()
 
+       # in case of a different generation for each NP just move this 
        realtraps = generate_traps (x, xval, sumx, y, yval, sumy, \
                z, zval, sumz, xlist, ylist, zlist, atoms, plt, \
                verbose)
