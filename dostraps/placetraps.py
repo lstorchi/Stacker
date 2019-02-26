@@ -326,6 +326,8 @@ if __name__ == "__main__":
    ycurvefname = "" 
    zcurvefname = ""
    xyzfname = ""
+
+   main_activatevtk = False
    
    parser = argparse.ArgumentParser()
    
@@ -408,33 +410,36 @@ if __name__ == "__main__":
 
          cx, cy, cz = nanop.get_center()
 
-         source = vtk.vtkSphereSource()
-         source.SetCenter(cx, cy, cz)
-         source.SetRadius(1.0)
-         sources.append(source)
+         if main_activatevtk:
+             source = vtk.vtkSphereSource()
+             source.SetCenter(cx, cy, cz)
+             source.SetRadius(1.0)
+             sources.append(source)
 
          centerdtraps = rototranslate_traps (alltraps, cx, cy, cz, \
              p1, p2, tetha)
          
-         for c in centerdtraps:
-           source = vtk.vtkSphereSource()
-           source.SetCenter(c.get_x(), c.get_y(), c.get_z())
-           source.SetRadius(0.5)
-           sources.append(source)
+         if main_activatevtk:
+             for c in centerdtraps:
+                 source = vtk.vtkSphereSource()
+                 source.SetCenter(c.get_x(), c.get_y(), c.get_z())
+                 source.SetRadius(0.5)
+                 sources.append(source)
  
        cube.addcube_to_source(sources, botx, boty, botz, \
            topx, topy, topz)
 
-       # create a rendering window and renderer
-       ren = vtk.vtkRenderer()
-       renWin = vtk.vtkRenderWindow()
-       renWin.AddRenderer(ren)
-         
-       # create a renderwindowinteractor
-       iren = vtk.vtkRenderWindowInteractor()
-       iren.SetRenderWindow(renWin)
-       
-       visualize_all_sources (renWin, iren, sources)
+       if main_activatevtk:
+           # create a rendering window and renderer
+           ren = vtk.vtkRenderer()
+           renWin = vtk.vtkRenderWindow()
+           renWin.AddRenderer(ren)
+           
+           # create a renderwindowinteractor
+           iren = vtk.vtkRenderWindowInteractor()
+           iren.SetRenderWindow(renWin)
+           
+           visualize_all_sources (renWin, iren, sources)
 
    if verbose:
        for t in alltraps:
