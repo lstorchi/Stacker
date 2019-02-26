@@ -24,7 +24,7 @@ CONVERTFCT = 1.889725989
 
 #######################################################################`
 
-def rototranslate_traps (intraps, cx, cy, cz, p1, p2, tetha):
+def rototranslate_traps (intraps, cx, cy, cz, p1, p2, tetha, npid):
   
     trap_centerx = numpy.mean([t.get_x() for t in intraps])
     trap_centery = numpy.mean([t.get_y() for t in intraps])
@@ -39,6 +39,11 @@ def rototranslate_traps (intraps, cx, cy, cz, p1, p2, tetha):
     rotvals = [util.point_rotate(p1, p2, p, tetha) for p in vals]
     rettraps = [traps.trap(p.get_x(), p.get_y(), p.get_z()) \
         for p in rotvals]
+
+    # should be Vectorized
+    for i in range(len(rettraps)):
+        rettraps[i].set_id(intraps[i].get_id())
+        rettraps[i].set_npid(npid)
 
     return rettraps
 
@@ -387,6 +392,8 @@ if __name__ == "__main__":
 
        plt.savefig("curve_" + id + ".png", bbox_inches='tight')
 
+   fullsetoftraps = []
+
    if args.filmfile != "":
        # non mi interessano le intersezioni
        nanoparticle.POINTINSIDEDIM = 0
@@ -405,10 +412,16 @@ if __name__ == "__main__":
 
        sources = []
 
+       counter = 0
+
        for nanop in nanoparticles:
          p1, p2, tetha = nanop.get_rotation_info ()
 
          cx, cy, cz = nanop.get_center()
+
+         counter = counter + 1
+
+         print >> sys.stderr, counter , "of ", len(nanoparticles)
 
          if main_activatevtk:
              source = vtk.vtkSphereSource()
@@ -417,7 +430,9 @@ if __name__ == "__main__":
              sources.append(source)
 
          centerdtraps = rototranslate_traps (alltraps, cx, cy, cz, \
-             p1, p2, tetha)
+             p1, p2, tetha, counter)
+         
+         fullsetoftraps.extend(centerdtraps)
          
          if main_activatevtk:
              for c in centerdtraps:
@@ -425,9 +440,9 @@ if __name__ == "__main__":
                  source.SetCenter(c.get_x(), c.get_y(), c.get_z())
                  source.SetRadius(0.5)
                  sources.append(source)
- 
-       cube.addcube_to_source(sources, botx, boty, botz, \
-           topx, topy, topz)
+                 
+             cube.addcube_to_source(sources, botx, boty, botz, \
+                     topx, topy, topz)
 
        if main_activatevtk:
            # create a rendering window and renderer
@@ -442,7 +457,7 @@ if __name__ == "__main__":
            visualize_all_sources (renWin, iren, sources)
 
    if verbose:
-       for t in alltraps:
-           print "%10d %10.5f %10.5f %10.5f"%(t.get_id(), t.get_x(), \
-                   t.get_y(), t.get_z())
+       for t in fullsetoftraps:
+           print "%10d %10.5f %10.5f %10.5f %10d"%(t.get_id(), t.get_x(), \
+                   t.get_y(), t.get_z(), t.get_npid())
 

@@ -11,6 +11,7 @@ sys.path.append("../modules")
 from cube import *
 from point import * 
 from sphere import *
+from traps import *
 
 ###############################################################################
 
@@ -30,53 +31,6 @@ def distance(x0, x1, dimensions):
     delta = numpy.abs(x0 - x1)
     delta = numpy.where(delta > 0.5 * dimensions, delta - dimensions, delta)
     return numpy.sqrt((delta ** 2).sum(axis=-1))
-
-###############################################################################
-
-class trap:
-    def __init__(self, x = 0.0, y = 0.0, z = 0.0):
-        self.__electron__ = 0
-        self.__x__ = x
-        self.__y__ = y
-        self.__z__ = z
-
-        self.release_time = 0.0
-
-    def __lt__(self, other):
-        return self.release_time < other.release_time
-
-    def __gt__(self, other):
-        return self.release_time > other.release_time
-
-    def __repr__(self):
-        return 'R Time({})'.format(self.release_time)
-
-    def x(self):
-        return self.__x__
-
-    def y(self):
-        return self.__y__
-
-    def z(self):
-        return self.__z__
-
-    def get_position(self):
-        return numpy.array([self.__x__, self.__y__, self.__z__])
-
-    def electron(self):
-        return self.__electron__
-
-    def set_x(self, i):
-        self.__x__ = i
-
-    def set_y(self, i):
-        self.__y__ = i
-
-    def set_z(self, i):
-        self.__z__ = i
-
-    def set_electron(self, i):
-        self.__electron__ = i
 
 ###############################################################################
 
