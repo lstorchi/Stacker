@@ -15,6 +15,7 @@ class trap:
         self.__electron__ = 0
 
         self.__npid__ = 0
+        self.__atomid__ = 0
 
         self.release_time = 0.0
 
@@ -32,6 +33,12 @@ class trap:
 
     def set_npid(self, i):
         self.__npid__ = i
+
+    def get_atomid(self):
+        return self.__atomid__
+
+    def set_atomid(self, i):
+        self.__atomid__ = i
 
     def get_id(self):
         return self.__id__

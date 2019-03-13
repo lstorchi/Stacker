@@ -95,17 +95,19 @@ zmax = float("-inf")
 
 for line in file:
   mergedline = ' '.join(line.split())
-  sid, sx, sy, sz, snpnum = mergedline.split(" ")
+  sid, sx, sy, sz, snpnum, satomid = mergedline.split(" ")
 
   id = int(sid)
   x = float(sx)
   y = float(sy)
   z = float(sz)
   npnum = int(snpnum)
+  atomid = int(satomid)
 
   t = trap(x, y, z)
   t.set_id(id)
   t.set_npid(npnum)
+  t.set_atomid(atomid)
 
   if x < xmin:
       xmin = x
@@ -211,9 +213,12 @@ for i in range(numofiter):
             progress_bar (i+1, numofiter)
 
     if checksingle:
-        print "%10.5f %10.5f %10.5f"%(alltraps[idxfrom].get_position()[0], \
+        print "From %10.5f %10.5f %10.5f %10d %10d"%( \
+                alltraps[idxfrom].get_position()[0], \
                 alltraps[idxfrom].get_position()[1], \
-                alltraps[idxfrom].get_position()[2])
+                alltraps[idxfrom].get_position()[2],
+                alltraps[idxfrom].get_npid(), \
+                alltraps[idxfrom].get_atomid())
 
     # find near by alltraps imposing boundary conditions
     dists = distance(np_alltraps_position, alltraps[idxfrom].get_position(), dimensions)
@@ -267,10 +272,13 @@ for i in range(numofiter):
             print indextojump , alltraps[indextojump].release_time, alltraps[indextojump].electron()
 
         if checksingle:
-            print "%10.5f %10.5f %10.5f"%(alltraps[indextojump].get_position()[0], \
-                alltraps[indextojump].get_position()[1], \
-                alltraps[indextojump].get_position()[2])
- 
+            print "To %10.5f %10.5f %10.5f %10d %10d"%( \
+                    alltraps[indextojump].get_position()[0], \
+                    alltraps[indextojump].get_position()[1], \
+                    alltraps[indextojump].get_position()[2], \
+                    alltraps[indextojump].get_npid(), \
+                    alltraps[indextojump].get_atomid())
+
  
 Nfinalelectron = 0
 fp = open("final_conf.txt", "w")

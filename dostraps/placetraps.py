@@ -44,6 +44,7 @@ def rototranslate_traps (intraps, cx, cy, cz, p1, p2, tetha, npid):
     for i in range(len(rettraps)):
         rettraps[i].set_id(intraps[i].get_id())
         rettraps[i].set_npid(npid)
+        rettraps[i].set_atomid(intraps[i].get_atomid())
 
     return rettraps
 
@@ -245,7 +246,7 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
     
             p = fx(xv) * fy(yv) * fz(zv)
             totp += p
-            traps_xyz_pdf.append([xlist[i], ylist[i], zlist[i], p])
+            traps_xyz_pdf.append([xlist[i], ylist[i], zlist[i], p, i])
     
     for i in range(len(traps_xyz_pdf)):
         traps_xyz_pdf[i][3] = 100.0 * (traps_xyz_pdf[i][3] / totp )
@@ -283,7 +284,7 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
             sources.append(source)
     
     realtraps = []
-    numoftotaltraps = 1000
+    numoftotaltraps = 2000
     for trap in traps_xyz_pdf:
         numoftraps_per_atom = int(numoftotaltraps*trap[3]/100.0)
     
@@ -293,7 +294,8 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
         cx = trap[0]
         cy = trap[1]
         cz = trap[2]
-    
+        atomid = trap[4]
+
         trapcounter = 0
         todo = True
         while todo:
@@ -304,6 +306,7 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
             zt = cz + r * math.cos(phi)
            
             t = traps.trap(xt, yt, zt)
+            t.set_atomid(atomid)
     
             realtraps.append(t)
             trapcounter += 1
@@ -432,7 +435,13 @@ if __name__ == "__main__":
          centerdtraps = rototranslate_traps (alltraps, cx, cy, cz, \
              p1, p2, tetha, counter)
          
-         fullsetoftraps.extend(centerdtraps)
+         #fullsetoftraps.extend(centerdtraps)
+         
+         if verbose:
+             for t in centerdtraps:
+                 print "%10d %10.5f %10.5f %10.5f %10d %10d"%(t.get_id(), t.get_x(), \
+                         t.get_y(), t.get_z(), t.get_npid(), t.get_atomid())
+
          
          if main_activatevtk:
              for c in centerdtraps:
@@ -456,8 +465,8 @@ if __name__ == "__main__":
            
            visualize_all_sources (renWin, iren, sources)
 
-   if verbose:
-       for t in fullsetoftraps:
-           print "%10d %10.5f %10.5f %10.5f %10d"%(t.get_id(), t.get_x(), \
-                   t.get_y(), t.get_z(), t.get_npid())
+   #if verbose:
+   #    for t in fullsetoftraps:
+   #        print "%10d %10.5f %10.5f %10.5f %10d %10d"%(t.get_id(), t.get_x(), \
+   #                t.get_y(), t.get_z(), t.get_npid(), t.get_atomid())
 
