@@ -13,7 +13,7 @@ import cube
 
 # init 
 
-BOXDIM = 70.0
+BOXDIM = 100.0
 
 # no mi interessano le intersezioni
 nanoparticle.POINTINSIDEDIM = 0
@@ -46,6 +46,13 @@ maxy = boxcentey + BOXDIM/2.0
 minz = boxcentez - BOXDIM/2.0
 maxz = boxcentez + BOXDIM/2.0
 
+minbox_x = 100000.0 
+maxbox_x =-100000.0 
+minbox_y = 100000.0
+maxbox_y =-100000.0
+minbox_z = 100000.0
+maxbox_z =-100000.0
+
 for np in nanaparticles:
     cx, cy, cz = np.get_center()
 
@@ -57,6 +64,27 @@ for np in nanaparticles:
                 p2 = np.get_p2()
                 tetha = np.get_theta()
 
+                dm = max(H, B, A) / 2.0
+
+                if (maxbox_x < (cx + dm)):
+                  maxbox_x = (cx + dm)
+                if (maxbox_y < (cy + dm)):
+                  maxbox_y = (cy + dm)
+                if (maxbox_z < (cz + dm)):
+                  maxbox_z = (cz + dm)
+                
+                if (minbox_x > (cx - dm)):
+                  minbox_x = (cx - dm)
+                if (minbox_y > (cy - dm)):
+                  minbox_y = (cy - dm)
+                if (minbox_z > (cz - dm)):
+                  minbox_z = (cz - dm)
+
                 print cx, cy, cz, A, B, H, p2.get_x(), \
                         p2.get_y(), p2.get_z(), tetha 
 
+
+
+#print minbox_x, maxbox_x
+#print minbox_y, maxbox_y
+print minbox_z, maxbox_z
