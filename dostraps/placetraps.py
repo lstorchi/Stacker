@@ -284,7 +284,7 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
             sources.append(source)
     
     realtraps = []
-    numoftotaltraps = 2000
+    numoftotaltraps = 20000
     for trap in traps_xyz_pdf:
         numoftraps_per_atom = int(numoftotaltraps*trap[3]/100.0)
     
