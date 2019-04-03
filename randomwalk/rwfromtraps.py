@@ -13,6 +13,15 @@ from traps import *
 from point import * 
 from sphere import *
 
+
+###############################################################################
+
+def file_len(fname):
+    with open(fname) as f:
+        for i, l in enumerate(f):
+            pass
+        return i + 1
+
 ###############################################################################
 
 def progress_bar (count, total, status=''):
@@ -42,8 +51,8 @@ parser.add_argument("-f","--filename", help="Traps filename", \
         type=str, required=True, dest="filename")
 parser.add_argument("-v", "--verbose", help="increase output verbosity", \
         default=False, action="store_true")
-parser.add_argument("--checksingleelectron", help="use a single electron for debugging", \
-        default=False, action="store_true")
+parser.add_argument("--num-of-electrons", help="set number of electron to place", \
+        type=int, default=1, dest="numofelectron")
 parser.add_argument("-n", "--num-of-iter", help="Number of iterations ", \
         type=int, required=False, default=100, dest="numofiter")
 parser.add_argument("--v0", help="v0 value ", \
@@ -64,8 +73,6 @@ if len(sys.argv) == 1:
 args = parser.parse_args()
 
 filename = args.filename
-
-checksingle = args.checksingleelectron
 
 # need to set proper values
 numofiter = args.numofiter
@@ -92,6 +99,12 @@ xmax = float("-inf")
 ymax = float("-inf")
 zmax = float("-inf")
 
+npset = set()
+
+trapsidx_for_np = {}
+
+i = 0
+lineinfile = file_len(filename)
 
 for line in file:
   mergedline = ' '.join(line.split())
@@ -104,10 +117,19 @@ for line in file:
   npnum = int(snpnum)
   atomid = int(satomid)
 
+  if npnum not in trapsidx_for_np:
+      trapsidx_for_np[npnum] = []
+
+  trapsidx_for_np[npnum].append(id)
+
   t = trap(x, y, z)
   t.set_id(id)
   t.set_npid(npnum)
   t.set_atomid(atomid)
+  t.set_electron(0)
+  t.release_time = float('inf')
+
+  npset.add(npnum)
 
   if x < xmin:
       xmin = x
@@ -126,32 +148,44 @@ for line in file:
 
   alltraps.append(t)
 
+  i += 1
 
-# filling the trap initial 
-electrons = numpy.random.choice(2, len(alltraps))
-for i in range(len(alltraps)):
-    alltraps[i].set_electron(electrons[i])
+  progress_bar (i, lineinfile)
 
-    if electrons[i] == 1:
-        R = numpy.random.uniform(0.0, 1.0)
-        t = -1.0 * math.log(R) * t0 * math.exp((Ec - Ei)/(kB*T))
-        alltraps[i].release_time = t
-        #print alltraps[i].x(), alltraps[i].y(), alltraps[i].z(), alltraps[i].electron()
-    else:
-        alltraps[i].release_time = float('inf')
+print ""
 
-# check single electron
-if checksingle:
-    alltraps[0].set_electron(1)
-    R = numpy.random.uniform(0.0, 1.0)
-    t = -1.0 * math.log(R) * t0 * math.exp((Ec - Ei)/(kB*T))
-    alltraps[0].release_time = t
-    for i in range(1, len(alltraps)):
-        alltraps[i].set_electron(0)
-        alltraps[i].release_time = float('inf')
+numofelectron = min(args.numofelectron, len(npset))
+
+print "Number of NPs: ", len(npset) 
+print "Number of electrons: ", numofelectron
+
+# select initial NP to get an electron
+# and set electron
+setelectron = 0
+setofnp = set()
+while setelectron < numofelectron:
+    yesorno = numpy.random.choice(2)
+    if yesorno == 1:
+        setelectron += 1
+
+        while True:
+            setnp = random.randint(0, len(npset)-1)
+
+            if setnp not in setofnp: 
+                randomtrapidx = random.randint(0, \
+                        len(trapsidx_for_np[setnp])) 
+
+                R = numpy.random.uniform(0.0, 1.0)
+                t = -1.0 * math.log(R) * t0 * math.exp((Ec - Ei)/(kB*T))
+                alltraps[randomtrapidx].set_electron(1)
+                alltraps[randomtrapidx].release_time = t
+                print ("Set electron %3d to NP %10d at trap %10d"%(\
+                        setelectron, setnp, randomtrapidx))
+                setofnp.add(setnp)
+                break
 
 Nelectron = 0
-fp = open("starting_conf.txt", "w")
+fp = open("starting_conf_"+str(numofelectron)+".txt", "w")
 for t in alltraps:
     if t.electron() != 0:
         fp.write( "%10.4f %10.4f %10.4f\n"%(t.x(), t.y(), t.z()))
@@ -209,10 +243,10 @@ for i in range(numofiter):
         exit(1)
     
     if not verbose:
-        if not checksingle:
+        if not numofelectron == 1:
             progress_bar (i+1, numofiter)
 
-    if checksingle:
+    if numofelectron == 1:
         print "From %10.5f %10.5f %10.5f %10d %10d"%( \
                 alltraps[idxfrom].get_position()[0], \
                 alltraps[idxfrom].get_position()[1], \
@@ -271,7 +305,7 @@ for i in range(numofiter):
             print idxfrom , alltraps[idxfrom].release_time, alltraps[idxfrom].electron()
             print indextojump , alltraps[indextojump].release_time, alltraps[indextojump].electron()
 
-        if checksingle:
+        if numofelectron == 1:
             print "To %10.5f %10.5f %10.5f %10d %10d"%( \
                     alltraps[indextojump].get_position()[0], \
                     alltraps[indextojump].get_position()[1], \
@@ -281,7 +315,7 @@ for i in range(numofiter):
 
  
 Nfinalelectron = 0
-fp = open("final_conf.txt", "w")
+fp = open("final_conf_"+str(numofelectron)+".txt", "w")
 for t in alltraps:
     if t.electron() != 0:
         fp.write( "%10.4f %10.4f %10.4f\n"%(t.x(), t.y(), t.z()))
