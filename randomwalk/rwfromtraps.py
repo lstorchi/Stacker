@@ -1,5 +1,6 @@
 import sys
 import math
+import time
 import numpy
 import random
 
@@ -70,6 +71,8 @@ if len(sys.argv) == 1:
     parser.print_help()
     exit(1)
 
+fullstart = time.time()
+
 args = parser.parse_args()
 
 filename = args.filename
@@ -105,6 +108,8 @@ trapsidx_for_np = {}
 
 i = 0
 lineinfile = file_len(filename)
+
+start = time.time()
 
 for line in file:
   mergedline = ' '.join(line.split())
@@ -152,11 +157,15 @@ for line in file:
 
   progress_bar (i, lineinfile)
 
+end = time.time()
+
 print ""
 
-numofelectron = min(args.numofelectron, len(npset))
+nplist = list(npset)
 
-print "Number of NPs: ", len(npset) 
+numofelectron = min(args.numofelectron, len(nplist))
+
+print "Number of NPs: ", len(nplist) 
 print "Number of electrons: ", numofelectron
 
 # select initial NP to get an electron
@@ -169,19 +178,20 @@ while setelectron < numofelectron:
         setelectron += 1
 
         while True:
-            setnp = random.randint(0, len(npset)-1)
+            setnp = random.randint(0, len(nplist)-1)
+            npidx = nplist[setnp]
 
-            if setnp not in setofnp: 
+            if npidx not in setofnp: 
                 randomtrapidx = random.randint(0, \
-                        len(trapsidx_for_np[setnp])) 
+                        len(trapsidx_for_np[npidx])) 
 
                 R = numpy.random.uniform(0.0, 1.0)
                 t = -1.0 * math.log(R) * t0 * math.exp((Ec - Ei)/(kB*T))
                 alltraps[randomtrapidx].set_electron(1)
                 alltraps[randomtrapidx].release_time = t
                 print ("Set electron %3d to NP %10d at trap %10d"%(\
-                        setelectron, setnp, randomtrapidx))
-                setofnp.add(setnp)
+                        setelectron, npidx, randomtrapidx))
+                setofnp.add(npidx)
                 break
 
 Nelectron = 0
@@ -329,3 +339,11 @@ if Nfinalelectron != Nelectron:
     print "Error number of starting electron is: ", Nelectron
     print "     number of final electron is: ", Nfinalelectron
 file.close()
+
+fullend = time.time()
+
+print ""
+print("Time to read %10.3f"%(end - start))
+print("Time compute %10.3f"%((fullend - fullstart)-(end - start)))
+print("Total time to read %10.3f"%(fullend - fullstart))
+
