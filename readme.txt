@@ -1,39 +1,54 @@
-REL_0_0_0   : prima di usare glyph3d
-REL_0_0_1   : dopo provo ad implementare direttamente quanto descritto  in 
-              Comp. Mechanics. WCCM VI Sept. 5-10 2004 China
-REL_0_0_2   : split in due programmi stacker per generare e poi il visualizzatore
-REL_0_0_3   : prima di iniziare ad usare configurazioni e dimensioni di particella
-              piu' realistiche e di splittare coordination.py in piu' files
-REL_0_0_4   : dopo aver splittato e messo i moduli in modules
-REL_0_0_5   : tag intermedio prima si inserire il calcolo della PSD piu' accurato
-REL_0_0_5_b : prima di committari alcuni fix, forse fix
-REL_0_0_5_c : forse fissato un problema in psd_accurate, ma voglio ora
-              ristrutturare il codice cosi'; che  tutti i due metodi si basino
-              sull'insieme dei punti nel vuoto.  
-REL_0_0_6   : Prima di iniziare ad implementare PSD sulla falsa riga di 
-              psdsolv
-REL_0_0_7   : Implementato il calcolo del PSD
-REL_0_0_8   : Visualizzazione nanoparticelle TiO2 con classe associata 
-REL_0_0_9   : Prima di iniziare ad aggiungere funzioni a corredo della
-              parte nanparticella tio2
-REL_0_1_0   : Aggiunta la determinazione del punto inside 
-REL_0_1_1   : Prima di iniziare a fare qualche test con dim e situazioni
-              realistiche
-REL_0_1_2   : Prima di implementare pore_size ad ispirazione diretta di Lagemat
-REL_0_1_3   : Prima implementazione con metodo collision detection per psd 
-              nanocristalli
-REL_0_1_4   : Prima di partire con il test con sfere a dim variabile
-REL_0_1_5   : Prima di committare cambiamenti in psd_using_tr
-REL_0_1_5_a : Sovrascrivo il psd_using_tr visualizer
-REL_0_1_6   : Backup prima di apportare modiche a psd tr per i nanocristalli
 
-REL_0_1_7   : Prima di partire con una ristrutturazione in funzione della
-              parallelizzabilita' dei vari calcoli
+This is mainly just a bunch of code I developed and used to produce some results published: 
+
+L. Storchi, F. Nunzi, F. De Angelis, Modeling Mesoporous Nanoparticulated TiO2 Films 
+through Nanopolyhedra Random Packing J. Phys. Chem. C, 119 (19), 10716, (2015) DOI: 10.1021/acs.jpcc.5b01620 (2015) 
+
+F. Nunzi, L. Storchi, M. Manca, M. Giannuzzi, G. Gigli, F. De Angelis, "Shape and Morphology 
+Effects on the Electronic Structure of TiO2 Nanostructures: From Nanocrystals to Nanorods" 
+ACS Appl. Mater. Interfaces 2014, (2014) DOI: 10.1021/am404293x 
+
+Francesca Nunzi, Edoardo Mosconi, Loriano Storchi, Enrico Ronca, Annabella Selloni, M. Gra"tzel, F. De Angelis, 
+"Inherent Electronic Trap States in TiO2 Nanocrystals: Effect of Saturation and Sintering", 
+Energy & Environmental Science, 6(4), 1221, (2013). 
+
+some other results have not yet been published instead 
+
+
+REL_0_0_0   : before using glyph3d
+REL_0_0_1   : later I will try to implement directly what was described in
+              Comp. Mechanics. WCCM VI Sept. 5-10 2004 China
+REL_0_0_2   : split into two stacker programs to generate and then the viewer
+REL_0_0_3   : before starting to use more realistic configurations and particle 
+              sizes and to split coordination.py into multiple files
+REL_0_0_4   : after splitting and putting the modules in modules
+REL_0_0_5   : intermediate tag before entering the most accurate PSD calculation
+REL_0_0_5_b : before commit of some fixes
+REL_0_0_5_c : maybe fixed a problem in psd_accurate, but I want to restructure the code now; 
+              that all the two methods are based on the set of points in a vacuum.
+REL_0_0_6   : Before starting to implement PSD along the lines of
+              psdsolv
+REL_0_0_7   : Implementation of the PSD calculation
+REL_0_0_8   : TiO2 nanoparticle visualization with associated class
+REL_0_0_9   : Before starting to add features to the tio2 nanparticle part
+REL_0_1_0   : Added the determination of the inside point
+REL_0_1_1   : Before starting to do some tests with simulations and realistic dimensions
+REL_0_1_2   : Before implementing pore_size directly inspired by Lagemat
+REL_0_1_3   : First implementation with collision detection method for psd nanocrystals
+REL_0_1_4   : Before starting with the variable size spheres test
+REL_0_1_5   : Before committing changes in psd_using_tr
+REL_0_1_5_a : Overwrite of psd_using_tr visualizer
+REL_0_1_6   : Backup Before committing changes in psd_using_tr
+
+REL_0_1_7   : Before starting with a restructuring according to the parallelisability 
+              of the various calculations
 
 REL_0_2_0   : remove old results
 
-REL_0_2_2   : prima di risistemare il source per arrivare ad una configurazione con 
-              volumq di intersezione nullo e quasi
+REL_0_2_2   : before fixing the source to arrive at a configuration with zero or almost 
+              zero intersection volume
+
+OLD code description need at least to be translated
 
 stacker.py            : genera la configurazione e scrive il risultato in un file
 stacker_random.py     : genera la configurazione e scrive il risultato in un file
@@ -177,34 +192,3 @@ nanoparticle_replace_surface_step2_fixed_nona.py : come sopra ma mette fixed sol
                                                    toccano quella che muovo quindi in conclusione ne muove
                                                    di piu' di quello sopra, quindi non rimane fixed solo
                                                    la coordinazione
-
-
-per usare pyOpt: export PYTHONPATH=$PYTHONPATH:/home/redo/AssegnoFilippo/stacker/pyopt/pyOpt-1.0.1
-
--------------------------------------------------------------------------------------
-OLD 
--------------------------------------------------------------------------------------
-
-pore_size_accurate.py : Calcola la pore size. Usando il metodo piu complesso.
-                        Quindi per ogni punto nella griglia considera la sfera
-                        piu' grande che contiene lui ma centrata anche nei
-                        vicini
-pore_size.py          : Calcola la pore size. Usando il metodo semplice e quindi
-                        data la griglia di punti semplicemente considera la sfera
-                        piu' grande centrata nel punto. In realta' il modo in
-                        cui sono valutate vpor e psd non credo sia ben definito.
-Ricordati di considerare anche l'orientazione dei nanocristalli nel
-randomwalk. Di fatto da come sono distribuiti gli stati, se due 
-nanocristalli sono impilati l'uno sopra la'ltro forse consucono poco.
-
-quindi si potrebbe tentare anche di determinare una qualche 
-possibilita' di transizione tra nanocristalli impaccati deiversamente 
-e quindi anche con porosita' e PSD. Impilati uno sopra l'altro porosita'
-presumibilmente maggiore e psd di un qualche tipo.
-
-=====================================================================
-
-PRIMO LAVORO
-
-studio proprieta' delle sfere e come cambia quando passo ai nanocristalli
-
