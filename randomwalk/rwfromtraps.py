@@ -172,6 +172,7 @@ print "Number of electrons: ", numofelectron
 # and set electron
 setelectron = 0
 setofnp = set()
+#faket = 1.0
 while setelectron < numofelectron:
     yesorno = numpy.random.choice(2)
     if yesorno == 1:
@@ -187,9 +188,11 @@ while setelectron < numofelectron:
 
                 R = numpy.random.uniform(0.0, 1.0)
                 t = -1.0 * math.log(R) * t0 * math.exp((Ec - Ei)/(kB*T))
+                #faket = +0.1
                 econtainer = electron()
                 alltraps[randomtrapidx].set_electron(1, econtainer)
                 alltraps[randomtrapidx].release_time = t
+                #alltraps[randomtrapidx].release_time = faket
                 print ("Set electron %3d to NP %10d at trap %10d"%(\
                         setelectron, npidx, randomtrapidx))
                 setofnp.add(npidx)
