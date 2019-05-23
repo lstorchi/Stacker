@@ -187,7 +187,8 @@ while setelectron < numofelectron:
 
                 R = numpy.random.uniform(0.0, 1.0)
                 t = -1.0 * math.log(R) * t0 * math.exp((Ec - Ei)/(kB*T))
-                alltraps[randomtrapidx].set_electron(1)
+                econtainer = electron()
+                alltraps[randomtrapidx].set_electron(1, econtainer)
                 alltraps[randomtrapidx].release_time = t
                 print ("Set electron %3d to NP %10d at trap %10d"%(\
                         setelectron, npidx, randomtrapidx))
@@ -291,12 +292,13 @@ for i in range(numofiter):
             selectidx = random.randint(0, len(free_near_alltraps)-1)
 
         indextojump = free_near_alltraps[selectidx]
-        
+
         # move electron
+        econtainer = alltraps[idxfrom].get_electron_cont()
         alltraps[idxfrom].set_electron(0)
         alltraps[idxfrom].release_time = float('inf')
 
-        alltraps[indextojump].set_electron(1)
+        alltraps[indextojump].set_electron(1, econtainer)
         
         # new release time is computed and trap 
         R = numpy.random.uniform(0.0, 1.0)
@@ -326,13 +328,21 @@ for i in range(numofiter):
  
 Nfinalelectron = 0
 fp = open("final_conf_"+str(numofelectron)+".txt", "w")
+fpe = open("electrons_"+str(numofelectron)+".txt", "w")
+i = 1
 for t in alltraps:
     if t.electron() != 0:
         fp.write( "%10.4f %10.4f %10.4f\n"%(t.x(), t.y(), t.z()))
         Nfinalelectron += 1
+        econtainer = t.get_electron_cont()
+        fpe.write("electron_%d\n"%(i))
+        numpy.savetxt(fpe, econtainer.get_allxyz())
+        i = i +1
+
     #fp.write( "%10.4f %10.4f %10.4f %2d %10.4f\n"%(t.x(), t.y(), t.z(), \
     #        t.electron, t.release_time))
 fp.close()
+fpe.close()
 
 print ""
 if Nfinalelectron != Nelectron:

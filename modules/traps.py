@@ -1,5 +1,27 @@
 import numpy 
 
+class electron:
+
+    def __init__ (self):
+        self.__x__ = []
+        self.__y__ = []
+        self.__z__ = []
+
+    def clear(self):
+        self.__x__.clear()
+        self.__y__.clear()
+        self.__z__.clear()
+
+    def append_xyz(self, x, y, z):
+        self.__x__.append(x)
+        self.__y__.append(y)
+        self.__z__.append(z)
+
+    def get_allxyz(self):
+
+        return numpy.transpose([self.__x__, \
+                self.__y__, self.__z__])
+
 class trap:
 
     def __init__ (self, x = 0.0, y = 0.0, z = 0.0, \
@@ -13,6 +35,7 @@ class trap:
         self.__energy__ = energy
 
         self.__electron__ = 0
+        self.__electron_cont__ = None
 
         self.__npid__ = 0
         self.__atomid__ = 0
@@ -71,6 +94,14 @@ class trap:
     def electron(self):
         return self.__electron__
 
-    def set_electron(self, i):
+    def set_electron(self, i, e = None):
         self.__electron__ = i
+        
+        if e != None:
+            e.append_xyz(self.__x__, self.__y__, self.__z__)
+
+        self.__electron_cont__ = e
+
+    def get_electron_cont(self):
+        return self.__electron_cont__
 
