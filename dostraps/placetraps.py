@@ -152,7 +152,7 @@ def read_filecurve (fname):
 
 def generate_traps (x, xval, sumx, y, yval, sumy, \
         z, zval, sumz, xlist, ylist, zlist, atoms,\
-        plt, verbose = False):
+        plt, numoftotaltraps, verbose = False):
 
     activatevtk = False
     showalsomainspheres = True
@@ -173,10 +173,10 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
     curvemaxz = max(z)
     
     if verbose:
-        print "Curves limits: "
-        print "%10.5f %10.5f"%(min(x), max(x))
-        print "%10.5f %10.5f"%(min(y), max(y))
-        print "%10.5f %10.5f"%(min(z), max(z))
+        print >> sys.stderr, "Curves limits: "
+        print >> sys.stderr, "%10.5f %10.5f"%(min(x), max(x))
+        print >> sys.stderr, "%10.5f %10.5f"%(min(y), max(y))
+        print >> sys.stderr, "%10.5f %10.5f"%(min(z), max(z))
     
     fx = interp1d(x, xval, kind='cubic')
     fy = interp1d(y, yval, kind='cubic')
@@ -209,10 +209,10 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
     zlist -= np_centerz
     
     if verbose:
-        print "Nanoparticle limits: "
-        print "%10.5f %10.5f"%(min(xlist), max(xlist))
-        print "%10.5f %10.5f"%(min(ylist), max(ylist))
-        print "%10.5f %10.5f"%(min(zlist), max(zlist))
+        print >> sys.stderr, "Nanoparticle limits: "
+        print >> sys.stderr, "%10.5f %10.5f"%(min(xlist), max(xlist))
+        print >> sys.stderr, "%10.5f %10.5f"%(min(ylist), max(ylist))
+        print >> sys.stderr, "%10.5f %10.5f"%(min(zlist), max(zlist))
     
     traps_xyz_pdf = []
     totp = 0.0
@@ -282,13 +282,22 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
             
         if showalsomainspheres:
             sources.append(source)
-    
-    realtraps = []
-    numoftotaltraps = 20000
+
+    totalsum = 0.0
     for trap in traps_xyz_pdf:
-        numoftraps_per_atom = int(numoftotaltraps*trap[3]/100.0)
+        totalsum += trap[3]
+
+    if verbose:
+        print >> sys.stderr, "Check number of traps and sum: ", \
+                len(traps_xyz_pdf), totalsum
+
+    totalnumoft = 0
+    placedpoints = 0
+    realtraps = []
+    for trap in traps_xyz_pdf:
+        numoftraps_per_atom = int(numoftotaltraps*trap[3]/totalsum)
     
-        #print numoftraps_per_atom
+        totalnumoft += numoftraps_per_atom
     
         r = trap[3]
         cx = trap[0]
@@ -297,7 +306,9 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
         atomid = trap[4]
 
         trapcounter = 0
-        todo = True
+
+        # do not place point if estimation is equal to zero
+        todo = (numoftraps_per_atom != 0)
         while todo:
             theta = 2.0 * math.pi * numpy.random.uniform(0.0, 1.0)
             phi = math.pi * numpy.random.uniform(0.0, 1.0)
@@ -310,6 +321,7 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
     
             realtraps.append(t)
             trapcounter += 1
+            placedpoints += 1
             
             if (activatevtk):
                 source = vtk.vtkSphereSource()
@@ -320,7 +332,12 @@ def generate_traps (x, xval, sumx, y, yval, sumy, \
             if trapcounter >= numoftraps_per_atom:
                 todo = False
     
-    
+
+    if verbose:
+        print >> sys.stderr, \
+                "Check totalnumoft vs numoftotaltraps and placedpoints : ", \
+                totalnumoft, numoftotaltraps, placedpoints
+
     if (activatevtk):
         visualize_all_sources (renWin, iren, sources)
 
@@ -344,6 +361,9 @@ if __name__ == "__main__":
            type=str, required=True, default="", dest="curvefiles")
    parser.add_argument("-I", "--input-xyz", help="input XYZ file", \
            type=str, required=True, default="", dest="xyzfile")
+   parser.add_argument("-N", "--numof-point-per-state", help="number of points per each trap state", \
+           type=int, required=True, default=0, dest="numofpointperstate")
+ 
    parser.add_argument("-f", "--input-film", help="input the film file if needed", \
            type=str, required=False, default="", dest="filmfile")
    parser.add_argument("-v", "--verbose", help="increase output verbosity", \
@@ -369,7 +389,7 @@ if __name__ == "__main__":
    for pair in args.curvefiles.split(";"):
        id, fname = pair.split(":")
    
-       print id, fname
+       print >> sys.stderr, id, fname
    
        x, xval, sumx, \
                y, yval, sumy, \
@@ -387,7 +407,7 @@ if __name__ == "__main__":
        # in case of a different generation for each NP just move this 
        realtraps = generate_traps (x, xval, sumx, y, yval, sumy, \
                z, zval, sumz, xlist, ylist, zlist, atoms, plt, \
-               verbose)
+               args.numofpointperstate, verbose)
 
        realtraps[:] = [ t for t in realtraps if t.set_id(int(id)) ]
 
@@ -395,15 +415,16 @@ if __name__ == "__main__":
 
        plt.savefig("curve_" + id + ".png", bbox_inches='tight')
 
-   fullsetoftraps = []
+   # too big in case of many traps
+   #fullsetoftraps = []
 
    if args.filmfile != "":
-       # non mi interessano le intersezioni
+       # non mi inter)essano le intersezioni
        nanoparticle.POINTINSIDEDIM = 0
 
        nanoparticles = []
 
-       print "Reading nanoparticles file"
+       print >> sys.stderr, "Reading nanoparticles file"
 
        botx, topx, boty, topy, botz, topz = \
                nanoparticle.file_to_nanoparticle_list(args.filmfile, \
