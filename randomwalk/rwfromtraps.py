@@ -108,9 +108,7 @@ trapsidx_for_np = {}
 
 i = 0
 lineinfile = file_len(filename)
-
 start = time.time()
-
 for line in file:
   mergedline = ' '.join(line.split())
   sid, sx, sy, sz, snpnum, satomid = mergedline.split(" ")
@@ -125,7 +123,7 @@ for line in file:
   if npnum not in trapsidx_for_np:
       trapsidx_for_np[npnum] = []
 
-  trapsidx_for_np[npnum].append(id)
+  trapsidx_for_np[npnum].append(i)
 
   t = trap(x, y, z)
   t.set_id(id)
@@ -183,8 +181,8 @@ while setelectron < numofelectron:
             npidx = nplist[setnp]
 
             if npidx not in setofnp: 
-                randomtrapidx = random.randint(0, \
-                        len(trapsidx_for_np[npidx])) 
+                randomtrapidx = random.randint(min(trapsidx_for_np[npidx]), \
+                        max(trapsidx_for_np[npidx])) 
 
                 R = numpy.random.uniform(0.0, 1.0)
                 t = -1.0 * math.log(R) * t0 * math.exp((Ec - Ei)/(kB*T))
