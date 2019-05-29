@@ -181,8 +181,15 @@ while setelectron < numofelectron:
             npidx = nplist[setnp]
 
             if npidx not in setofnp: 
-                randomtrapidx = random.randint(min(trapsidx_for_np[npidx]), \
+                
+                randomtrapidx = -1
+
+                while True:
+                    randomtrapidx = random.randint(min(trapsidx_for_np[npidx]), \
                         max(trapsidx_for_np[npidx])) 
+                    if alltraps[randomtrapidx].get_id() == 2937:
+                        break
+
 
                 R = numpy.random.uniform(0.0, 1.0)
                 t = -1.0 * math.log(R) * t0 * math.exp((Ec - Ei)/(kB*T))
@@ -191,8 +198,8 @@ while setelectron < numofelectron:
                 alltraps[randomtrapidx].set_electron(1, econtainer)
                 alltraps[randomtrapidx].release_time = t
                 #alltraps[randomtrapidx].release_time = faket
-                print ("Set electron %3d to NP %10d at trap %10d"%(\
-                        setelectron, npidx, randomtrapidx))
+                print ("Set electron %3d to NP %10d at trap %10d in state %10d"%(\
+                        setelectron, npidx, randomtrapidx, alltraps[randomtrapidx].get_id()))
                 setofnp.add(npidx)
                 break
 
@@ -238,6 +245,8 @@ print "Traps X max: %10.5f Spheres X max: %10.5f "%(alltrapsxmax, xmax)
 print "Traps Y max: %10.5f Spheres Y max: %10.5f "%(alltrapsymax, ymax)
 print "Traps Z max: %10.5f Spheres Z max: %10.5f "%(alltrapszmax, zmax)
 print ""
+
+exit(1)
 
 # box dim to be used in the boundary conditions
 dimensions = numpy.array(\
