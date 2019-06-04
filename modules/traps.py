@@ -31,7 +31,7 @@ class trap:
         self.__y__ = y
         self.__z__ = z
 
-        self.__id__ = 0
+        self.__id__ = id
         self.__energy__ = energy
 
         self.__electron__ = 0
@@ -50,6 +50,12 @@ class trap:
 
     def __repr__(self):
         return 'R Time({})'.format(self.release_time)
+
+    def get_energy(self):
+        return self.__energy__
+
+    def set_energy(self, e):
+        self.__energy__ = e
 
     def get_npid(self):
         return self.__npid__

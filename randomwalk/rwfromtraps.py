@@ -56,16 +56,15 @@ parser.add_argument("--num-of-electrons", help="set number of electron to place"
         type=int, default=1, dest="numofelectron")
 parser.add_argument("-n", "--num-of-iter", help="Number of iterations ", \
         type=int, required=False, default=100, dest="numofiter")
-parser.add_argument("--v0", help="v0 value ", \
+parser.add_argument("--t0", help="t0 value ", \
         type=float, required=False, default=2.5)
-parser.add_argument("--Ec", help="Ec value ", \
-        type=float, required=False, default=10.0)
-parser.add_argument("--Ei", help="Ei value ", \
-        type=float, required=False, default=11.0)
 parser.add_argument("-T", help="T value ", \
         type=float, required=False, default=298.0)
 parser.add_argument("--min-dist", help="Cut-off radius to neighboured traps ", \
         type=float, required=False, default=20.0, dest="mindist")
+parser.add_argument("-e", "--energy-per-trap", \
+        help="energies \"id1:energy1;id2:energy2;...;idN:energyN\"  ", \
+        type=str, required=True, default="", dest="energy")
 
 if len(sys.argv) == 1:
     parser.print_help()
@@ -79,14 +78,19 @@ filename = args.filename
 
 # need to set proper values
 numofiter = args.numofiter
-v0 = args.v0
-t0 = 1.0 / v0
-Ec = args.Ec
-Ei = args.Ei
+t0 = args.t0
 T = args.T
+kB = 1.0
 mindist = args.mindist # radius of the traps where to jump
 
-kB = 1.0
+idenergymap = {}
+for pair in args.energy.split(";"):
+    id, e = pair.split(":")
+   
+    print >> sys.stderr, id, " has energy ", e
+
+    idenergymap[int(id)] = float(e)
+
 
 verbose = args.verbose
 
@@ -120,13 +124,18 @@ for line in file:
   npnum = int(snpnum)
   atomid = int(satomid)
 
+  if not (id in idenergymap.keys()):
+      print "Error in energies cannot find ", sid
+      exit(1)
+
+  energy = idenergymap[id]
+
   if npnum not in trapsidx_for_np:
       trapsidx_for_np[npnum] = []
 
   trapsidx_for_np[npnum].append(i)
 
-  t = trap(x, y, z)
-  t.set_id(id)
+  t = trap(x, y, z, id, energy)
   t.set_npid(npnum)
   t.set_atomid(atomid)
   t.set_electron(0)
@@ -165,6 +174,37 @@ numofelectron = min(args.numofelectron, len(nplist))
 
 print "Number of NPs: ", len(nplist) 
 print "Number of electrons: ", numofelectron
+print ""
+print "Storing traps' positions"
+np_alltraps_position = numpy.zeros((len(alltraps), 3), numpy.float)
+i = 0
+for t in alltraps:
+    np_alltraps_position[i,:] = t.get_position()
+    i = i + 1
+
+alltrapsxmin = numpy.amin(np_alltraps_position[:,0])
+alltrapsymin = numpy.amin(np_alltraps_position[:,1])
+alltrapszmin = numpy.amin(np_alltraps_position[:,2])
+
+alltrapsxmax = numpy.amax(np_alltraps_position[:,0])
+alltrapsymax = numpy.amax(np_alltraps_position[:,1])
+alltrapszmax = numpy.amax(np_alltraps_position[:,2])
+
+# box dim to be used in the boundary conditions
+dimensions = numpy.array(\
+        [(alltrapsxmax-alltrapsxmin), (alltrapsxmax-alltrapsymin), (alltrapszmax-alltrapszmin)])
+
+print ""
+print "Check should be more or less the same values: "
+print "Traps X min: %10.5f Spheres X min: %10.5f "%(alltrapsxmin, xmin)
+print "Traps Y min: %10.5f Spheres Y min: %10.5f "%(alltrapsymin, ymin)
+print "Traps Z min: %10.5f Spheres Z min: %10.5f "%(alltrapszmin, zmin)
+
+print "Check should be more or less the same values: "
+print "Traps X max: %10.5f Spheres X max: %10.5f "%(alltrapsxmax, xmax)
+print "Traps Y max: %10.5f Spheres Y max: %10.5f "%(alltrapsymax, ymax)
+print "Traps Z max: %10.5f Spheres Z max: %10.5f "%(alltrapszmax, zmax)
+print ""
 
 # select initial NP to get an electron
 # and set electron
@@ -187,19 +227,41 @@ while setelectron < numofelectron:
                 while True:
                     randomtrapidx = random.randint(min(trapsidx_for_np[npidx]), \
                         max(trapsidx_for_np[npidx])) 
+                    # always select the lowet trap
                     if alltraps[randomtrapidx].get_id() == 2937:
                         break
 
+                # find near by alltraps imposing boundary conditions
+                dists = distance(np_alltraps_position, \
+                        alltraps[randomtrapidx].get_position(), dimensions)
+                # without boundary conditions
+                # dist_2 = numpy.sum((np_alltraps_position - alltraps[idxfrom].get_position())**2, axis=1)
+                # all indexes of dist_2 where values is lower than 
+                idexes = numpy.where(dists < mindist)[0]
 
+                t = float("+inf")
                 R = numpy.random.uniform(0.0, 1.0)
-                t = -1.0 * math.log(R) * t0 * math.exp((Ec - Ei)/(kB*T))
+                for ival in idexes:
+                    #x, y, z = alltraps[ival].get_position()
+                    #print ("%10.5f %10.5f %10.5f"%(x, y, z))
+                    rij = dists[ival]
+                    aij = 1.0 # need to be defined
+                    Ei = alltraps[randomtrapidx].get_energy()
+                    Ej = alltraps[ival].get_energy()
+                    #print ("%10.5f %10.5f "%(Ei, Ej))
+                    at = -1.0 * math.log(R) * t0 * math.exp( ((2.0*rij)/aij) + \
+                            ((Ej - Ei + abs(Ej + Ei))/(2.0*kB*T)) )
+                    if at < t:
+                        t = at
+                
                 #faket = +0.1
                 econtainer = electron()
                 alltraps[randomtrapidx].set_electron(1, econtainer)
                 alltraps[randomtrapidx].release_time = t
                 #alltraps[randomtrapidx].release_time = faket
-                print ("Set electron %3d to NP %10d at trap %10d in state %10d"%(\
-                        setelectron, npidx, randomtrapidx, alltraps[randomtrapidx].get_id()))
+                print ("Set electron %3d to NP %10d at trap %10d in state %10d time %10.5f"%(\
+                        setelectron, npidx, randomtrapidx, alltraps[randomtrapidx].get_id(), \
+                        alltraps[randomtrapidx].release_time))
                 setofnp.add(npidx)
                 break
 
@@ -217,40 +279,8 @@ fp.close()
 #print ""
 #print "Sorting by release time "
 #alltraps.sort(key=lambda x: x.release_time, reverse=False)
-print ""
-print ""
-print "Storing traps' positions"
-np_alltraps_position = numpy.zeros((len(alltraps), 3), numpy.float)
-i = 0
-for t in alltraps:
-    np_alltraps_position[i,:] = t.get_position()
-    i = i + 1
-
-alltrapsxmin = numpy.amin(np_alltraps_position[:,0])
-alltrapsymin = numpy.amin(np_alltraps_position[:,1])
-alltrapszmin = numpy.amin(np_alltraps_position[:,2])
-
-alltrapsxmax = numpy.amax(np_alltraps_position[:,0])
-alltrapsymax = numpy.amax(np_alltraps_position[:,1])
-alltrapszmax = numpy.amax(np_alltraps_position[:,2])
-
-print ""
-print "Check should be more or less the same values: "
-print "Traps X min: %10.5f Spheres X min: %10.5f "%(alltrapsxmin, xmin)
-print "Traps Y min: %10.5f Spheres Y min: %10.5f "%(alltrapsymin, ymin)
-print "Traps Z min: %10.5f Spheres Z min: %10.5f "%(alltrapszmin, zmin)
-
-print "Check should be more or less the same values: "
-print "Traps X max: %10.5f Spheres X max: %10.5f "%(alltrapsxmax, xmax)
-print "Traps Y max: %10.5f Spheres Y max: %10.5f "%(alltrapsymax, ymax)
-print "Traps Z max: %10.5f Spheres Z max: %10.5f "%(alltrapszmax, zmax)
-print ""
 
 exit(1)
-
-# box dim to be used in the boundary conditions
-dimensions = numpy.array(\
-        [(alltrapsxmax-alltrapsxmin), (alltrapsxmax-alltrapsymin), (alltrapszmax-alltrapszmin)])
 
 for i in range(numofiter):
     idxfrom = alltraps.index(min(alltraps, key=attrgetter('release_time')))
