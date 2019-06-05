@@ -41,6 +41,7 @@ class trap:
         self.__atomid__ = 0
 
         self.release_time = 0.0
+        self.__idxtojump__ = -1
 
     def __lt__(self, other):
         return self.release_time < other.release_time
@@ -50,6 +51,12 @@ class trap:
 
     def __repr__(self):
         return 'R Time({})'.format(self.release_time)
+
+    def get_idxtojump(self):
+        return self.__idxtojump__
+
+    def set_idxtojump(self, i):
+        self.__idxtojump__ = i
 
     def get_energy(self):
         return self.__energy__

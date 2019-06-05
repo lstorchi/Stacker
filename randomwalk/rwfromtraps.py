@@ -44,6 +44,43 @@ def distance(x0, x1, dimensions):
 
 ###############################################################################
 
+def get_mint (idx, np_alltraps_position, alltraps, dimensions, mindist, kB, T):
+
+    # find near by alltraps imposing boundary conditions
+    dists = distance(np_alltraps_position, \
+            alltraps[idx].get_position(), dimensions)
+    # without boundary conditions
+    # dist_2 = numpy.sum((np_alltraps_position - 
+    #    alltraps[idxfrom].get_position())**2, axis=1)
+    # all indexes of dist_2 where values is lower than 
+    nearindex = numpy.where(dists < mindist)[0]
+
+    free_nearindex = []
+    for ival in nearindex:
+        if (alltraps[ival].electron() == 0):
+            free_nearindex.append(ival)
+
+    idxtojump = -1
+    t = float("+inf")
+    R = numpy.random.uniform(0.0, 1.0)
+    for ival in free_nearindex:
+        #x, y, z = alltraps[ival].get_position()
+        #print ("%10.5f %10.5f %10.5f"%(x, y, z))
+        rij = dists[ival]
+        aij = 1.0 # need to be defined
+        Ei = alltraps[idx].get_energy()
+        Ej = alltraps[ival].get_energy()
+        #print ("%10.5f %10.5f "%(Ei, Ej))
+        at = -1.0 * math.log(R) * t0 * math.exp( ((2.0*rij)/aij) + \
+                ((Ej - Ei + abs(Ej + Ei))/(2.0*kB*T)) )
+        if at < t:
+            t = at
+            idxtojump = ival
+
+    return t, idxtojump
+ 
+###############################################################################
+
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -231,37 +268,18 @@ while setelectron < numofelectron:
                     if alltraps[randomtrapidx].get_id() == 2937:
                         break
 
-                # find near by alltraps imposing boundary conditions
-                dists = distance(np_alltraps_position, \
-                        alltraps[randomtrapidx].get_position(), dimensions)
-                # without boundary conditions
-                # dist_2 = numpy.sum((np_alltraps_position - alltraps[idxfrom].get_position())**2, axis=1)
-                # all indexes of dist_2 where values is lower than 
-                idexes = numpy.where(dists < mindist)[0]
+                t, idxtojump = get_mint (randomtrapidx, np_alltraps_position, alltraps, \
+                        dimensions, mindist, kB, T)
 
-                t = float("+inf")
-                R = numpy.random.uniform(0.0, 1.0)
-                for ival in idexes:
-                    #x, y, z = alltraps[ival].get_position()
-                    #print ("%10.5f %10.5f %10.5f"%(x, y, z))
-                    rij = dists[ival]
-                    aij = 1.0 # need to be defined
-                    Ei = alltraps[randomtrapidx].get_energy()
-                    Ej = alltraps[ival].get_energy()
-                    #print ("%10.5f %10.5f "%(Ei, Ej))
-                    at = -1.0 * math.log(R) * t0 * math.exp( ((2.0*rij)/aij) + \
-                            ((Ej - Ei + abs(Ej + Ei))/(2.0*kB*T)) )
-                    if at < t:
-                        t = at
-                
                 #faket = +0.1
                 econtainer = electron()
                 alltraps[randomtrapidx].set_electron(1, econtainer)
                 alltraps[randomtrapidx].release_time = t
+                alltraps[randomtrapidx].set_idxtojump(idxtojump)
                 #alltraps[randomtrapidx].release_time = faket
-                print ("Set electron %3d to NP %10d at trap %10d in state %10d time %10.5f"%(\
+                print ("Set electron %3d to NP %10d at trap %10d in state %10d time %10.5f to %10d"%(\
                         setelectron, npidx, randomtrapidx, alltraps[randomtrapidx].get_id(), \
-                        alltraps[randomtrapidx].release_time))
+                        alltraps[randomtrapidx].release_time, alltraps[randomtrapidx].get_idxtojump()))
                 setofnp.add(npidx)
                 break
 
