@@ -351,15 +351,15 @@ for i in range(numofiter):
         
         if verbose:
             print idxfrom , alltraps[idxfrom].release_time, alltraps[idxfrom].electron()
-            print indextojump , alltraps[indextojump].release_time, alltraps[indextojump].electron()
+            print idxtojump , alltraps[idxtojump].release_time, alltraps[idxtojump].electron()
 
         if numofelectron == 1:
             print "To %10.5f %10.5f %10.5f %10d %10d"%( \
-                    alltraps[indextojump].get_position()[0], \
-                    alltraps[indextojump].get_position()[1], \
-                    alltraps[indextojump].get_position()[2], \
-                    alltraps[indextojump].get_npid(), \
-                    alltraps[indextojump].get_atomid())
+                    alltraps[idxtojump].get_position()[0], \
+                    alltraps[idxtojump].get_position()[1], \
+                    alltraps[idxtojump].get_position()[2], \
+                    alltraps[idxtojump].get_npid(), \
+                    alltraps[idxtojump].get_atomid())
 
  
 Nfinalelectron = 0
