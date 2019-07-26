@@ -77,7 +77,7 @@ def get_mint (idx, np_alltraps_position, alltraps, dimensions, mindist, kB, T):
             t = at
             idxtojump = ival
 
-    return t, idxtojump
+    return t, idxtojump, len(free_nearindex)
  
 ###############################################################################
 
@@ -268,7 +268,7 @@ while setelectron < numofelectron:
                     if alltraps[randomtrapidx].get_id() == 2937:
                         break
 
-                t, idxtojump = get_mint (randomtrapidx, np_alltraps_position, alltraps, \
+                t, idxtojump, nomoffree = get_mint (randomtrapidx, np_alltraps_position, alltraps, \
                         dimensions, mindist, kB, T)
 
                 #faket = +0.1
@@ -298,11 +298,10 @@ fp.close()
 #print "Sorting by release time "
 #alltraps.sort(key=lambda x: x.release_time, reverse=False)
 
-exit(1)
-
 for i in range(numofiter):
     idxfrom = alltraps.index(min(alltraps, key=attrgetter('release_time')))
     tmin = alltraps[idxfrom].release_time
+
     if verbose:
         print idxfrom , alltraps[idxfrom].release_time, alltraps[idxfrom].electron()
 
@@ -323,45 +322,24 @@ for i in range(numofiter):
                 alltraps[idxfrom].get_npid(), \
                 alltraps[idxfrom].get_atomid())
 
-    # find near by alltraps imposing boundary conditions
-    dists = distance(np_alltraps_position, alltraps[idxfrom].get_position(), dimensions)
-    # without boundary conditions
-    # dist_2 = numpy.sum((np_alltraps_position - alltraps[idxfrom].get_position())**2, axis=1)
-    # all indexes of dist_2 where values is lower than 
-    idexes = numpy.where(dists < mindist)[0]
+    t, idxtojump, nomoffree = get_mint (idxfrom, np_alltraps_position, alltraps, \
+                        dimensions, mindist, kB, T)
 
-    # are they free traps ?
-    free_near_alltraps = []
-    for near_i in idexes:
-        if (alltraps[near_i].electron() == 0 and \
-                alltraps[near_i].get_npid() != alltraps[idxfrom].get_npid()):
-            free_near_alltraps.append(near_i)
 
-    if len(free_near_alltraps) == 0:
+    if nomoffree == 0:
         if verbose:
             print "No free traps near by"
         for t in alltraps:
             if t.release_time < float("inf"):
                 t.release_time -= tmin
     else:
-        # randomly choose a trap
-        selectidx = 0
-        if len(free_near_alltraps) > 1:
-            selectidx = random.randint(0, len(free_near_alltraps)-1)
-
-        indextojump = free_near_alltraps[selectidx]
-
         # move electron
         econtainer = alltraps[idxfrom].get_electron_cont()
         alltraps[idxfrom].set_electron(0)
         alltraps[idxfrom].release_time = float('inf')
 
-        alltraps[indextojump].set_electron(1, econtainer)
-        
-        # new release time is computed and trap 
-        R = numpy.random.uniform(0.0, 1.0)
-        t = -1.0 * math.log(R) * t0 * math.exp((Ec - Ei)/(kB*T))
-        alltraps[indextojump].release_time = t
+        alltraps[idxtojump].set_electron(1, econtainer)
+        alltraps[idxtojump].release_time = t
         
         # reduce realease time of tmin 
         for t in alltraps:
