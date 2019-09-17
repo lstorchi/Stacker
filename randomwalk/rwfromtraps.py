@@ -102,6 +102,10 @@ parser.add_argument("--min-dist", help="Cut-off radius to neighboured traps ", \
 parser.add_argument("-e", "--energy-per-trap", \
         help="energies \"id1:energy1;id2:energy2;...;idN:energyN\"  ", \
         type=str, required=True, default="", dest="energy")
+parser.add_argument("-l", "--select-always-the-trapid", \
+        help="specify the trapidwhere to set the electron", \
+        type=int, required=False, default=None, dest="trapid")
+
 
 if len(sys.argv) == 1:
     parser.print_help()
@@ -119,6 +123,7 @@ t0 = args.t0
 T = args.T
 kB = 1.0
 mindist = args.mindist # radius of the traps where to jump
+trapidtoset = args.trapid
 
 idenergymap = {}
 for pair in args.energy.split(";"):
@@ -128,6 +133,11 @@ for pair in args.energy.split(";"):
 
     idenergymap[int(id)] = float(e)
 
+if trapidtoset is not None:
+
+    if not idenergymap.has_key(trapidtoset):
+        print >> sys.stderr, trapidtoset, "is not a valid trapid"
+        exit(1)
 
 verbose = args.verbose
 
@@ -265,7 +275,10 @@ while setelectron < numofelectron:
                     randomtrapidx = random.randint(min(trapsidx_for_np[npidx]), \
                         max(trapsidx_for_np[npidx])) 
                     # always select the lowet trap
-                    if alltraps[randomtrapidx].get_id() == 2937:
+                    if trapidtoset is not None:
+                        if alltraps[randomtrapidx].get_id() == trapidtoset:
+                            break
+                    else:
                         break
 
                 t, idxtojump, nomoffree = get_mint (randomtrapidx, np_alltraps_position, alltraps, \
@@ -360,6 +373,14 @@ for i in range(numofiter):
                     alltraps[idxtojump].get_position()[2], \
                     alltraps[idxtojump].get_npid(), \
                     alltraps[idxtojump].get_atomid())
+
+
+print()
+for trapidx in range(len(alltraps)):
+
+    if (alltraps[trapidx].get_electron_cont() != None):
+        print ("Electron in trap %10d of NP %10d and %10.5f release time"%(
+            trapidx, alltraps[trapidx].get_npid(), alltraps[trapidx].release_time))
 
  
 Nfinalelectron = 0
