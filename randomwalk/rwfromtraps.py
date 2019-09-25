@@ -66,8 +66,10 @@ def get_mint (idx, np_alltraps_position, alltraps, dimensions, mindist, kB, T):
     for ival in free_nearindex:
         tojumptrpid = alltraps[ival].get_id()
         npid = alltraps[ival].get_npid()
-        #if (tojumptrpid != alltraps[idx].get_id()):
-        if (npid != alltraps[idx].get_npid()): # jump to different NPs
+        atomid = alltraps[ival].get_atomid()
+        #if (tojumptrpid != alltraps[idx].get_id()): # jump to different TRAPids
+        #if (npid != alltraps[idx].get_npid()): # jump to different NPs
+        if (atomid != alltraps[idx].get_atomid()): # jump to different atom
            #x, y, z = alltraps[ival].get_position()
            #print ("%10.5f %10.5f %10.5f"%(x, y, z))
            rij = dists[ival]
@@ -82,7 +84,7 @@ def get_mint (idx, np_alltraps_position, alltraps, dimensions, mindist, kB, T):
                idxtojump = ival
 
     # use a faketime 
-    t = numpy.random.uniform(0.0, 1.0)
+    #t = numpy.random.uniform(0.0, 1.0)
 
     return t, idxtojump, len(free_nearindex)
  
