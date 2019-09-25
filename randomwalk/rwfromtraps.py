@@ -67,7 +67,7 @@ def get_mint (idx, np_alltraps_position, alltraps, dimensions, mindist, kB, T):
         tojumptrpid = alltraps[ival].get_id()
         npid = alltraps[ival].get_npid()
         #if (tojumptrpid != alltraps[idx].get_id()):
-        if (npid != alltraps[idx].get_npid()):
+        if (npid != alltraps[idx].get_npid()): # jump to different NPs
            #x, y, z = alltraps[ival].get_position()
            #print ("%10.5f %10.5f %10.5f"%(x, y, z))
            rij = dists[ival]
@@ -80,6 +80,9 @@ def get_mint (idx, np_alltraps_position, alltraps, dimensions, mindist, kB, T):
            if at < t:
                t = at
                idxtojump = ival
+
+    # use a faketime 
+    t = numpy.random.uniform(0.0, 1.0)
 
     return t, idxtojump, len(free_nearindex)
  
@@ -260,7 +263,7 @@ print ""
 # and set electron
 setelectron = 0
 setofnp = set()
-faket = 1.0
+#faket = 0.0
 while setelectron < numofelectron:
     yesorno = numpy.random.choice(2)
     if yesorno == 1:
@@ -287,8 +290,9 @@ while setelectron < numofelectron:
                 t, idxtojump, nomoffree = get_mint (randomtrapidx, np_alltraps_position, alltraps, \
                         dimensions, mindist, kB, T)
 
-                faket += 0.1
+                #faket += 0.1
                 econtainer = electron()
+                econtainer.append_trapid(randomtrapidx)
                 alltraps[randomtrapidx].set_electron(1, econtainer)
                 alltraps[randomtrapidx].release_time = t
                 alltraps[randomtrapidx].set_idxtojump(idxtojump)
@@ -319,7 +323,6 @@ for i in range(numofiter):
     tmin = alltraps[idxfrom].release_time
     idxto = alltraps[idxfrom].get_idxtojump()
     #print (idxfrom, tmin, alltraps[idxfrom].electron(), idxto)
-    #exit()
 
     if verbose:
         print idxfrom , alltraps[idxfrom].release_time, alltraps[idxfrom].electron()
@@ -361,8 +364,12 @@ for i in range(numofiter):
         for t in alltraps:
             if t.release_time < float("inf"):
                 t.release_time -= tmin
+                if verbose:
+                    print "Old RT %105f new RT %10.5f"%(t.release_time+tmin, \
+                            t.release_time)
 
         alltraps[idxto].set_idxtojump(newidxtojump)
+        econtainer.append_trapid(idxto)
         alltraps[idxto].set_electron(1, econtainer)
         alltraps[idxto].release_time = newtime
 
@@ -400,7 +407,13 @@ for t in alltraps:
         Nfinalelectron += 1
         econtainer = t.get_electron_cont()
         fpe.write("electron_%d\n"%(i))
-        numpy.savetxt(fpe, econtainer.get_allxyz())
+        x, y, z = econtainer.get_xyz()
+        npids = econtainer.get_npid()
+        trapids = econtainer.get_trapid()
+        #numpy.savetxt(fpe, econtainer.get_allxyz())
+        for j in range(len(trapids)):
+            fpe.write( "%10.4f %10.4f %10.4f %10d %10d\n"%(x[j], y[j], z[j], \
+                    npids[j], trapids[j]))
         i = i +1
 
     #fp.write( "%10.4f %10.4f %10.4f %2d %10.4f\n"%(t.x(), t.y(), t.z(), \
