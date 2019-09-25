@@ -44,10 +44,16 @@ class trap:
         self.__idxtojump__ = -1
 
     def __lt__(self, other):
-        return self.release_time < other.release_time
+        if type(other) is float:
+            return self.release_time < other
+        else:
+            return self.release_time < other.release_time
 
     def __gt__(self, other):
-        return self.release_time > other.release_time
+        if type(other) is float:
+            return self.release_time > other
+        else:
+            return self.release_time > other.release_time
 
     def __repr__(self):
         return 'R Time({})'.format(self.release_time)

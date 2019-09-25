@@ -64,18 +64,22 @@ def get_mint (idx, np_alltraps_position, alltraps, dimensions, mindist, kB, T):
     t = float("+inf")
     R = numpy.random.uniform(0.0, 1.0)
     for ival in free_nearindex:
-        #x, y, z = alltraps[ival].get_position()
-        #print ("%10.5f %10.5f %10.5f"%(x, y, z))
-        rij = dists[ival]
-        aij = 1.0 # need to be defined
-        Ei = alltraps[idx].get_energy()
-        Ej = alltraps[ival].get_energy()
-        #print ("%10.5f %10.5f "%(Ei, Ej))
-        at = -1.0 * math.log(R) * t0 * math.exp( ((2.0*rij)/aij) + \
-                ((Ej - Ei + abs(Ej + Ei))/(2.0*kB*T)) )
-        if at < t:
-            t = at
-            idxtojump = ival
+        tojumptrpid = alltraps[ival].get_id()
+        npid = alltraps[ival].get_npid()
+        #if (tojumptrpid != alltraps[idx].get_id()):
+        if (npid != alltraps[idx].get_npid()):
+           #x, y, z = alltraps[ival].get_position()
+           #print ("%10.5f %10.5f %10.5f"%(x, y, z))
+           rij = dists[ival]
+           aij = 1.0 # need to be defined
+           Ei = alltraps[idx].get_energy()
+           Ej = alltraps[ival].get_energy()
+           #print ("%10.5f %10.5f "%(Ei, Ej))
+           val = ((Ej - Ei + abs(Ej + Ei))/(2.0*kB*T))
+           at = -1.0 * math.log(R) * t0 * math.exp( ((2.0*rij)/aij) + val )
+           if at < t:
+               t = at
+               idxtojump = ival
 
     return t, idxtojump, len(free_nearindex)
  
@@ -93,8 +97,6 @@ parser.add_argument("--num-of-electrons", help="set number of electron to place"
         type=int, default=1, dest="numofelectron")
 parser.add_argument("-n", "--num-of-iter", help="Number of iterations ", \
         type=int, required=False, default=100, dest="numofiter")
-parser.add_argument("--t0", help="t0 value ", \
-        type=float, required=False, default=2.5)
 parser.add_argument("-T", help="T value ", \
         type=float, required=False, default=298.0)
 parser.add_argument("--min-dist", help="Cut-off radius to neighboured traps ", \
@@ -119,9 +121,10 @@ filename = args.filename
 
 # need to set proper values
 numofiter = args.numofiter
-t0 = args.t0
+t0 = 1.0e-13
+kB = 8.617333262145e-5
+
 T = args.T
-kB = 1.0
 mindist = args.mindist # radius of the traps where to jump
 trapidtoset = args.trapid
 
@@ -257,7 +260,7 @@ print ""
 # and set electron
 setelectron = 0
 setofnp = set()
-#faket = 1.0
+faket = 1.0
 while setelectron < numofelectron:
     yesorno = numpy.random.choice(2)
     if yesorno == 1:
@@ -284,13 +287,13 @@ while setelectron < numofelectron:
                 t, idxtojump, nomoffree = get_mint (randomtrapidx, np_alltraps_position, alltraps, \
                         dimensions, mindist, kB, T)
 
-                #faket = +0.1
+                faket += 0.1
                 econtainer = electron()
                 alltraps[randomtrapidx].set_electron(1, econtainer)
                 alltraps[randomtrapidx].release_time = t
                 alltraps[randomtrapidx].set_idxtojump(idxtojump)
                 #alltraps[randomtrapidx].release_time = faket
-                print ("Set electron %3d to NP %10d at trap %10d in state %10d time %10.5f to %10d"%(\
+                print ("Set electron %3d to NP %10d at trap %10d in state %10d time %10.5e to %10d"%(\
                         setelectron, npidx, randomtrapidx, alltraps[randomtrapidx].get_id(), \
                         alltraps[randomtrapidx].release_time, alltraps[randomtrapidx].get_idxtojump()))
                 setofnp.add(npidx)
@@ -314,6 +317,9 @@ fp.close()
 for i in range(numofiter):
     idxfrom = alltraps.index(min(alltraps, key=attrgetter('release_time')))
     tmin = alltraps[idxfrom].release_time
+    idxto = alltraps[idxfrom].get_idxtojump()
+    #print (idxfrom, tmin, alltraps[idxfrom].electron(), idxto)
+    #exit()
 
     if verbose:
         print idxfrom , alltraps[idxfrom].release_time, alltraps[idxfrom].electron()
@@ -335,7 +341,7 @@ for i in range(numofiter):
                 alltraps[idxfrom].get_npid(), \
                 alltraps[idxfrom].get_atomid())
 
-    t, idxtojump, nomoffree = get_mint (idxfrom, np_alltraps_position, alltraps, \
+    newtime, newidxtojump, numoffree = get_mint (idxto, np_alltraps_position, alltraps, \
                         dimensions, mindist, kB, T)
 
 
@@ -351,14 +357,15 @@ for i in range(numofiter):
         alltraps[idxfrom].set_electron(0)
         alltraps[idxfrom].release_time = float('inf')
 
-        alltraps[idxtojump].set_electron(1, econtainer)
-        alltraps[idxtojump].release_time = t
-        
         # reduce realease time of tmin 
         for t in alltraps:
             if t.release_time < float("inf"):
                 t.release_time -= tmin
-        
+
+        alltraps[idxto].set_idxtojump(newidxtojump)
+        alltraps[idxto].set_electron(1, econtainer)
+        alltraps[idxto].release_time = newtime
+
         # position = bisect.insort_left(alltraps, movedtrap)
         #alltraps.sort(key=lambda x: x.release_time, reverse=False)
         
@@ -379,7 +386,7 @@ print()
 for trapidx in range(len(alltraps)):
 
     if (alltraps[trapidx].get_electron_cont() != None):
-        print ("Electron in trap %10d of NP %10d and %10.5f release time"%(
+        print ("Electron in trap %10d of NP %10d and %10.5e release time"%(
             trapidx, alltraps[trapidx].get_npid(), alltraps[trapidx].release_time))
 
  
