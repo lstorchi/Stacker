@@ -68,17 +68,20 @@ def get_mint (idx, np_alltraps_position, alltraps, dimensions, mindist, kB, T):
         npid = alltraps[ival].get_npid()
         atomid = alltraps[ival].get_atomid()
         #if (tojumptrpid != alltraps[idx].get_id()): # jump to different TRAPids
-        #if (npid != alltraps[idx].get_npid()): # jump to different NPs
-        if (atomid != alltraps[idx].get_atomid()): # jump to different atom
+        if (npid != alltraps[idx].get_npid()): # jump to different NPs
+        #if (atomid != alltraps[idx].get_atomid()): # jump to different atom
            #x, y, z = alltraps[ival].get_position()
            #print ("%10.5f %10.5f %10.5f"%(x, y, z))
            rij = dists[ival]
-           aij = 1.0 # need to be defined
+           aij = 10.0 # need to be defined
            Ei = alltraps[idx].get_energy()
            Ej = alltraps[ival].get_energy()
            #print ("%10.5f %10.5f "%(Ei, Ej))
-           val = ((Ej - Ei + abs(Ej + Ei))/(2.0*kB*T))
+           val = ((Ej - Ei + abs(Ej - Ei))/(2.0*kB*T))
+           #print("%10.5f %10.5e %10.5f %10.5f %10.5f %10.5e %10.5f "%(R, t0, rij, Ei, Ej, kB, T))
+           #print("%10.5e %10.5e %10.5e"%(val, math.exp( ((2.0*rij)/aij) + val ), t0))
            at = -1.0 * math.log(R) * t0 * math.exp( ((2.0*rij)/aij) + val )
+           #print("%10.5e"%(at))
            if at < t:
                t = at
                idxtojump = ival
