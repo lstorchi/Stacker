@@ -393,7 +393,7 @@ for i in range(numofiter):
             if t.release_time < float("inf"):
                 t.release_time -= tmin
                 if verbose:
-                    print "Old RT %105f new RT %10.5f"%(t.release_time+tmin, \
+                    print "Old RT %10.5e new RT %10.5e"%(t.release_time+tmin, \
                             t.release_time)
 
         alltraps[idxto].set_idxtojump(newidxtojump)
