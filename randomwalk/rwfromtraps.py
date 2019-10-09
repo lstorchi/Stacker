@@ -44,6 +44,24 @@ def distance(x0, x1, dimensions):
 
 ###############################################################################
 
+def move_electron_randmly (idxto, np_alltraps_position, alltraps, \
+        trapsidx_for_np):
+
+    newindexto = idxto
+
+    npidx = alltraps[idxto].get_npid()
+    trapidtoset = alltraps[idxto].get_id()
+
+    while True:
+        newindexto = random.randint(min(trapsidx_for_np[npidx]), \
+            max(trapsidx_for_np[npidx])) 
+        if alltraps[newindexto].get_id() == trapidtoset:
+            break
+
+    return newindexto 
+
+###############################################################################
+
 def get_mint (idx, np_alltraps_position, alltraps, dimensions, mindist, kB, T):
 
     # find near by alltraps imposing boundary conditions
@@ -328,6 +346,10 @@ for i in range(numofiter):
     tmin = alltraps[idxfrom].release_time
     idxto = alltraps[idxfrom].get_idxtojump()
     #print (idxfrom, tmin, alltraps[idxfrom].electron(), idxto)
+
+    # move electron randmly inside the same trap and same NP 
+    idxto = move_electron_randmly (idxto, np_alltraps_position, alltraps, 
+            trapsidx_for_np)
 
     if verbose:
         print idxfrom , alltraps[idxfrom].release_time, alltraps[idxfrom].electron()
