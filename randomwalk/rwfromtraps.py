@@ -238,7 +238,8 @@ for line in file:
 
   i += 1
 
-  progress_bar (i, lineinfile)
+  if not verbose:
+      progress_bar (i, lineinfile)
 
 end = time.time()
 
