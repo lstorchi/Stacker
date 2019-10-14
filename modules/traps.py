@@ -54,6 +54,7 @@ class trap:
 
         self.__id__ = id
         self.__energy__ = energy
+        self.__alpha__ = 0.0
 
         self.__electron__ = 0
         self.__electron_cont__ = None
@@ -90,6 +91,12 @@ class trap:
 
     def set_energy(self, e):
         self.__energy__ = e
+
+    def get_alpha(self):
+        return self.__alpha__
+
+    def set_alpha(self, a):
+        self.__alpha__ = a
 
     def get_npid(self):
         return self.__npid__
