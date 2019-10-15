@@ -471,7 +471,7 @@ for trapidx in range(len(alltraps)):
  
 Nfinalelectron = 0
 fp = open("final_conf_"+str(numofelectron)+".txt", "w")
-fpe = open("electrons_"+str(numofelectron)+".txt", "w")
+#fpe = open("electrons_"+str(numofelectron)+".txt", "w")
 i = 1
 for t in alltraps:
     if t.electron() != 0:
