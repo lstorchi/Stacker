@@ -52,6 +52,7 @@ file = open(filename, "r")
 i = 0
 lineinfile = file_len(filename)
 title = file.readline()
+print title
 #start posizion
 line = file.readline()
 mergedline = ' '.join(line.split())
@@ -60,6 +61,9 @@ sx, sy, sz, snpnum, stpidx = mergedline.split(" ")
 x0 = float(sx)
 y0 = float(sy)
 z0 = float(sz)
+
+print "%10.5f %10.5f %10.5f %10d %10d"%(x0, y0, z0, \
+        int(snpnum), int(stpidx))
 
 xpred = x0
 ypred = y0
@@ -114,7 +118,6 @@ for line in file:
   if (tosumz):
       zpred += zsum
 
-  print xpred, ypred, zpred
-
-print ""
+  print "%10.5f %10.5f %10.5f %10d %10d"%(xpred, ypred, zpred, \
+        int(snpnum), int(stpidx))
 
