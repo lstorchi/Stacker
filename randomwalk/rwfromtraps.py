@@ -160,7 +160,7 @@ idalphamap = {}
 for pair in args.energy.split(";"):
     id, e, alpha = pair.split(":")
    
-    print >> sys.stderr, id, " has energy ", e, " and alpha ", alpha
+    print id, " has energy ", e, " and alpha ", alpha
 
     idenergymap[int(id)] = float(e)
     idalphamap[int(id)] = float(alpha)
@@ -359,9 +359,14 @@ fp.close()
 #    print "  Electron at trap: ", idxtotest , " RT: %10.5e"%(alltraps[idxtotest].release_time), \
 #            " Ne: ", alltraps[idxtotest].electron()
 
+totaltime = 0.0
+
 for i in range(numofiter):
     idxfrom = alltraps.index(min(alltraps, key=attrgetter('release_time')))
     tmin = alltraps[idxfrom].release_time
+
+    totaltime += tmin
+
     idxto = alltraps[idxfrom].get_idxtojump()
     #print (idxfrom, tmin, alltraps[idxfrom].electron(), idxto)
     if verbose:
@@ -461,6 +466,8 @@ for i in range(numofiter):
 
 
 
+print " "
+print "Total run time: ", totaltime
 print " "
 
 for trapidx in range(len(alltraps)):
