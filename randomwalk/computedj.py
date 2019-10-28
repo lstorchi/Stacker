@@ -43,6 +43,7 @@ if len(sys.argv) == 1:
 args = parser.parse_args()
 filenames = args.filenamelist.split(":")
 N = numpy.float64(len(filenames))
+CONV = numpy.float64(1.0e9)
 
 total = numpy.float64(0.0)
 
@@ -80,7 +81,7 @@ for filename in filenames:
      ypred = y
      zpred = z
 
-   total += (xpred-x0)**2 + (ypred-y0)**2 + (zpred-z0)**2 
+   total += ((xpred-x0)/CONV)**2 + ((ypred-y0)/CONV)**2 + ((zpred-z0)/CONV)**2 
    
    file.close()
 
