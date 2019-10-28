@@ -31,49 +31,49 @@ import argparse
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-f","--filename", help="Electron filename", \
-        type=str, required=True, dest="filename")
+parser.add_argument("-f","--filenamelist", help="Electron filename list \"file1:file2:file3:....:fileN\"", \
+        type=str, required=True, dest="filenamelist")
 
 if len(sys.argv) == 1:
     parser.print_help()
     exit(1)
 
 args = parser.parse_args()
-filename = args.filename
+filenames = args.filenamelist.split(":")
 
-file = open(filename, "r")
+for filename in filenames:
 
-i = 0
-lineinfile = file_len(filename)
-title = file.readline()
-#start posizion
-line = file.readline()
-mergedline = ' '.join(line.split())
-sx, sy, sz, snpnum, stpidx = mergedline.split(" ")
+   file = open(filename, "r")
+   
+   line = file.readline()
+   mergedline = ' '.join(line.split())
+   sx, sy, sz, snpnum, stpidx = mergedline.split(" ")
+   
+   x0 = float(sx)
+   y0 = float(sy)
+   z0 = float(sz)
+   
+   xpred = x0
+   ypred = y0
+   zpred = z0
+   
+   for line in file:
+     mergedline = ' '.join(line.split())
+     sx, sy, sz, snpnum, stpidx = mergedline.split(" ")
+   
+     x = float(sx)
+     y = float(sy)
+     z = float(sz)
+   
+     distopred = get_distance(xpred, ypred, zpred, x, y, z)
+   
+     if distopred > 200.0:
+        print "Maybe a problem: ", distopred, " in file ", filename
+        print "        at line: ", mergedline
 
-x0 = float(sx)
-y0 = float(sy)
-z0 = float(sz)
-
-xpred = x0
-ypred = y0
-zpred = z0
-
-for line in file:
-  mergedline = ' '.join(line.split())
-  sx, sy, sz, snpnum, stpidx = mergedline.split(" ")
-
-  x = float(sx)
-  y = float(sy)
-  z = float(sz)
-
-  distopred = get_distance(xpred, ypred, zpred, x, y, z)
-
-  print distopred
-
-  xpred = x
-  ypred = y
-  zpred = z
-
-print ""
-
+     xpred = x
+     ypred = y
+     zpred = z
+   
+   file.close()
+   
