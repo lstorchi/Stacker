@@ -33,6 +33,8 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument("-f","--filenamelist", help="Electron filename list \"file1:file2:file3:....:fileN\"", \
         type=str, required=True, dest="filenamelist")
+parser.add_argument("-t","--time", help="Total time", \
+        type=numpy.float64, required=True)
 
 if len(sys.argv) == 1:
     parser.print_help()
@@ -40,6 +42,9 @@ if len(sys.argv) == 1:
 
 args = parser.parse_args()
 filenames = args.filenamelist.split(":")
+N = numpy.float64(len(filenames))
+
+total = numpy.float64(0.0)
 
 for filename in filenames:
 
@@ -49,21 +54,21 @@ for filename in filenames:
    mergedline = ' '.join(line.split())
    sx, sy, sz, snpnum, stpidx = mergedline.split(" ")
    
-   x0 = float(sx)
-   y0 = float(sy)
-   z0 = float(sz)
+   x0 = numpy.float64(sx)
+   y0 = numpy.float64(sy)
+   z0 = numpy.float64(sz)
    
    xpred = x0
    ypred = y0
    zpred = z0
-   
+
    for line in file:
      mergedline = ' '.join(line.split())
      sx, sy, sz, snpnum, stpidx = mergedline.split(" ")
    
-     x = float(sx)
-     y = float(sy)
-     z = float(sz)
+     x = numpy.float64(sx)
+     y = numpy.float64(sy)
+     z = numpy.float64(sz)
    
      distopred = get_distance(xpred, ypred, zpred, x, y, z)
    
@@ -74,6 +79,9 @@ for filename in filenames:
      xpred = x
      ypred = y
      zpred = z
+
+   total += (xpred-x0)**2 + (ypred-y0)**2 + (zpred-z0)**2 
    
    file.close()
-   
+
+print numpy.log(((1.0/N) * total) / (6.0 * args.time))
