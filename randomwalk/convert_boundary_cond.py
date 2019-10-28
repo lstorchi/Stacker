@@ -49,21 +49,27 @@ zdim = float(szdim)
 
 file = open(filename, "r")
 
-i = 0
-lineinfile = file_len(filename)
 title = file.readline()
-print title
-#start posizion
-line = file.readline()
-mergedline = ' '.join(line.split())
-sx, sy, sz, snpnum, stpidx = mergedline.split(" ")
 
-x0 = float(sx)
-y0 = float(sy)
-z0 = float(sz)
+coordinates = []
+for line in file:
+  mergedline = ' '.join(line.split())
+  sx, sy, sz, snpnum, stpidx = mergedline.split(" ")
+
+  x = float(sx)
+  y = float(sy)
+  z = float(sz)
+
+  coordinates.append([x, y, z, int(snpnum), int(stpidx)])
+
+file.close()
+
+x0 = coordinates[0][0]
+y0 = coordinates[0][1]
+z0 = coordinates[0][2]
 
 print "%10.5f %10.5f %10.5f %10d %10d"%(x0, y0, z0, \
-        int(snpnum), int(stpidx))
+        coordinates[0][3], coordinates[0][4])
 
 xpred = x0
 ypred = y0
@@ -71,17 +77,11 @@ zpred = z0
 
 svalue = 200.0
 
-xsum = 0.0
-ysum = 0.0
-zsum = 0.0
+for i in range(1, len(coordinates)):
 
-for line in file:
-  mergedline = ' '.join(line.split())
-  sx, sy, sz, snpnum, stpidx = mergedline.split(" ")
-
-  x = float(sx) + xsum
-  y = float(sy) + ysum
-  z = float(sz) + zsum
+  x = coordinates[i][0]
+  y = coordinates[i][1]
+  z = coordinates[i][2]
 
   tosumx = False
   tosumy = False
@@ -108,16 +108,23 @@ for line in file:
       else:
           zsum = +zdim
 
+  if tosumx or tosumy or tosumz:
+    for j in range(i, len(coordinates)):
+      if (tosumx):
+        coordinates[j][0] += xsum 
+      if (tosumy):
+        coordinates[j][1] += ysum
+      if (tosumz):
+        coordinates[j][2] += zsum
+
+  x = coordinates[i][0]
+  y = coordinates[i][1]
+  z = coordinates[i][2]
+
   xpred = x 
-  if (tosumx):
-      xpred += xsum
   ypred = y 
-  if (tosumy):
-      ypred += ysum
   zpred = z 
-  if (tosumz):
-      zpred += zsum
 
   print "%10.5f %10.5f %10.5f %10d %10d"%(xpred, ypred, zpred, \
-        int(snpnum), int(stpidx))
+        coordinates[i][3], coordinates[i][4])
 

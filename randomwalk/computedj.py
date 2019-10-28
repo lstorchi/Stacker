@@ -69,10 +69,7 @@ for line in file:
 
   distopred = get_distance(xpred, ypred, zpred, x, y, z)
 
-  if (distopred > 50.0):
-      print distopred
-      print x, y, z 
-      print xpred, ypred, zpred
+  print distopred
 
   xpred = x
   ypred = y
