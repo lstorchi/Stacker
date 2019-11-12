@@ -5,4 +5,6 @@ do
   python convert_boundary_cond.py -f ./10ele_10000steps/electrons_"$i"_of_10.txt -d "527.82203:527.37773:501.25099" > electrons_"$i".txt
 done
 
+ls electrons_* | xargs | sed "s/\ /:/g"
+
 python computedj.py -f "electrons_1.txt:electrons_2.txt:electrons_3.txt:electrons_4.txt:electrons_5.txt:electrons_6.txt:electrons_7.txt:electrons_8.txt:electrons_9.txt:electrons_10.txt" -t 2.11300337178e-9
