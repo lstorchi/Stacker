@@ -43,7 +43,7 @@ if len(sys.argv) == 1:
 args = parser.parse_args()
 filenames = args.filenamelist.split(":")
 N = numpy.float64(len(filenames))
-CONV = numpy.float64(1.0e9)
+CONV = numpy.float64(1.0e10)
 
 total = numpy.float64(0.0)
 
@@ -74,8 +74,8 @@ for filename in filenames:
      distopred = get_distance(xpred, ypred, zpred, x, y, z)
    
      if distopred > 200.0:
-        print "Maybe a problem: ", distopred, " in file ", filename
-        print "        at line: ", mergedline
+        print("Maybe a problem: ", distopred, " in file ", filename)
+        print("        at line: ", mergedline)
 
      xpred = x
      ypred = y
@@ -85,4 +85,5 @@ for filename in filenames:
    
    file.close()
 
-print numpy.log(((1.0/N) * total) / (6.0 * args.time)), ((1.0/N) * total) / (6.0 * args.time)
+print(total)
+print(numpy.log(((1.0/N) * total) / (6.0 * args.time)), ((1.0/N) * total) / (6.0 * args.time))

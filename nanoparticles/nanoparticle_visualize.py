@@ -40,7 +40,7 @@ botx, topx, boty, topy, botz, topz = \
 
 if (botx >= topx) or (boty >= topy) or \
    (boty >= topy):
-  print "Error Invalid BOX"
+  print("Error Invalid BOX")
   exit()
 
 # nanaparticle
@@ -71,7 +71,7 @@ for nanop in nanaparticles:
   renderer.AddActor(nanop.get_vtk_actor(color=True,opacity=1.0))
   #renderer.AddActor(nanop.get_vtk_actor())
 
-  print nanop.get_surface()
+  print(nanop.get_surface())
 
   cx, cy, cz = nanop.get_center()
   A, B, H = nanop.get_dimensions()
@@ -137,7 +137,7 @@ writer.SetInputConnection (renderLarge.GetOutputPort())
 writer.SetFileName("largeImage.tif")
 writer.Write()
 
-print minbox_x, minbox_y, minbox_z, maxbox_x, maxbox_y, maxbox_z
+print(minbox_x, minbox_y, minbox_z, maxbox_x, maxbox_y, maxbox_z)
 
 renWin.Render()
 iren.Start()

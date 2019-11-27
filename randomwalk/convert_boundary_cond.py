@@ -68,8 +68,8 @@ x0 = coordinates[0][0]
 y0 = coordinates[0][1]
 z0 = coordinates[0][2]
 
-print "%10.5f %10.5f %10.5f %10d %10d"%(x0, y0, z0, \
-        coordinates[0][3], coordinates[0][4])
+print("%10.5f %10.5f %10.5f %10d %10d"%(x0, y0, z0, \
+        coordinates[0][3], coordinates[0][4]))
 
 xpred = x0
 ypred = y0
@@ -125,6 +125,6 @@ for i in range(1, len(coordinates)):
   ypred = y 
   zpred = z 
 
-  print "%10.5f %10.5f %10.5f %10d %10d"%(xpred, ypred, zpred, \
-        coordinates[i][3], coordinates[i][4])
+  print("%10.5f %10.5f %10.5f %10d %10d"%(xpred, ypred, zpred, \
+        coordinates[i][3], coordinates[i][4]))
 

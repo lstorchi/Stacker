@@ -252,7 +252,7 @@ def file_to_sphere_list(filename, spheres):
       R = s.get_radius()
     else:
       if (R != s.get_radius()):
-        print "Error R differ"
+        print("Error R differ")
         exit()
   
     if (zmax < (float(z) + float(r))):
@@ -519,7 +519,7 @@ def generate_point_inside_poly(p1, p2, p3, p4, step, psurface_list, label):
   # forse meglio indicare lo step cosi' da avere uniformita' di punti
   numofp = int(d[idx] / step)
   if (numofp == 0):
-    print >> sys.stderr, "Step too big ", d[idx] , " and ", step
+    print("Step too big ", d[idx] , " and ", step, file=sys.stderr)
     return
 
   B = point.point()
@@ -595,13 +595,13 @@ def generate_point_inside_poly(p1, p2, p3, p4, step, psurface_list, label):
 def area3D_polygon (n, V, N):
 # http://softsurfer.com/Archive/algorithm_0101/algorithm_0101.htm#area3D_Polygon%28%29
 
-  print "FIX IT"
+  print("FIX IT")
 
   return -1.0
 
   area = 0.0
 
-  print N
+  print(N)
   
   # select largest abs coordinate to ignore for projection
   ax = math.fabs(N.get_x())
@@ -641,7 +641,7 @@ def area3D_polygon (n, V, N):
     if coord == 1:
       area += (V[i].get_y() * (V[j].get_z() - V[k].get_z()))
     elif coord == 2:
-      print  V[j].get_z(), V[k].get_z()
+      print(V[j].get_z(), V[k].get_z())
       area += (V[i].get_x() * (V[j].get_z() - V[k].get_z()))
     elif coord == 3:
       area += (V[i].get_x() * (V[j].get_y() - V[k].get_y()))

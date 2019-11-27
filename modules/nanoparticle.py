@@ -1150,7 +1150,7 @@ class nanotio2:
 
   def __compute_distance_from_perimeter (self, ptc):
 
-    print "Chevk it "
+    print("Chevk it ")
 
     # 0 1
     a = point.point(self._x[0][0], self._x[0][1], self._x[0][2])
@@ -1430,7 +1430,7 @@ def file_to_nanoparticle_list_and_center(filename, nanaparticles):
       R = float(r)
     else:
       if (R != float(r)):
-        print "Error R differ"
+        print("Error R differ")
         exit()
  
     if (zmax < (float(z) + float(r))):
@@ -1470,7 +1470,7 @@ def file_to_nanoparticle_list_and_center(filename, nanaparticles):
       R = float(r)
     else:
       if (R != float(r)):
-        print "Error R differ"
+        print("Error R differ")
         exit()
  
     H = float(r) * 2.52
