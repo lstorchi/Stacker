@@ -329,7 +329,7 @@ while setelectron < numofelectron:
 
                 if (t == 0.0) or (t == float("-inf")) \
                         or (t == float("+inf")):
-                    print ("Error in the computed release time")
+                    print ("Error in the computed release time ", t)
                     exit(1)
 
                 #faket += 0.1
@@ -417,7 +417,7 @@ for i in range(numofiter):
 
           if (newtime == 0.0) or (newtime == float("-inf")) \
                      or (newtime == float("+inf")):
-                 print ("Error in the computed release time")
+                 print ("Error in the computed release time ", newtime)
                  exit(1)
 
           
