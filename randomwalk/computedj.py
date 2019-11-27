@@ -85,4 +85,4 @@ for filename in filenames:
    
    file.close()
 
-print numpy.log(((1.0/N) * total) / (6.0 * args.time))
+print numpy.log(((1.0/N) * total) / (6.0 * args.time)), ((1.0/N) * total) / (6.0 * args.time)

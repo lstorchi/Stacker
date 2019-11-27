@@ -160,19 +160,19 @@ idalphamap = {}
 for pair in args.energy.split(";"):
     id, e, alpha = pair.split(":")
    
-    print id, " has energy ", e, " and alpha ", alpha
+    print(id, " has energy ", e, " and alpha ", alpha)
 
     idenergymap[int(id)] = float(e)
     idalphamap[int(id)] = float(alpha)
 
 if trapidtoset is not None:
 
-    if not idenergymap.has_key(trapidtoset):
-        print >> sys.stderr, trapidtoset, "is not a valid trapid"
+    if trapidtoset not in idenergymap:
+        print(trapidtoset, "is not a valid trapid", file=sys.stderr)
         exit(1)
 
-    if not idalphamap.has_key(trapidtoset):
-        print >> sys.stderr, trapidtoset, "is not a valid trapid"
+    if trapidtoset not in idalphamap:
+        print(trapidtoset, "is not a valid trapid", file=sys.stderr)
         exit(1)
 
 verbose = args.verbose
@@ -207,12 +207,12 @@ for line in file:
   npnum = int(snpnum)
   atomid = int(satomid)
 
-  if not (id in idenergymap.keys()):
-      print "Error in energies cannot find ", sid
+  if not (id in list(idenergymap.keys())):
+      print("Error in energies cannot find ", sid)
       exit(1)
 
-  if not (id in idalphamap.keys()):
-      print "Error in alpha cannot find ", sid
+  if not (id in list(idalphamap.keys())):
+      print("Error in alpha cannot find ", sid)
       exit(1)
 
   alpha = idalphamap[id]
@@ -256,16 +256,16 @@ for line in file:
 
 end = time.time()
 
-print ""
+print("")
 
 nplist = list(npset)
 
 numofelectron = min(args.numofelectron, len(nplist))
 
-print "Number of NPs: ", len(nplist) 
-print "Number of electrons: ", numofelectron
-print ""
-print "Storing traps' positions"
+print("Number of NPs: ", len(nplist)) 
+print("Number of electrons: ", numofelectron)
+print("")
+print("Storing traps' positions")
 np_alltraps_position = numpy.zeros((len(alltraps), 3), numpy.float)
 i = 0
 for t in alltraps:
@@ -284,17 +284,17 @@ alltrapszmax = numpy.amax(np_alltraps_position[:,2])
 dimensions = numpy.array(\
         [(alltrapsxmax-alltrapsxmin), (alltrapsxmax-alltrapsymin), (alltrapszmax-alltrapszmin)])
 
-print ""
-print "Check should be more or less the same values: "
-print "Traps X min: %10.5f Spheres X min: %10.5f "%(alltrapsxmin, xmin)
-print "Traps Y min: %10.5f Spheres Y min: %10.5f "%(alltrapsymin, ymin)
-print "Traps Z min: %10.5f Spheres Z min: %10.5f "%(alltrapszmin, zmin)
+print("")
+print("Check should be more or less the same values: ")
+print("Traps X min: %10.5f Spheres X min: %10.5f "%(alltrapsxmin, xmin))
+print("Traps Y min: %10.5f Spheres Y min: %10.5f "%(alltrapsymin, ymin))
+print("Traps Z min: %10.5f Spheres Z min: %10.5f "%(alltrapszmin, zmin))
 
-print "Check should be more or less the same values: "
-print "Traps X max: %10.5f Spheres X max: %10.5f "%(alltrapsxmax, xmax)
-print "Traps Y max: %10.5f Spheres Y max: %10.5f "%(alltrapsymax, ymax)
-print "Traps Z max: %10.5f Spheres Z max: %10.5f "%(alltrapszmax, zmax)
-print ""
+print("Check should be more or less the same values: ")
+print("Traps X max: %10.5f Spheres X max: %10.5f "%(alltrapsxmax, xmax))
+print("Traps Y max: %10.5f Spheres Y max: %10.5f "%(alltrapsymax, ymax))
+print("Traps Z max: %10.5f Spheres Z max: %10.5f "%(alltrapszmax, zmax))
+print("")
 
 # select initial NP to get an electron
 # and set electron
@@ -327,6 +327,11 @@ while setelectron < numofelectron:
                 t, idxtojump, nomoffree = get_mint (randomtrapidx, np_alltraps_position, alltraps, \
                         dimensions, mindist, kB, T)
 
+                if (t == 0.0) or (t == float("-inf")) \
+                        or (t == float("+inf")):
+                    print ("Error in the computed release time")
+                    exit(1)
+
                 #faket += 0.1
                 econtainer = electron()
                 econtainer.append_trapid(randomtrapidx)
@@ -334,9 +339,9 @@ while setelectron < numofelectron:
                 alltraps[randomtrapidx].release_time = t
                 alltraps[randomtrapidx].set_idxtojump(idxtojump)
                 #alltraps[randomtrapidx].release_time = faket
-                print ("Set electron %3d to NP %10d at trap %10d in state %10d time %10.5e to %10d"%(\
+                print(("Set electron %3d to NP %10d at trap %10d in state %10d time %10.5e to %10d"%(\
                         setelectron, npidx, randomtrapidx, alltraps[randomtrapidx].get_id(), \
-                        alltraps[randomtrapidx].release_time, alltraps[randomtrapidx].get_idxtojump()))
+                        alltraps[randomtrapidx].release_time, alltraps[randomtrapidx].get_idxtojump())))
                 setofnp.add(npidx)
                 break
 
@@ -368,112 +373,123 @@ for i in range(numofiter):
     totaltime += tmin
 
     idxto = alltraps[idxfrom].get_idxtojump()
-    #print (idxfrom, tmin, alltraps[idxfrom].electron(), idxto)
-    if verbose:
-        print "Run: ", i+1, " of ", numofiter
+    if (idxto >= 0):
+          print (idxfrom, tmin, alltraps[idxfrom].electron(), idxto)
+          if verbose:
+              print("Run: ", i+1, " of ", numofiter)
+          
+          #if verbose:
+          #    for idxtotest in range(len(alltraps)):
+          #        if alltraps[idxtotest].electron() != 0:
+          #            print "  Electron at trap: ", idxtotest , " RT: %10.5e"%(alltraps[idxtotest].release_time) 
+          
+          # move electron randmly inside the same trap and same NP 
+          idxto = move_electron_randmly (idxto, np_alltraps_position, alltraps, 
+                  trapsidx_for_np)
+          
+          if (alltraps[idxto].electron() != 0):
+              print("Error cannot move to occupied trap")
+              exit(1)
+          
+          if verbose:
+              print("  Index from: " , idxfrom , " RT ", alltraps[idxfrom].release_time, \
+                      " NumOfEle: ", alltraps[idxfrom].electron())
+          
+          if alltraps[idxfrom].electron() != 1:
+              print("ERROR alltraps[idxfrom] has finite release time but zero electron")
+              print(alltraps[idxfrom].release_time)
+              exit(1)
+          
+          if not verbose:
+              if not numofelectron == 1:
+                  progress_bar (i+1, numofiter)
+          
+          if numofelectron == 1:
+              print("From %10.5f %10.5f %10.5f %10d %10d"%( \
+                      alltraps[idxfrom].get_position()[0], \
+                      alltraps[idxfrom].get_position()[1], \
+                      alltraps[idxfrom].get_position()[2],
+                      alltraps[idxfrom].get_npid(), \
+                      alltraps[idxfrom].get_atomid()))
+          
+          newtime, newidxtojump, numoffree = get_mint (idxto, np_alltraps_position, alltraps, \
+                              dimensions, mindist, kB, T)
 
-    #if verbose:
-    #    for idxtotest in range(len(alltraps)):
-    #        if alltraps[idxtotest].electron() != 0:
-    #            print "  Electron at trap: ", idxtotest , " RT: %10.5e"%(alltraps[idxtotest].release_time) 
+          if (newtime == 0.0) or (newtime == float("-inf")) \
+                     or (newtime == float("+inf")):
+                 print ("Error in the computed release time")
+                 exit(1)
 
-    # move electron randmly inside the same trap and same NP 
-    idxto = move_electron_randmly (idxto, np_alltraps_position, alltraps, 
-            trapsidx_for_np)
-
-    if (alltraps[idxto].electron() != 0):
-        print "Error cannot move to occupied trap"
-        exit(1)
-
-    if verbose:
-        print "  Index from: " , idxfrom , " RT ", alltraps[idxfrom].release_time, \
-                " NumOfEle: ", alltraps[idxfrom].electron()
-
-    if alltraps[idxfrom].electron() != 1:
-        print "ERROR alltraps[idxfrom] has finite release time but zero electron"
-        print alltraps[idxfrom].release_time
-        exit(1)
-    
-    if not verbose:
-        if not numofelectron == 1:
-            progress_bar (i+1, numofiter)
-
-    if numofelectron == 1:
-        print "From %10.5f %10.5f %10.5f %10d %10d"%( \
-                alltraps[idxfrom].get_position()[0], \
-                alltraps[idxfrom].get_position()[1], \
-                alltraps[idxfrom].get_position()[2],
-                alltraps[idxfrom].get_npid(), \
-                alltraps[idxfrom].get_atomid())
-
-    newtime, newidxtojump, numoffree = get_mint (idxto, np_alltraps_position, alltraps, \
-                        dimensions, mindist, kB, T)
-
-
-    if nomoffree == 0:
-        if verbose:
-            print "No free traps near by"
-        for t in alltraps:
-            if t.release_time < float("inf"):
-                t.release_time -= (tmin*0.99)
+          
+          if nomoffree == 0:
+              print("No free traps near by")
+              exit(1)
+              #for t in alltraps:
+              #    if t.release_time < float("inf"):
+              #        t.release_time -= (tmin*0.99)
+          else:
+              # move electron
+              econtainer = alltraps[idxfrom].get_electron_cont()
+              alltraps[idxfrom].set_electron(0)
+              alltraps[idxfrom].release_time = float('inf')
+              
+              # reduce realease time of tmin 
+              contali = 1
+              for t in alltraps:
+                  if t.release_time < float("inf"):
+                      t.release_time -= tmin
+                      contali += t.electron()
+                      if verbose:
+                          print("  Old RT %10.5e new RT %10.5e"%(t.release_time+tmin, \
+                                     t.release_time))
+          
+              if contali != Nelectron:
+                  print("Error started with ", Nelectron, " now we have ", contali)
+                  exit(1)
+          
+              alltraps[idxto].set_idxtojump(newidxtojump)
+              econtainer.append_trapid(idxto)
+              alltraps[idxto].set_electron(1, econtainer)
+              alltraps[idxto].release_time = newtime
+          
+              # position = bisect.insort_left(alltraps, movedtrap)
+              #alltraps.sort(key=lambda x: x.release_time, reverse=False)
+              
+              if verbose:
+                  #print "  IdxFrom: ", idxfrom , " RT: ", alltraps[idxfrom].release_time, \
+                  #       " NumOfEle: ", alltraps[idxfrom].electron()
+                  print("  IdxTo:   ", idxto , " RT: ", alltraps[idxto].release_time, \
+                         " NumOfEle: ", alltraps[idxto].electron())
+          
+                  #contali = 0
+                  #for idxtotest in range(len(alltraps)):
+                  #    if alltraps[idxtotest].electron() != 0:
+                  #        contali += 1
+                  #        print "  Electron at trap: ", idxtotest , " RT: %10.5e"%(alltraps[idxtotest].release_time) 
+          
+              if numofelectron == 1:
+                  print("To %10.5f %10.5f %10.5f %10d %10d"%( \
+                          alltraps[newidxtojump].get_position()[0], \
+                          alltraps[newidxtojump].get_position()[1], \
+                          alltraps[newidxtojump].get_position()[2], \
+                          alltraps[newidxtojump].get_npid(), \
+                          alltraps[newidxtojump].get_atomid()))
     else:
-        # move electron
-        econtainer = alltraps[idxfrom].get_electron_cont()
-        alltraps[idxfrom].set_electron(0)
-        alltraps[idxfrom].release_time = float('inf')
-        
-        # reduce realease time of tmin 
-        contali = 1
-        for t in alltraps:
-            if t.release_time < float("inf"):
-                t.release_time -= tmin
-                contali += t.electron()
-                if verbose:
-                    print "  Old RT %10.5e new RT %10.5e"%(t.release_time+tmin, \
-                               t.release_time)
-
-        if contali != Nelectron:
-            print "Error started with ", Nelectron, " now we have ", contali
-            exit(1)
-
-        alltraps[idxto].set_idxtojump(newidxtojump)
-        econtainer.append_trapid(idxto)
-        alltraps[idxto].set_electron(1, econtainer)
-        alltraps[idxto].release_time = newtime
-
-        # position = bisect.insort_left(alltraps, movedtrap)
-        #alltraps.sort(key=lambda x: x.release_time, reverse=False)
-        
-        if verbose:
-            #print "  IdxFrom: ", idxfrom , " RT: ", alltraps[idxfrom].release_time, \
-            #       " NumOfEle: ", alltraps[idxfrom].electron()
-            print "  IdxTo:   ", idxto , " RT: ", alltraps[idxto].release_time, \
-                   " NumOfEle: ", alltraps[idxto].electron()
-
-            #contali = 0
-            #for idxtotest in range(len(alltraps)):
-            #    if alltraps[idxtotest].electron() != 0:
-            #        contali += 1
-            #        print "  Electron at trap: ", idxtotest , " RT: %10.5e"%(alltraps[idxtotest].release_time) 
-
-        if numofelectron == 1:
-            print "To %10.5f %10.5f %10.5f %10d %10d"%( \
-                    alltraps[newidxtojump].get_position()[0], \
-                    alltraps[newidxtojump].get_position()[1], \
-                    alltraps[newidxtojump].get_position()[2], \
-                    alltraps[newidxtojump].get_npid(), \
-                    alltraps[newidxtojump].get_atomid())
+          print("No free traps near by")
+          exit(1)
+          #for t in alltraps:
+          #    if t.release_time < float("inf"):
+          #        t.release_time -= (tmin*0.99)
 
 
-
-print " "
-print "Total run time: ", totaltime
-print " "
+print(" ")
+print("Total run time: ", totaltime)
+print(" ")
 
 for trapidx in range(len(alltraps)):
     if (alltraps[trapidx].get_electron_cont() != None):
-        print ("Electron in trap %10d of NP %10d and %10.5e release time"%(
-            trapidx, alltraps[trapidx].get_npid(), alltraps[trapidx].release_time))
+        print(("Electron in trap %10d of NP %10d and %10.5e release time"%(
+            trapidx, alltraps[trapidx].get_npid(), alltraps[trapidx].release_time)))
 
  
 Nfinalelectron = 0
@@ -503,16 +519,16 @@ for t in alltraps:
     #        t.electron, t.release_time))
 fp.close()
 
-print ""
+print("")
 if Nfinalelectron != Nelectron:
-    print "Error number of starting electron is: ", Nelectron
-    print "     number of final electron is: ", Nfinalelectron
+    print("Error number of starting electron is: ", Nelectron)
+    print("     number of final electron is: ", Nfinalelectron)
 file.close()
 
 fullend = time.time()
 
-print ""
-print("Time to read %10.3f"%(end - start))
-print("Time compute %10.3f"%((fullend - fullstart)-(end - start)))
-print("Total time to read %10.3f"%(fullend - fullstart))
+print("")
+print(("Time to read %10.3f"%(end - start)))
+print(("Time compute %10.3f"%((fullend - fullstart)-(end - start))))
+print(("Total time to read %10.3f"%(fullend - fullstart)))
 
