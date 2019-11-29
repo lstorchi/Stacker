@@ -47,6 +47,7 @@ CONV = numpy.float64(1.0e10)
 
 total = numpy.float64(0.0)
 
+N = 0.0
 for filename in filenames:
 
    file = open(filename, "r")
@@ -81,9 +82,13 @@ for filename in filenames:
      ypred = y
      zpred = z
 
-   total += ((xpred-x0)/CONV)**2 + ((ypred-y0)/CONV)**2 + ((zpred-z0)/CONV)**2 
-   
+   total += math.sqrt(((xpred-x0)/CONV)**2 + \
+           ((ypred-y0)/CONV)**2 + \
+           ((zpred-z0)/CONV)**2 )
+   N += 1.0
+
    file.close()
 
-print(total)
-print(numpy.log(((1.0/N) * total) / (6.0 * args.time)), ((1.0/N) * total) / (6.0 * args.time))
+total = total / N
+#print(total)
+#print(numpy.log((total**2) / (6.0 * args.time)))
