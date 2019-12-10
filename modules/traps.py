@@ -1,4 +1,5 @@
 import numpy 
+import math
 
 class electron:
 
@@ -42,6 +43,19 @@ class electron:
 
         return numpy.transpose([self.__x__, \
                 self.__y__, self.__z__])
+    
+    def get_distance_from_start(self):
+        dist = 0.0
+
+        if (len(self.__x__) > 1 and len(self.__y__) > 1 
+                and len(self.__y__) > 1 ):
+            xdiff = (self.__x__[0] - self.__x__[-1])**2
+            ydiff = (self.__y__[0] - self.__y__[-1])**2
+            zdiff = (self.__z__[0] - self.__z__[-1])**2
+
+            dist = math.sqrt(xdiff + ydiff + zdiff)
+
+        return dist
 
 class trap:
 

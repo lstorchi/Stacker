@@ -83,27 +83,37 @@ def get_mint (idx, np_alltraps_position, alltraps, dimensions, mindist, kB, T):
     t = float("+inf")
     R = numpy.random.uniform(0.0, 1.0)
     for ival in free_nearindex:
-        tojumptrpid = alltraps[ival].get_id()
-        npid = alltraps[ival].get_npid()
-        atomid = alltraps[ival].get_atomid()
-        #if (tojumptrpid != alltraps[idx].get_id()): # jump to different TRAPids
-        if (npid != alltraps[idx].get_npid()): # jump to different NPs
-        #if (atomid != alltraps[idx].get_atomid()): # jump to different atom
-           #x, y, z = alltraps[ival].get_position()
-           #print ("%10.5f %10.5f %10.5f"%(x, y, z))
-           rij = dists[ival]
-           alphai = alltraps[idx].get_alpha()
-           Ei = alltraps[idx].get_energy()
-           Ej = alltraps[ival].get_energy()
-           #print ("%10.5f %10.5f "%(Ei, Ej))
-           val = ((Ej - Ei + abs(Ej - Ei))/(2.0*kB*T))
-           #print("%10.5f %10.5e %10.5f %10.5f %10.5f %10.5e %10.5f "%(R, t0, rij, Ei, Ej, kB, T))
-           #print("%10.5e %10.5e %10.5e"%(val, math.exp( ((2.0*rij)/alphai) + val ), t0))
-           at = -1.0 * math.log(R) * t0 * math.exp( ((2.0*rij)/alphai) + val )
-           #print("%10.5e"%(at))
-           if at < t:
-               t = at
-               idxtojump = ival
+        tojumptrapid = alltraps[ival].get_id()
+        tojumpnpid = alltraps[ival].get_npid()
+        tojumpatomid = alltraps[ival].get_atomid()
+        #if (tojumptrapid != alltraps[idx].get_id()): # jump to different TRAPids
+        if (tojumpnpid != alltraps[idx].get_npid()): # jump to different NPs
+        #if (tojumpatomid != alltraps[idx].get_atomid()): # jump to different atom
+           
+           totelectronintrap = 0
+           # check if in the same trap there is an electron
+           for ivalcheck in free_nearindex:
+               npidcheck = alltraps[ivalcheck].get_npid()
+               trapidcheck = alltraps[ivalcheck].get_id()
+               if ((trapidcheck == tojumptrapid) and (npidcheck == tojumpnpid)):
+                   totelectronintrap += alltraps[ivalcheck].electron()
+
+           if (totelectronintrap <= 1):
+               #x, y, z = alltraps[ival].get_position()
+               #print ("%10.5f %10.5f %10.5f"%(x, y, z))
+               rij = dists[ival]
+               alphai = alltraps[idx].get_alpha()
+               Ei = alltraps[idx].get_energy()
+               Ej = alltraps[ival].get_energy()
+               #print ("%10.5f %10.5f "%(Ei, Ej))
+               val = ((Ej - Ei + abs(Ej - Ei))/(2.0*kB*T))
+               #print("%10.5f %10.5e %10.5f %10.5f %10.5f %10.5e %10.5f "%(R, t0, rij, Ei, Ej, kB, T))
+               #print("%10.5e %10.5e %10.5e"%(val, math.exp( ((2.0*rij)/alphai) + val ), t0))
+               at = -1.0 * math.log(R) * t0 * math.exp( ((2.0*rij)/alphai) + val )
+               #print("%10.5e"%(at))
+               if at < t:
+                   t = at
+                   idxtojump = ival
 
     # use a faketime 
     #t = numpy.random.uniform(0.0, 1.0)
@@ -474,6 +484,41 @@ for i in range(numofiter):
                           alltraps[newidxtojump].get_position()[2], \
                           alltraps[newidxtojump].get_npid(), \
                           alltraps[newidxtojump].get_atomid()))
+
+          # after each step print info
+          if verbose:
+              allelectron = [t for t in alltraps if t.electron() != 0]
+              if (len(allelectron)) == Nelectron:
+
+                  meanvalue = 0.0
+                  for i, t in zip(range(len(allelectron)), allelectron):
+                      if (t.electron() != 1):
+                          print("Error trap has more then one lectron")
+                          exit(1)
+
+                      econtainer = t.get_electron_cont()
+                      print("electron", i+1, " distance " , econtainer.get_distance_from_start())
+                      meanvalue += econtainer.get_distance_from_start() 
+
+                      fpe = open("electrons_"+str(i+1)+"_of_"+ \
+                              str(numofelectron)+".txt", "a")
+                      x, y, z = econtainer.get_xyz()
+                      npids = econtainer.get_npid()
+                      trapids = econtainer.get_trapid()
+                      fpe.write( "%10.4f %10.4f %10.4f %10d %10d\n"%(x[-1], y[-1], z[-1], \
+                               npids[-1], trapids[-1]))
+                      fpe.close()
+ 
+
+                  meanvalue = meanvalue / float(len(allelectron))
+                  print ("electron average distance ", meanvalue )
+                  print ("electron average distance over time ", (meanvalue/numpy.float64(1.0e10))/totaltime )
+
+
+              else:
+                  print("Error started with ", Nelectron, " now we have ", len(allelectron))
+                  exit(1)
+
     else:
           print("No free traps near by")
           exit(1)
@@ -502,17 +547,17 @@ for t in alltraps:
         Nfinalelectron += 1
         econtainer = t.get_electron_cont()
 
-        fpe = open("electrons_"+str(i)+"_of_"+ \
-                str(numofelectron)+".txt", "w")
-        fpe.write("electron_%d\n"%(i))
-        x, y, z = econtainer.get_xyz()
-        npids = econtainer.get_npid()
-        trapids = econtainer.get_trapid()
-        #numpy.savetxt(fpe, econtainer.get_allxyz())
-        for j in range(len(trapids)):
-            fpe.write( "%10.4f %10.4f %10.4f %10d %10d\n"%(x[j], y[j], z[j], \
-                    npids[j], trapids[j]))
-        fpe.close()
+        if not verbose:
+            fpe = open("electrons_"+str(i)+"_of_"+ \
+                    str(numofelectron)+".txt", "w")
+            x, y, z = econtainer.get_xyz()
+            npids = econtainer.get_npid()
+            trapids = econtainer.get_trapid()
+            #numpy.savetxt(fpe, econtainer.get_allxyz())
+            for j in range(len(trapids)):
+                fpe.write( "%10.4f %10.4f %10.4f %10d %10d\n"%(x[j], y[j], z[j], \
+                        npids[j], trapids[j]))
+            fpe.close()
         i = i +1
 
     #fp.write( "%10.4f %10.4f %10.4f %2d %10.4f\n"%(t.x(), t.y(), t.z(), \
