@@ -14,6 +14,8 @@ from traps import *
 from point import * 
 from sphere import *
 
+import convert_boundary_cond
+
 
 ###############################################################################
 
@@ -497,23 +499,37 @@ for i in range(numofiter):
                           exit(1)
 
                       econtainer = t.get_electron_cont()
-                      print("electron", i+1, " distance " , econtainer.get_distance_from_start())
-                      meanvalue += econtainer.get_distance_from_start() 
+                      #print("electron", i+1, " distance " , econtainer.get_distance_from_start())
+                      #meanvalue += econtainer.get_distance_from_start() 
 
-                      fpe = open("electrons_"+str(i+1)+"_of_"+ \
-                              str(numofelectron)+".txt", "a")
                       x, y, z = econtainer.get_xyz()
                       npids = econtainer.get_npid()
                       trapids = econtainer.get_trapid()
-                      fpe.write( "%10.4f %10.4f %10.4f %10d %10d\n"%(x[-1], y[-1], z[-1], \
-                               npids[-1], trapids[-1]))
-                      fpe.close()
- 
+
+                      coordonates = tuple(zip(x, y, z, npids, trapids))
+
+                      final = convert_boundary_cond.resort_boundary(xmax - xmin, \
+                              ymax - ymin, zmax- zmin, coordonates)
+
+                      xdiff = (final[0][0] - final[-1][0])**2
+                      ydiff = (final[0][1] - final[-1][1])**2
+                      zdiff = (final[0][2] - final[-1][2])**2
+
+                      meanvalue += math.sqrt(xdiff + ydiff + zdiff)
+
+
+                      #fpe = open("electrons_"+str(i+1)+"_of_"+ \
+                      #        str(numofelectron)+".txt", "a")
+                      #x, y, z = econtainer.get_xyz()
+                      #npids = econtainer.get_npid()
+                      #trapids = econtainer.get_trapid()
+                      #fpe.write( "%10.4f %10.4f %10.4f %10d %10d\n"%(x[-1], y[-1], z[-1], \
+                      #         npids[-1], trapids[-1]))
+                      #fpe.close()
 
                   meanvalue = meanvalue / float(len(allelectron))
                   print ("electron average distance ", meanvalue )
                   print ("electron average distance over time ", (meanvalue/numpy.float64(1.0e10))/totaltime )
-
 
               else:
                   print("Error started with ", Nelectron, " now we have ", len(allelectron))
@@ -547,17 +563,16 @@ for t in alltraps:
         Nfinalelectron += 1
         econtainer = t.get_electron_cont()
 
-        if not verbose:
-            fpe = open("electrons_"+str(i)+"_of_"+ \
-                    str(numofelectron)+".txt", "w")
-            x, y, z = econtainer.get_xyz()
-            npids = econtainer.get_npid()
-            trapids = econtainer.get_trapid()
-            #numpy.savetxt(fpe, econtainer.get_allxyz())
-            for j in range(len(trapids)):
-                fpe.write( "%10.4f %10.4f %10.4f %10d %10d\n"%(x[j], y[j], z[j], \
-                        npids[j], trapids[j]))
-            fpe.close()
+        fpe = open("electrons_"+str(i)+"_of_"+ \
+                str(numofelectron)+".txt", "w")
+        x, y, z = econtainer.get_xyz()
+        npids = econtainer.get_npid()
+        trapids = econtainer.get_trapid()
+        #numpy.savetxt(fpe, econtainer.get_allxyz())
+        for j in range(len(trapids)):
+            fpe.write( "%10.4f %10.4f %10.4f %10d %10d\n"%(x[j], y[j], z[j], \
+                    npids[j], trapids[j]))
+        fpe.close()
         i = i +1
 
     #fp.write( "%10.4f %10.4f %10.4f %2d %10.4f\n"%(t.x(), t.y(), t.z(), \

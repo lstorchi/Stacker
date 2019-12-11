@@ -28,27 +28,9 @@ def get_distance(x0, y0, z0, x1, y1, z1):
 
 ###############################################################################
 
-def resort_boundary(xdim, ydim, zdim, filename, jumpthefirst = False):
+def resort_boundary(xdim, ydim, zdim, coordinates):
 
     final = []
-   
-    file = open(filename, "r")
-    
-    if not jumpthefirst:
-      title = file.readline()
-    
-    coordinates = []
-    for line in file:
-      mergedline = ' '.join(line.split())
-      sx, sy, sz, snpnum, stpidx = mergedline.split(" ")
-    
-      x = float(sx)
-      y = float(sy)
-      z = float(sz)
-    
-      coordinates.append([x, y, z, int(snpnum), int(stpidx)])
-    
-    file.close()
     
     x0 = coordinates[0][0]
     y0 = coordinates[0][1]
@@ -143,8 +125,25 @@ if __name__ == '__main__':
     xdim = float(sxdim)
     ydim = float(sydim)
     zdim = float(szdim)
+
+    file = open(filename, "r")
+    
+    title = file.readline()
+    
+    coordinates = []
+    for line in file:
+      mergedline = ' '.join(line.split())
+      sx, sy, sz, snpnum, stpidx = mergedline.split(" ")
+    
+      x = float(sx)
+      y = float(sy)
+      z = float(sz)
+    
+      coordinates.append([x, y, z, int(snpnum), int(stpidx)])
+    
+    file.close()
  
-    final = resort_boundary (xdim, ydim, zdim, filename)
+    final = resort_boundary (xdim, ydim, zdim, coordinates)
 
     for f in final:
         print("%10.5f %10.5f %10.5f %10d %10d"%(f[0], f[1], f[2], f[3], f[4]))
