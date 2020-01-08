@@ -46,62 +46,62 @@ def resort_boundary(xdim, ydim, zdim, coordinates):
     zpred = z0
     
     svalue = 200.0
-    
-    for i in range(1, len(coordinates)):
-    
-      x = coordinates[i][0]
-      y = coordinates[i][1]
-      z = coordinates[i][2]
-    
-      tosumx = False
-      tosumy = False
-      tosumz = False
-    
-      if abs(x-xpred) > svalue: 
-          tosumx = True
-          if x-xpred > 0.0:
-              xsum = -xdim
-          else:
-              xsum = +xdim
-    
-      if abs(y-ypred) > svalue: 
-          tosumy = True
-          if y-ypred > 0.0:
-              ysum = -ydim
-          else:
-              ysum = +ydim
-    
-      if abs(z-zpred) > svalue: 
-          tosumz = True
-          if z-zpred > 0.0:
-              zsum = -zdim
-          else:
-              zsum = +zdim
-    
-      if tosumx or tosumy or tosumz:
-        for j in range(i, len(coordinates)):
-          if (tosumx):
-            coordinates[j][0] += xsum 
-          if (tosumy):
-            coordinates[j][1] += ysum
-          if (tosumz):
-            coordinates[j][2] += zsum
-    
-      x = coordinates[i][0]
-      y = coordinates[i][1]
-      z = coordinates[i][2]
-    
-      xpred = x 
-      ypred = y 
-      zpred = z 
-    
-      #print("%10.5f %10.5f %10.5f %10d %10d"%(xpred, ypred, zpred, \
-      #      coordinates[i][3], coordinates[i][4]))
 
-      final.append((xpred, ypred, zpred, coordinates[i][3], coordinates[i][4]))
+    if (len(coordinates) > 1):
+      for i in range(1, len(coordinates)):
+      
+        x = coordinates[i][0]
+        y = coordinates[i][1]
+        z = coordinates[i][2]
+      
+        tosumx = False
+        tosumy = False
+        tosumz = False
+      
+        if abs(x-xpred) > svalue: 
+            tosumx = True
+            if x-xpred > 0.0:
+                xsum = -xdim
+            else:
+                xsum = +xdim
+      
+        if abs(y-ypred) > svalue: 
+            tosumy = True
+            if y-ypred > 0.0:
+                ysum = -ydim
+            else:
+                ysum = +ydim
+      
+        if abs(z-zpred) > svalue: 
+            tosumz = True
+            if z-zpred > 0.0:
+                zsum = -zdim
+            else:
+                zsum = +zdim
+      
+        if tosumx or tosumy or tosumz:
+          for j in range(i, len(coordinates)):
+            if (tosumx):
+              coordinates[j][0] += xsum 
+            if (tosumy):
+              coordinates[j][1] += ysum
+            if (tosumz):
+              coordinates[j][2] += zsum
+      
+        x = coordinates[i][0]
+        y = coordinates[i][1]
+        z = coordinates[i][2]
+      
+        xpred = x 
+        ypred = y 
+        zpred = z 
+      
+        #print("%10.5f %10.5f %10.5f %10d %10d"%(xpred, ypred, zpred, \
+        #      coordinates[i][3], coordinates[i][4]))
+      
+        final.append((xpred, ypred, zpred, coordinates[i][3], coordinates[i][4]))
 
     return final
-     
 
 
 ###############################################################################
