@@ -214,32 +214,32 @@ lineinfile = file_len(filename)
 start = time.time()
 for line in file:
   mergedline = ' '.join(line.split())
-  sid, sx, sy, sz, snpnum, satomid = mergedline.split(" ")
+  sstateid, sx, sy, sz, snpnum, satomid = mergedline.split(" ")
 
-  id = int(sid)
+  stateid = int(sstateid)
   x = float(sx)
   y = float(sy)
   z = float(sz)
   npnum = int(snpnum)
   atomid = int(satomid)
 
-  if not (id in list(idenergymap.keys())):
+  if not (stateid in list(idenergymap.keys())):
       print("Error in energies cannot find ", sid)
       exit(1)
 
-  if not (id in list(idalphamap.keys())):
+  if not (stateid in list(idalphamap.keys())):
       print("Error in alpha cannot find ", sid)
       exit(1)
 
-  alpha = idalphamap[id]
-  energy = idenergymap[id]
+  alpha = idalphamap[stateid]
+  energy = idenergymap[stateid]
 
   if npnum not in trapsidx_for_np:
       trapsidx_for_np[npnum] = []
 
   trapsidx_for_np[npnum].append(i)
 
-  t = trap(x, y, z, id, energy)
+  t = trap(x, y, z, stateid, energy)
   t.set_alpha(alpha)
   t.set_npid(npnum)
   t.set_atomid(atomid)
@@ -382,6 +382,10 @@ fp.close()
 
 totaltime = 0.0
 
+fpesi = None
+if verbose:
+    fpesi = open("electrons_stateids.txt", "w")
+
 for i in range(numofiter):
     idxfrom = alltraps.index(min(alltraps, key=attrgetter('release_time')))
     tmin = alltraps[idxfrom].release_time
@@ -492,47 +496,56 @@ for i in range(numofiter):
                           alltraps[newidxtojump].get_atomid()))
 
           # after each step print info
-          if verbose and meanvalueprint:
+          if verbose:
+
               allelectron = [t for t in alltraps if t.electron() != 0]
               if (len(allelectron)) == Nelectron:
-
                   meanvalue = 0.0
+                  electronstateids = []
                   for i, t in zip(range(len(allelectron)), allelectron):
                       if (t.electron() != 1):
                           print("Error trap has more then one lectron")
                           exit(1)
-
+                  
                       econtainer = t.get_electron_cont()
                       #print("electron", i+1, " distance " , econtainer.get_distance_from_start())
                       #meanvalue += econtainer.get_distance_from_start() 
 
-                      x, y, z = econtainer.get_xyz()
-                      npids = econtainer.get_npid()
-                      trapids = econtainer.get_trapid()
+                      stateids = econtainer.get_stateid()
+                      electronstateids.append(stateids[-1])
 
-                      coordonates = tuple(zip(x, y, z, npids, trapids))
+                      if meanvalueprint:
 
-                      final = convert_boundary_cond.resort_boundary(xmax - xmin, \
-                              ymax - ymin, zmax - zmin, coordonates)
+                          npids = econtainer.get_npid()
+                          trapids = econtainer.get_trapid()
+                          x, y, z = econtainer.get_xyz()
+                  
+                          coordonates = tuple(zip(x, y, z, npids, trapids))
+                          
+                          final = convert_boundary_cond.resort_boundary(xmax - xmin, \
+                                  ymax - ymin, zmax - zmin, coordonates)
+                          
+                          xdiff = (final[0][0] - final[-1][0])**2
+                          ydiff = (final[0][1] - final[-1][1])**2
+                          zdiff = (final[0][2] - final[-1][2])**2
+                          
+                          meanvalue += math.sqrt(xdiff + ydiff + zdiff)
+                          
+                          #fpe = open("electrons_"+str(i+1)+"_of_"+ \
+                          #        str(numofelectron)+".txt", "a")
+                          #x, y, z = econtainer.get_xyz()
+                          #npids = econtainer.get_npid()
+                          #trapids = econtainer.get_trapid()
+                          #fpe.write( "%10.4f %10.4f %10.4f %10d %10d\n"%(x[-1], y[-1], z[-1], \
+                          #         npids[-1], trapids[-1]))
+                          #fpe.close()
+                  
+                  fpesi.write(' '.join(str(x) for x in electronstateids) + "\n")
 
-                      xdiff = (final[0][0] - final[-1][0])**2
-                      ydiff = (final[0][1] - final[-1][1])**2
-                      zdiff = (final[0][2] - final[-1][2])**2
-
-                      meanvalue += math.sqrt(xdiff + ydiff + zdiff)
-
-                      #fpe = open("electrons_"+str(i+1)+"_of_"+ \
-                      #        str(numofelectron)+".txt", "a")
-                      #x, y, z = econtainer.get_xyz()
-                      #npids = econtainer.get_npid()
-                      #trapids = econtainer.get_trapid()
-                      #fpe.write( "%10.4f %10.4f %10.4f %10d %10d\n"%(x[-1], y[-1], z[-1], \
-                      #         npids[-1], trapids[-1]))
-                      #fpe.close()
-
-                  meanvalue = meanvalue / float(len(allelectron))
-                  print ("electron average distance ", meanvalue )
-                  print ("electron average distance over time ", (meanvalue/numpy.float64(1.0e10))/totaltime )
+                  if meanvalueprint:
+                      meanvalue = meanvalue / float(len(allelectron))
+                      print ("electron average distance ", meanvalue )
+                      print ("electron average distance over time ", (meanvalue/numpy.float64(1.0e10))/totaltime )
 
               else:
                   print("Error started with ", Nelectron, " now we have ", len(allelectron))
@@ -545,6 +558,8 @@ for i in range(numofiter):
           #    if t.release_time < float("inf"):
           #        t.release_time -= (tmin*0.99)
 
+if verbose:
+    fpesi.close()
 
 print(" ")
 print("Total run time: ", totaltime)
@@ -571,10 +586,11 @@ for t in alltraps:
         x, y, z = econtainer.get_xyz()
         npids = econtainer.get_npid()
         trapids = econtainer.get_trapid()
+        stateids =  econtainer.get_stateid()
         #numpy.savetxt(fpe, econtainer.get_allxyz())
         for j in range(len(trapids)):
-            fpe.write( "%10.4f %10.4f %10.4f %10d %10d\n"%(x[j], y[j], z[j], \
-                    npids[j], trapids[j]))
+            fpe.write( "%10.4f %10.4f %10.4f %10d %10d %10d\n"%(x[j], y[j], z[j], \
+                    npids[j], trapids[j], stateids[j]))
         fpe.close()
         i = i +1
 

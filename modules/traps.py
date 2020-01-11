@@ -10,6 +10,7 @@ class electron:
 
         self.__npid__ = []
         self.__trapid__ = []
+        self.__stateid__ = []
 
     def clear(self):
         self.__x__.clear()
@@ -17,6 +18,7 @@ class electron:
         self.__z__.clear()
 
         self.__npid__.clear()
+        self.__trapid__.clear()
         self.__trapid__.clear()
 
     def append_xyz(self, x, y, z):
@@ -30,11 +32,17 @@ class electron:
     def append_trapid(self, id):
         self.__trapid__.append(id)
 
+    def append_stateid(self, id):
+        self.__stateid__.append(id)
+
     def get_npid(self):
         return self.__npid__
 
     def get_trapid(self):
         return self.__trapid__
+
+    def get_stateid(self):
+        return self.__stateid__
 
     def get_xyz(self):
         return self.__x__, self.__y__, self.__z__
@@ -161,6 +169,7 @@ class trap:
         if e != None:
             e.append_xyz(self.__x__, self.__y__, self.__z__)
             e.append_npid(self.__npid__)
+            e.append_stateid(self.__id__)
 
         self.__electron_cont__ = e
 
