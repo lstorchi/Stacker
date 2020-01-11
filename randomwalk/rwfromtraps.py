@@ -132,6 +132,9 @@ parser.add_argument("-f","--filename", help="Traps filename", \
         type=str, required=True, dest="filename")
 parser.add_argument("-v", "--verbose", help="increase output verbosity", \
         default=False, action="store_true")
+parser.add_argument("-m", "--meanvalueprint", help="compute and dump mean value " + \
+        "(need to enveloppe boundary condition)", \
+        default=False, action="store_true")
 parser.add_argument("--num-of-electrons", help="set number of electron to place", \
         type=int, default=1, dest="numofelectron")
 parser.add_argument("-n", "--num-of-iter", help="Number of iterations ", \
@@ -188,6 +191,7 @@ if trapidtoset is not None:
         exit(1)
 
 verbose = args.verbose
+meanvalueprint = args.meanvalueprint
 
 file = open(filename, "r")
 
@@ -488,7 +492,7 @@ for i in range(numofiter):
                           alltraps[newidxtojump].get_atomid()))
 
           # after each step print info
-          if verbose:
+          if verbose and meanvalueprint:
               allelectron = [t for t in alltraps if t.electron() != 0]
               if (len(allelectron)) == Nelectron:
 
@@ -509,14 +513,13 @@ for i in range(numofiter):
                       coordonates = tuple(zip(x, y, z, npids, trapids))
 
                       final = convert_boundary_cond.resort_boundary(xmax - xmin, \
-                              ymax - ymin, zmax- zmin, coordonates)
+                              ymax - ymin, zmax - zmin, coordonates)
 
                       xdiff = (final[0][0] - final[-1][0])**2
                       ydiff = (final[0][1] - final[-1][1])**2
                       zdiff = (final[0][2] - final[-1][2])**2
 
                       meanvalue += math.sqrt(xdiff + ydiff + zdiff)
-
 
                       #fpe = open("electrons_"+str(i+1)+"_of_"+ \
                       #        str(numofelectron)+".txt", "a")
