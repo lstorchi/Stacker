@@ -16,6 +16,7 @@ from sphere import *
 
 import convert_boundary_cond
 
+EVERYNSTEPS  = 100
 
 ###############################################################################
 
@@ -386,6 +387,8 @@ fpesi = None
 if verbose:
     fpesi = open("electrons_stateids.txt", "w")
 
+counter = 0
+
 for i in range(numofiter):
     idxfrom = alltraps.index(min(alltraps, key=attrgetter('release_time')))
     tmin = alltraps[idxfrom].release_time
@@ -502,17 +505,30 @@ for i in range(numofiter):
               if (len(allelectron)) == Nelectron:
                   meanvalue = 0.0
                   electronstateids = []
-                  for i, t in zip(range(len(allelectron)), allelectron):
+                  for idxe, t in zip(range(len(allelectron)), allelectron):
                       if (t.electron() != 1):
                           print("Error trap has more then one lectron")
                           exit(1)
                   
                       econtainer = t.get_electron_cont()
-                      #print("electron", i+1, " distance " , econtainer.get_distance_from_start())
+                      #print("electron", idxe+1, " distance " , econtainer.get_distance_from_start())
                       #meanvalue += econtainer.get_distance_from_start() 
 
                       stateids = econtainer.get_stateid()
                       electronstateids.append(stateids[-1])
+
+                      if counter == EVERYNSTEPS:
+
+                          fpe = open("electrons_"+str(idxe+1)+"_of_"+ \
+                                  str(numofelectron)+"_at_step_" + str(i) + ".txt", "w")
+                          x, y, z = econtainer.get_xyz()
+                          npids = econtainer.get_npid()
+                          trapids = econtainer.get_trapid()
+                          stateids =  econtainer.get_stateid()
+                          for j in range(len(trapids)):
+                              fpe.write( "%10.4f %10.4f %10.4f %10d %10d %10d\n"%(x[j], y[j], z[j], \
+                                      npids[j], trapids[j], stateids[j]))
+                          fpe.close()
 
                       if meanvalueprint:
 
@@ -539,6 +555,9 @@ for i in range(numofiter):
                           #fpe.write( "%10.4f %10.4f %10.4f %10d %10d\n"%(x[-1], y[-1], z[-1], \
                           #         npids[-1], trapids[-1]))
                           #fpe.close()
+
+                  if counter == EVERYNSTEPS:
+                      counter = 0 
                   
                   fpesi.write(' '.join(str(x) for x in electronstateids) + "\n")
 
@@ -557,6 +576,8 @@ for i in range(numofiter):
           #for t in alltraps:
           #    if t.release_time < float("inf"):
           #        t.release_time -= (tmin*0.99)
+
+    counter += 1
 
 if verbose:
     fpesi.close()
