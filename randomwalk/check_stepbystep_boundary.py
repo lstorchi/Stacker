@@ -2,6 +2,7 @@ from os import listdir
 from os.path import isfile, join
 
 import argparse
+import math
 import sys
 
 import convert_boundary_cond
@@ -61,9 +62,10 @@ for f in onlyfiles:
 for s in sorted(steps):
     print("need to check at steps %6d"%(s), " for %5d"%(num_of_ele), " electrons ")
 
+    fulldist = 0.0
     for i in range(1, num_of_ele+1):
         filename = mypath+"electrons_%d_of_%d_at_step_%d.txt"%(i, num_of_ele, s)
-        print(filename)
+        #print(filename)
 
         file = open(filename, "r")
 
@@ -80,8 +82,18 @@ for s in sorted(steps):
 
         file.close()
         final = convert_boundary_cond.resort_boundary (xdim, ydim, zdim, coordinates)
+        
+        #for f in final:
+        #    print("%10.5f %10.5f %10.5f %10d %10d"%(f[0], f[1], f[2], f[3], f[4]))
 
-        for f in final:
-            print("%10.5f %10.5f %10.5f %10d %10d"%(f[0], f[1], f[2], f[3], f[4]))
+        start = final[0]
+        end = final[-1]
 
+        dist = math.sqrt((start[0]-end[0])**2 + \
+                (start[1]-end[1])**2 + \
+                (start[2]-end[2])**2)
+
+        fulldist += dist
+
+    print("    AVG D: %10.5f"%(fulldist/float(num_of_ele)))
 
