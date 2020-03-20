@@ -213,7 +213,8 @@ def readtrapsfromfile (filename, idenergymap, idalphamap, verbose):
  
 ###############################################################################
 
-def set_initial_electrons (alltraps, numofelectron):
+def set_initial_electrons (alltraps, numofelectron, trapidtoset, \
+        np_alltraps_position, dimensions, mindist, kB, T):
     
     # select initial NP to get an electron
     # and set electron
@@ -288,24 +289,27 @@ if __name__ == "__main__":
     parser.add_argument("--min-dist", help="Cut-off radius to neighboured traps ", \
             type=float, required=False, default=20.0, dest="mindist")
     parser.add_argument("-e", "--energy-per-trap", \
-            help="energies and alpha values \"id1:energy1:alpha1;id2:energy2:alpha2;...;idN:energyN:alphaN\"  ", \
+            help="energies (eV) and alpha values \"id1:energy1:alpha1;id2:energy2:alpha2;...;idN:energyN:alphaN\"  ", \
             type=str, required=True, default="", dest="energy")
     parser.add_argument("-l", "--select-always-the-trapid", \
             help="specify the trapidwhere to set the electron", \
             type=int, required=False, default=None, dest="trapid")
     parser.add_argument("-F", "--specify-fermi-energy", \
-            help="specify the Fermi energy value", \
+            help="specify the Fermi energy value (eV), thus we will use Fermi-Dirac distribution", \
             type=float, required=False, default=None, dest="fermienergy")
-    
     
     if len(sys.argv) == 1:
         parser.print_help()
         exit(1)
-    
+
     fullstart = time.time()
     
     args = parser.parse_args()
-    
+
+    if args.fermienergy != None  and args.trapid != None:
+        print ("Fermi-Dirac distribution it is not compatible with trapidwhere")
+        exit(1)
+
     filename = args.filename
     
     # need to set proper values
@@ -385,8 +389,12 @@ if __name__ == "__main__":
     print("Traps Z max: %10.5f Spheres Z max: %10.5f "%(alltrapszmax, zmax))
     print("")
 
-    set_initial_electrons (alltraps, numofelectron)
-    
+    if args.fermienergy == None:
+        set_initial_electrons (alltraps, numofelectron, trapidtoset, 
+                np_alltraps_position, dimensions, mindist, kB, T)
+    else:
+        set_initial_electrons_fd (alltraps, numofelectron)
+
     Nelectron = 0
     fp = open("starting_conf_"+str(numofelectron)+".txt", "w")
     for t in alltraps:
@@ -654,5 +662,5 @@ if __name__ == "__main__":
     print("")
     print(("Time to read %10.3f"%(end - start)))
     print(("Time compute %10.3f"%((fullend - fullstart)-(end - start))))
-    print(("Total time to read %10.3f"%(fullend - fullstart)))
+    print(("Total time   %10.3f"%(fullend - fullstart)))
     
