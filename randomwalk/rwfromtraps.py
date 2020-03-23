@@ -214,7 +214,7 @@ def readtrapsfromfile (filename, idenergymap, idalphamap, verbose):
 ###############################################################################
 
 def set_initial_electrons (alltraps, numofelectron, trapidtoset, \
-        np_alltraps_position, dimensions, mindist, kB, T):
+        np_alltraps_position, trapsidx_for_np, dimensions, mindist, kB, T):
     
     # select initial NP to get an electron
     # and set electron
@@ -264,6 +264,98 @@ def set_initial_electrons (alltraps, numofelectron, trapidtoset, \
                             alltraps[randomtrapidx].release_time, alltraps[randomtrapidx].get_idxtojump())))
                     setofnp.add(npidx)
                     break
+
+###############################################################################
+
+def set_initial_electrons_fd (alltraps, numofelectron, idenergymap, \
+        np_alltraps_position, trapsidx_for_np, dimensions, mindist, kB, T, fe):
+
+    assignedpopperid = {}
+    popperid = {}
+    tot = 0.0
+    for id in idenergymap:
+        n = 1.0/(math.exp((idenergymap[id]-fe)/(kB*T)) + 1.0)
+        popperid[id] = n
+        assignedpopperid[id] = 0
+        tot += n
+
+    totelectron = 0
+    for id in idenergymap:
+        popperid[id] = int( \
+                ((popperid[id] / tot) * float(numofelectron))+0.5)
+
+        totelectron += popperid[id]
+        print("State %10d energy %.8e and population %10d "%(\
+                id, idenergymap[id],  popperid[id]))
+
+    if totelectron != numofelectron:
+        print("Error in totale electron assigned per state")
+        exit(1)
+
+    # select initial NP to get an electron
+    # and set electron
+    setelectron = 0
+    setofnp = set()
+    #faket = 0.0
+    while setelectron < numofelectron:
+        yesorno = numpy.random.choice(2)
+        if yesorno == 1:
+            setelectron += 1
+    
+            while True:
+                setnp = random.randint(0, len(nplist)-1)
+                npidx = nplist[setnp]
+    
+                if npidx not in setofnp: 
+                    
+                    randomtrapidx = -1
+                    t = 0.0
+                    idxtojump = -1
+                    numoffree = 0
+    
+                    while True:
+                        randomtrapidx = random.randint(min(trapsidx_for_np[npidx]), \
+                            max(trapsidx_for_np[npidx])) 
+
+                        energyid = alltraps[randomtrapidx].get_id()
+
+                        assignedpopperid[energyid] += 1
+                        if (assignedpopperid[energyid] <= popperid[energyid]):
+                            t, idxtojump, numoffree = get_mint \
+                                    (randomtrapidx, np_alltraps_position, alltraps, \
+                                    dimensions, mindist, kB, T)
+                                    
+                            if not((t == 0.0) or (t == float("-inf")) \
+                                    or (t == float("+inf"))):
+                                break
+                            else:
+                                assignedpopperid[energyid] -= 1
+                        else:
+                            assignedpopperid[energyid] -= 1
+    
+                    if (t == 0.0) or (t == float("-inf")) \
+                            or (t == float("+inf")):
+                        print ("Error in the computed release time ", t)
+                        exit(1)
+    
+                    #faket += 0.1
+                    econtainer = electron()
+                    econtainer.append_trapid(randomtrapidx)
+                    alltraps[randomtrapidx].set_electron(1, econtainer)
+                    alltraps[randomtrapidx].release_time = t
+                    alltraps[randomtrapidx].set_idxtojump(idxtojump)
+                    #alltraps[randomtrapidx].release_time = faket
+                    print(("Set electron %3d to NP %10d at trap %10d in state %10d time %10.5e to %10d"%(\
+                            setelectron, npidx, randomtrapidx, alltraps[randomtrapidx].get_id(), \
+                            alltraps[randomtrapidx].release_time, alltraps[randomtrapidx].get_idxtojump())))
+                    setofnp.add(npidx)
+                    break
+
+    for id in idenergymap:
+        print("State %10d energy %.8e and final population assigned %10d "%(\
+                id, idenergymap[id],  assignedpopperid[id]))
+
+
 
 ###############################################################################
 
@@ -391,9 +483,12 @@ if __name__ == "__main__":
 
     if args.fermienergy == None:
         set_initial_electrons (alltraps, numofelectron, trapidtoset, 
-                np_alltraps_position, dimensions, mindist, kB, T)
+                np_alltraps_position, trapsidx_for_np, dimensions, 
+                mindist, kB, T)
     else:
-        set_initial_electrons_fd (alltraps, numofelectron)
+        set_initial_electrons_fd (alltraps, numofelectron, idenergymap, 
+                np_alltraps_position, trapsidx_for_np, dimensions, 
+                mindist, kB, T, args.fermienergy)
 
     Nelectron = 0
     fp = open("starting_conf_"+str(numofelectron)+".txt", "w")
