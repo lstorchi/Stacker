@@ -66,7 +66,10 @@ def move_electron_randmly (idxto, np_alltraps_position, alltraps, \
 
 ###############################################################################
 
-def get_mint (idx, np_alltraps_position, alltraps, dimensions, mindist, kB, T):
+def get_mint (idx, np_alltraps_position, alltraps, dimensions, mindist, kB, T, 
+        fixedenergystate = False):
+
+    initialstateid = alltraps[idx].get_id()
 
     # find near by alltraps imposing boundary conditions
     dists = distance(np_alltraps_position, \
@@ -80,7 +83,11 @@ def get_mint (idx, np_alltraps_position, alltraps, dimensions, mindist, kB, T):
     free_nearindex = []
     for ival in nearindex:
         if (alltraps[ival].electron() == 0):
-            free_nearindex.append(ival)
+            if fixedenergystate:
+                if initialstateid == alltraps[ival].get_id():
+                    free_nearindex.append(ival)
+            else:
+                free_nearindex.append(ival)
 
     idxtojump = -1
     t = float("+inf")
@@ -389,6 +396,10 @@ if __name__ == "__main__":
     parser.add_argument("-F", "--specify-fermi-energy", \
             help="specify the Fermi energy value (eV), thus we will use Fermi-Dirac distribution", \
             type=float, required=False, default=None, dest="fermienergy")
+    parser.add_argument("-X", "--fixed-stateid", \
+            help="Each electron is forced to stay in the same initial state", \
+            action="store_true", required=False, default=False, dest="fixedenergystate")
+ 
     
     if len(sys.argv) == 1:
         parser.print_help()
@@ -564,7 +575,7 @@ if __name__ == "__main__":
                           alltraps[idxfrom].get_atomid()))
               
               newtime, newidxtojump, numoffree = get_mint (idxto, np_alltraps_position, alltraps, \
-                                  dimensions, mindist, kB, T)
+                                  dimensions, mindist, kB, T, args.fixedenergystate)
     
               if (newtime == 0.0) or (newtime == float("-inf")) \
                          or (newtime == float("+inf")):
