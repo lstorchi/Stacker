@@ -296,10 +296,12 @@ def set_initial_electrons_fd (alltraps, numofelectron, idenergymap, \
                 id, idenergymap[id],  popperid[id]))
 
     if totelectron < numofelectron:
-
         addtotherfist = numofelectron - totelectron
-        idxmax = popperid.index(max(popperid))
-        popperid[idxmax] += addtotherfist
+
+        temp = max(popperid.values()) 
+        res = [key for key in popperid if popperid[key] == temp] 
+        
+        popperid[res[0]] += addtotherfist
         totelectron += addtotherfist
 
 
