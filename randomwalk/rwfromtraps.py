@@ -295,7 +295,15 @@ def set_initial_electrons_fd (alltraps, numofelectron, idenergymap, \
         print("State %10d energy %.8e and population %10d "%(\
                 id, idenergymap[id],  popperid[id]))
 
-    if totelectron != numofelectron:
+    if totelectron < numofelectron:
+
+        addtotherfist = numofelectron - totelectron
+        idxmax = popperid.index(max(popperid))
+        popperid[idxmax] += addtotherfist
+        totelectron += addtotherfist
+
+
+    if totelectron < numofelectron:
         print("Error in totale electron assigned per state")
         exit(1)
 
