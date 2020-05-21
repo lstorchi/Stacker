@@ -54,7 +54,7 @@ for filename in filenames:
    
    line = file.readline()
    mergedline = ' '.join(line.split())
-   sx, sy, sz, snpnum, stpidx = mergedline.split(" ")
+   sx, sy, sz, snpnum, stpidx, levelid = mergedline.split(" ")
    
    x0 = numpy.float64(sx)
    y0 = numpy.float64(sy)
@@ -66,7 +66,7 @@ for filename in filenames:
 
    for line in file:
      mergedline = ' '.join(line.split())
-     sx, sy, sz, snpnum, stpidx = mergedline.split(" ")
+     sx, sy, sz, snpnum, stpidx, levelid = mergedline.split(" ")
    
      x = numpy.float64(sx)
      y = numpy.float64(sy)
@@ -90,5 +90,5 @@ for filename in filenames:
    file.close()
 
 total = total / N
-#print(total)
+print(total)
 #print(numpy.log((total**2) / (6.0 * args.time)))

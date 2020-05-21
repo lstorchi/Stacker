@@ -36,11 +36,9 @@ def resort_boundary(xdim, ydim, zdim, coordinates):
     y0 = coordinates[0][1]
     z0 = coordinates[0][2]
     
-    final.append((x0, y0, z0, coordinates[0][3], coordinates[0][4]))
+    final.append((x0, y0, z0, coordinates[0][3], coordinates[0][4], \
+            coordinates[0][5]))
 
-    #print("%10.5f %10.5f %10.5f %10d %10d"%(x0, y0, z0, \
-    #        coordinates[0][3], coordinates[0][4]))
-    
     xpred = x0
     ypred = y0
     zpred = z0
@@ -96,10 +94,8 @@ def resort_boundary(xdim, ydim, zdim, coordinates):
         ypred = y 
         zpred = z 
       
-        #print("%10.5f %10.5f %10.5f %10d %10d"%(xpred, ypred, zpred, \
-        #      coordinates[i][3], coordinates[i][4]))
-      
-        final.append((xpred, ypred, zpred, coordinates[i][3], coordinates[i][4]))
+        final.append((xpred, ypred, zpred, coordinates[i][3], coordinates[i][4], \
+                coordinates[i][5]))
 
     return final
 
@@ -128,23 +124,30 @@ if __name__ == '__main__':
 
     file = open(filename, "r")
     
-    title = file.readline()
+    #title = file.readline()
     
     coordinates = []
     for line in file:
       mergedline = ' '.join(line.split())
-      sx, sy, sz, snpnum, stpidx = mergedline.split(" ")
+      sx, sy, sz, snpnum, stpidx, stateid = mergedline.split(" ")
     
       x = float(sx)
       y = float(sy)
       z = float(sz)
     
-      coordinates.append([x, y, z, int(snpnum), int(stpidx)])
+      coordinates.append([x, y, z, int(snpnum), int(stpidx), \
+              int(stateid)])
     
     file.close()
- 
-    final = resort_boundary (xdim, ydim, zdim, coordinates)
+
+    final = None 
+
+    if len(coordinates) > 1:
+        final = resort_boundary (xdim, ydim, zdim, coordinates)
+    else:
+        final = coordinates
 
     for f in final:
-        print("%10.5f %10.5f %10.5f %10d %10d"%(f[0], f[1], f[2], f[3], f[4]))
+        print("%10.5f %10.5f %10.5f %10d %10d %10d"%( \
+                f[0], f[1], f[2], f[3], f[4], f[5]))
 
