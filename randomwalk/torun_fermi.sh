@@ -2,7 +2,7 @@ time python rwfromtraps.py -f fullsimulatedfilm.out --num-of-electrons 100 -n 10
 
 for i in $(seq 100 100 1000)
 do
-  VAL = $(./boundary_cond.sh 100 $i)
+  VAL=$(./boundary_cond.sh 100 $i)
   echo $i $VAL
 done
 

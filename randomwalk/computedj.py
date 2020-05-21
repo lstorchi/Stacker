@@ -44,10 +44,13 @@ args = parser.parse_args()
 filenames = args.filenamelist.split(":")
 N = numpy.float64(len(filenames))
 CONV = numpy.float64(1.0e10)
+CONV = 1.0
 
 total = numpy.float64(0.0)
 
+nofeledistnonzero = 0
 N = 0.0
+sumofdist = 0.0
 for filename in filenames:
 
    file = open(filename, "r")
@@ -64,7 +67,9 @@ for filename in filenames:
    ypred = y0
    zpred = z0
 
+   numofstep = 0
    for line in file:
+     numofstep += 1
      mergedline = ' '.join(line.split())
      sx, sy, sz, snpnum, stpidx, levelid = mergedline.split(" ")
    
@@ -77,6 +82,8 @@ for filename in filenames:
      if distopred > 200.0:
         print("Maybe a problem: ", distopred, " in file ", filename)
         print("        at line: ", mergedline)
+     
+     sumofdist += distopred
 
      xpred = x
      ypred = y
@@ -86,9 +93,10 @@ for filename in filenames:
            ((ypred-y0)/CONV)**2 + \
            ((zpred-z0)/CONV)**2 )
    N += 1.0
+   if numofstep != 0:
+       nofeledistnonzero += 1
 
    file.close()
 
-total = total / N
-print(total)
+print("%10.8e %10.8e %10d"%(total/N, sumofdist/N, nofeledistnonzero))
 #print(numpy.log((total**2) / (6.0 * args.time)))
